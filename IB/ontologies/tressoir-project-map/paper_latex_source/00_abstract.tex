@@ -1,0 +1,13 @@
+\begin{abstract}
+We explore a principled approach that jointly designs and evolves the architectures, prompts, tools, and knowledge of multi-agent systems, whether online, offline, or with human guidance.
+
+We first propose \textit{Interpretable Blueprints (IBs)}, which pair an online-interpretable \textit{system ontology} (describing architectures, invariants, domain knowledge, etc.) with offline-\textit{materialized} components proven to be high-quality or cost-effective.
+Second, we propose a \textit{supervising interpreter} that co-interprets the IB and the task to construct a specialized agentic system on the fly, without assuming any pre-existing implementation, thereby enabling maximal adaptation to the task.
+IBs are also the primary online communication mechanism between agents.
+Offline learning is a subset of this approach; \textit{learning IBs} encode learning strategies that let the interpreter orchestrate metrics collection and IB improvement.
+Human guidance is enabled at every layer, whether by co-editing IBs or by steering online or offline interpretation in ways that the system learns from over time.
+
+To instantiate this vision, we develop \textit{Tressoir}, an IB-centric framework that unifies online, offline, and human-guided evolution under a single mechanism. Tressoir is tailored for long-running, complex projects with tasks that build on each other and require continual learning during or in between executions. Its generality further allows it to bootstrap itself, where its own features are now self-generated with high-level human guidance.
+
+We also evaluate Tressoir on shorter-term benchmarks. On SWE-Bench-Pro's Qutebrowser subset, Tressoir with Claude 4.6 Opus reaches 75.9\% vs.\ 57.0\% for SWE-Agent; on ScreenSpot-Pro, it lifts Gemini 3 Flash from a 69.1\% baseline to 83.1\%; and on Bird-Critic Flash, Tressoir with Gemini 3 Flash tools scores 56.0\%, exceeding SQL-ACT with Claude 4.6 Opus at 52.0\%.
+\end{abstract}

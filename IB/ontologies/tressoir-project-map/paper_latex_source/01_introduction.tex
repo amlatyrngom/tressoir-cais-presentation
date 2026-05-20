@@ -1,0 +1,75 @@
+\section{Introduction}
+
+% === Combined triptych: (a) online, (b) offline, (c) unified ===
+% (a) and (b) are vertically centered with (c); (c) gets more height.
+% \figmainscale shrinks only the images; sublabels stay at \scriptsize.
+\providecommand{\figmainscale}{1.0}
+\begin{figure*}[t]
+\centering
+\begin{minipage}[c]{0.24\textwidth}
+  \centering
+  \includegraphics[width=\figmainscale\linewidth]{figures/svg_pdf/TressoirSimpleOnline.pdf}\\[2pt]
+  {\scriptsize (a) Pure Online}
+\end{minipage}\hfill
+\vrule width 0.4pt\hfill
+\begin{minipage}[c]{0.3\textwidth}
+  \centering
+  \includegraphics[width=\figmainscale\linewidth]{figures/svg_pdf/TressoirSimpleOffline.pdf}\\[2pt]
+  {\scriptsize (b) Pure Offline}
+\end{minipage}\hfill
+\vrule width 0.4pt\hfill
+\begin{minipage}[c]{0.45\textwidth}
+  \centering
+  \includegraphics[width=\figmainscale\linewidth]{figures/svg_pdf/TressoirFullOnlineOffline.pdf}\\[2pt]
+  {\scriptsize (c) Unified Framework}
+\end{minipage}
+\caption{\textbf{The spectrum of agentic system design supported by Tressoir.} (a)~\textit{Pure online}: meta agents interactively spawn and steer specialized agents and tools in response to runtime observations. (b)~\textit{Pure offline}: meta agents search for and synthesize an optimal design using rollouts to collect learning signals. (c)~\textit{Unified:} ~\sysname unifies both under a single interpretation mechanism. Offline learning uses past runs as experiences to produce improved IBs that online execution uses to better solve a task. IBs balance flexible online interpretation with materialization of proven components. Human guidance is enabled throughout and serves as a learning signal for both the online and offline processes. Circled numbers indicate the sequence of operations; identical numbers denote parallel or co-interpreted steps.}
+\label{fig:main}
+\end{figure*}
+
+Agentic systems, which augment large language models (LLMs) with tool environments, feedback loops, and multi-agent coordination~\cite{react2023,sweagent2024,openhands2024,autogen2024,metagpt2024}, have become the dominant paradigm for autonomous problem-solving across complex domains \cite{agentsurvey2024, anthropic2025claudecode,github2025copilot,anthropic2026agentteams,github2025copilotsubagents,moonshot2026agentswarm}. A consistent finding across this landscape is that \emph{specialization} is a primary driver of performance \cite{dgm2025,robeyns2025selfimproving,agentsurvey2024}: systems whose prompts, multi-agent architectures, tool libraries, and retrieval strategies are tailored to their target domain consistently outperform general-purpose alternatives, motivating a growing body of work on self-evolving agents~\cite{gao2025selfevolvingsurvey}. Achieving such specialization, however, requires co-optimizing many tightly interdependent design decisions, with optimization signals that often only emerge online \cite{livesweagent2025,wang2025mas2}. Most existing approaches adapt only offline, or fragment this problem, optimizing prompts \cite{dspy2024,evoprompt2024}, rigid workflows \cite{aflow2025,adas2025,wang2025mas2}, or tools \cite{latm2024,craft2024,livesweagent2025} in isolation.
+
+Some self-evolving frameworks attempt to be holistic, yet remain rigid in their ability to adapt online and in their learning mechanism. For example, in the software engineering (SWE) domain, the most holistic approaches we are aware of are DGM, SICA, and HGM \cite{dgm2025,robeyns2025selfimproving,wang2025huxley}, which optimize a complete agentic system. All three show that a minimal coding agent, augmented with simple tools and workflows (e.g., better editing, navigation, parallel generate-and-rank), can substantially outperform its simplistic baseline on subsets of SWE-Bench \cite{swebench2024}, with improvements of over 30 percentage points. Still, the resulting agents are \textit{static code artifacts} that do not further evolve online, nor are their evolution mechanisms themselves subject to improvement; they are general-purpose, resource-intensive, hand-written search procedures (evolutionary in DGM/HGM, hill-climbing in SICA). In our view, since the search procedure is still just code, there is no fundamental reason why it should not be automatically generated and improved in a manner tailored to the task or the user's intent; frontier LLMs have already proven capable of generating learning algorithms \cite{alphaevolve2025,romeraparedes2024funsearch}. These holistic frameworks are, therefore, still insufficiently adaptive.
+
+This rigidity is compounded by the fact that human expertise, essential for high-level design strategy and complex problem-solving, is largely absent from these automated pipelines; they do not allow users to steer the online or offline design process, and to have their expertise automatically learned from for future tasks. For example, the optimization processes cited above are slow and costly (e.g., \$22{,}000 for a DGM optimization on SWE-Bench), yet they lack a mechanism for a human expert to inject guidance into the search. We argue that enabling such steering is critical to improving both the quality and efficiency of the discovery process.
+
+
+\textbf{Our Approach.} In this paper, we propose a unified framework that jointly handles holistic specialization across all design axes, online adaptation that continues at runtime, offline learning of proven patterns, generation and improvement of the learning mechanism itself, and human-in-the-loop (HIL) guidance throughout. We draw inspiration from Spec-Driven Development (SDD)~\cite{piskala2025sdd,meng2025wysiwid,bockeler2025sddtools,gu2025challenges}, which, in its ideal form, argues that code should be \emph{synthesized or derived from} a specification by an agentic interpreter. 
+Currently, SDD is applied mainly to static programs, not to the evolving agentic interpreters that generate them. Its scope is limited to feature-generation time and typically focuses on a bounded set of tasks, failing to capture key design decisions accumulated over a system’s lifetime. 
+First, we elevate SDD into the broader construct of a \emph{System Ontology}, a directed graph that encodes the complete semantic intent of a system, its architectural rationale, design constraints, governing invariants, and embedded domain knowledge, as a new source of truth that guides code synthesis. 
+In its simplest form, the ontology may be represented as a set of files organized within a hierarchical system with cross-links (as adopted in this paper). In its more advanced form, it may take the shape of a fine-grained directed knowledge graph stored in a specialized data structure, which is beyond the scope of this paper.
+Second, we include the design of not just the codebase, but its agentic system in the ontology. In this view, the ontology can be interpreted to interactively synthesize, at runtime, an agentic system whose every dimension is tailored to the task.
+This reframing naturally addresses all limitations above: (1) a specification can be holistic, jointly capturing all interdependent design decisions; (2) on-demand synthesis enables per-task online adaptation; (3) specifications are human-interpretable, allowing easy guidance. However, shifting all synthesis to online runtime can be costly and may fail to capture offline, deterministic tools/scaffolds known to be high-quality and/or cost-effective. We therefore allow the system to \textit{materialize} proven reusable components and introduce the concept of \textit{Interpretable Blueprints (IBs)}.
+
+Concretely, an IB pairs (1) a \textit{system ontology} describing prompts, agent architectures, tool-use guidelines, lessons learned, and task-specific information (e.g., codebase ontologies) with (2) materialized components (tools, agentic scaffolds, shared services) generated offline.
+A \textit{supervising interpreter} co-interprets the IB and a task to orchestrate a task-specific system, guided by the effective patterns described in the ontology, constantly adapting to signals that emerge online, and capable of re-using proven components with reliable quality, cost, or latency.
+
+\Cref{fig:main} illustrates the range of settings this mechanism supports. In the pure online setting (\cref{fig:main}a), the interpreter designs the system on the fly, monitoring agent trajectories and spawning specialized sub-agents as needed. IBs serve only as the online communication medium between agents, enabling clean exchange of online-generated knowledge and tools. This setting enables per-task adaptation but lacks predictability and cross-run improvement. In the pure offline setting (\cref{fig:main}b), a Learning IB encodes strategies for exploring design alternatives through rollouts and evaluation, producing a static IB that runs without interpreter involvement at inference time. The strategies can be formal algorithms, or natural-language intent that the interpreter synthesizes into code. This setting provides more predictability, but little runtime flexibility.
+
+The unified setting (\cref{fig:main}c) combines both: \textit{task profiles} collected from previous runs feed into offline learning, which uses the lessons therein to produce improved IBs with better specifications and materialized components. The online interpreter co-interprets this improved IB with incoming tasks to further adapt to emergent signals while re-using any available component. A human expert can steer either process or directly edit the IBs and have their expertise preserved in task profiles. Notably, the Learning IB itself evolves when the offline process discovers a better learning strategy or receives human expertise it can learn from. This setting is most comprehensive and general, and is effective on long-running projects with complex tasks that build upon one another and require domain expertise from humans.
+
+All of these settings rely on the same underlying mechanism of IB co-interpretation through a powerful supervising interpreter. Using these principles, we develop \textit{Tressoir}, an IB-centric framework that implements this mechanism. Tressoir was designed for long-term, complex systems research and development, hence its need to support the comprehensive workflow described above. This includes its own bootstrapping: its own features are now self-generated with human guidance that it gradually learns from. While not its main focus, Tressoir also achieves state-of-the-art results on diverse benchmarks on a subset of SWE-Bench-Pro (software engineering), ScreenSpot-Pro (UI navigation), and Bird-Critic (text-to-SQL). The primary trade-off is cost, mitigated by offline-designed IB components and per-role model selection.
+
+
+\textbf{Outline and Summary of Contributions.}
+\squishlist
+\item We propose specification/task co-interpretation with IBs, a single mechanism that unifies online, offline, and human-guided evolution of long-term, multi-agent systems (\cref{sec:approach}).
+\item We implement this mechanism in Tressoir, achieving strong results on benchmarks across diverse domains and settings (\cref{sec:evaluation}).
+\item We show that Tressoir can develop complex systems and has reached safe bootstrapping: its own features are now self-generated with HIL guidance (\cref{sec:usecases}).
+\squishend
+
+These principles are also being generalized beyond single-user agentic systems into the G5 platform \cite{G5}, which formalizes intent, multi-user collaboration, and domain knowledge as an evolving knowledge graph and abstraction layer. However, both this broader effort and the role of the system ontology in enabling semantic (rather than code-level) reasoning—for example, to identify specification conflicts and to simplify the maintenance of large systems—are outside the scope of this paper.
+
+
+
+% === Old figures (commented out, replaced by triptych above) ===
+% \begin{figure*}[t]
+% \includegraphics[width=0.75\textwidth]{figures/svg_pdf/TressoirMainFigureOnline.pdf}
+% \label{fig:main_online}
+% \end{figure*}
+% \begin{figure}[t]
+% \includegraphics[width=\columnwidth]{figures/svg_pdf/TressoirMainFigureOffline.pdf}
+% \label{fig:main_offline}
+% \end{figure}
+
+

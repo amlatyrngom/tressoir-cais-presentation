@@ -1,0 +1,56 @@
+\section{Building with Tressoir}
+\label{sec:usecases}
+
+The benchmarks in \cref{sec:evaluation} necessarily restrict human involvement. This section complements those results by showing \sysname as it is primarily intended: as a HIL-first development platform for complex systems.
+
+\subsection{Interfaces}
+\label{sec:interfaces}
+
+\sysname exposes two interfaces.
+A \textit{non-interactive CLI} drives the benchmark runs of \cref{sec:evaluation}: it accepts a configuration file encoding the task description, model configuration, and blueprint paths, then executes Algorithm~\ref{alg:cointerpret} (except for ablations) to completion and writes the result and task profile to disk.
+An \textit{interactive frontend} (Fig.~\ref{fig:duckdb_debug}) is the primary surface for HIL workflows: developers can monitor agent trees in real time, inspect trajectories, send messages via the Bridge, spawn or terminate agents, and approve checkpoints between workflow phases.
+
+\subsection{Bootstrapping}
+\label{sec:bootstrapping}
+
+Once the core backend reached stability, we began using \sysname to build \sysname itself. The architecture (Fig.~\ref{fig:bootstrapping}) shows our nested sandbox design for safe bootstrapping: an \textit{outer} sandbox runs the current stable version, while an \textit{inner} sandbox contains the code under development, which may be transiently broken. The outer agents (based on stable code) edit, build, and test code inside the inner sandbox (which may spawn unstable sub-agents); once the inner version passes all checks, the outer code is updated to match, yielding a new stable release. Multiple inner sandboxes can run in parallel on independent features.
+
+\begin{figure}[t]
+\centering
+\begin{subfigure}[t]{0.49\columnwidth}
+\centering
+\includegraphics[width=\textwidth]{figures/svg_pdf/BootstrappingFigure.pdf}
+\caption{Bootstrapping architecture.}
+\label{fig:bootstrapping}
+\end{subfigure}
+\hfill
+\begin{subfigure}[t]{0.49\columnwidth}
+\centering
+\includegraphics[width=\textwidth]{figures/Duckdb-Arrow-Debug-Zoomed.pdf}
+\caption{DuckDB debugging session.}
+\label{fig:duckdb_debug}
+\end{subfigure}
+\caption{\textbf{Building with \sysname.} (a) shows the bootstrapping architecture. The outer sandbox runs stable \sysname; agents edit, build, and test code in the inner sandbox, promoting it once validated. (b)~A zoomed-in view of the agent tree from a complex debugging session for the distributed DuckDB feature described in \cref{sec:systems}.}
+\label{fig:building}
+\end{figure}
+
+The bootstrapping blueprint follows the same structure as Listing~\ref{lst:blueprints}(b): meta agent specs, agent specs, code views covering backend and frontend components, and workflow entrypoints. As an example, the entire web frontend of \sysname shown in Fig.~\ref{fig:duckdb_debug} (real-time agent monitoring, trajectory inspection, Bridge-based interaction) was built through IB co-interpretation without any manual code authorship, with only human guidance on desired functionality and review of end-to-end results. Much of the backend is now also agent-generated. We estimate (using files that were hand-created, weighted by line count) that in the non-test codebase, roughly 79\% is fully \sysname-generated and 21\% is human/\sysname co-written; within that 21\%, most lines are still \sysname-written or refactored, with only the initial runnable core authored manually with the help of Copilot~\cite{github2025copilotide}. The test suite is 100\% \sysname-generated.
+
+\subsection{Complex Systems Engineering}
+\label{sec:systems}
+
+To illustrate \sysname on a heavily human-in-the-loop task, we describe a debugging session from an ongoing project: building a distributed, ACID-compliant version of DuckDB with Apache Arrow as the inter-node data interchange format.
+
+\sparagraph{Task.}
+We tasked \sysname with running a full TPC-H benchmark comparing vanilla DuckDB against our Arrow-based distributed variant and identifying the bottleneck. Figure~\ref{fig:duckdb_debug} shows the resulting agent tree. Throughout, the meta agent had access to the IB document shown in \cref{sec:app_duckdb} to guide it, as well as code views providing a high-level map of which key points to instrument.
+
+\sparagraph{Execution.}
+The meta agent first spawned a \textit{Benchmark Planner} and \textit{Benchmark Implementer} that used DuckDB's \texttt{tpch} extension for data generation, Docker Compose for multi-node simulation, and a mix of Python and C++ profiling libraries to measure performance. These agents identified IPC serialization as the general bottleneck but could not pinpoint the root cause; the meta agent escalated to the developer.
+
+With human guidance to focus on TPC-H Q1 (which produces only four rows yet exhibited the IPC slowdown), the meta agent spawned a \textit{Q1 Investigator} that isolated Arrow IPC as the culprit, then an \textit{IPC Investigator} that wrote standalone C++ tests to further narrow the problem to DuckDB's \texttt{to\_arrow\_ipc} extension function. A second escalation asked the developer whether to attempt a non-invasive fix or an in-extension patch. We chose the former to avoid a diverging extension fork.
+
+The meta agent then spawned an \textit{IPC Fixer} that discovered the root cause: the extension discards optimizer statistics for nested subqueries, forcing a slow \texttt{HASH\_GROUP\_BY} instead of \texttt{PERFECT\_\-HASH\_\-GROUP\_BY}. The agent proposed and implemented a fix using materialized CTEs to preserve the statistics, a DuckDB feature we were unaware of. After benchmarking confirmed the fix, the task profile was generated and the uplifter incorporated the lesson into the blueprint's ontology for future runs.
+
+\sparagraph{Discussion.}
+This single task spanned Python (benchmarking, agent orchestration), SQL (query formulation and analysis), shell (Docker, CMake builds), and C++ (extension code, isolated tests, patch), required several specialized agents coordinated by a meta agent aware of learned delegation patterns, and benefited from HIL steering at natural decision points. This combination of multi-language, multi-tool, multi-agent, complex operations with HIL steering and learned experiences from previous tasks is hard to achieve in traditional agentic systems, and exemplifies \sysname's target workflow.
+

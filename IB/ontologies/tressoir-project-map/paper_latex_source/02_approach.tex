@@ -1,0 +1,253 @@
+\section{Approach}
+\label{sec:approach}
+
+Given a task $T$, \sysname works by \emph{co-interpreting} it with an \emph{interpretable blueprint} $B$: a pair of ontology documents $O$ and materialized components $C$ that together guide a meta agent's decisions.
+Algorithm~\ref{alg:cointerpret} summarizes the resulting loop.
+The meta agent $M$ iteratively selects from a rich action space: spawning sub-agents configured by the blueprint, synthesizing multi-agent scaffolds (e.g., parallel DAGs), producing runtime artifacts that extend the blueprint itself, escalating to human operators, or recursing into sub-problems.
+Human interventions $H$ are recorded verbatim.
+At termination, a \emph{task profile} $P$ captures the blueprint, all human exchanges, and a trajectory analysis of every spawned agent, providing the raw material for offline improvement.
+
+The rest of this section makes each element of the loop concrete.
+\Cref{sec:toolkit} presents the interpreter's toolkit: the primitives that implement lines~6--15 of the algorithm.
+\Cref{sec:ibs} defines interpretable blueprints and explains how they are authored, interpreted, and used as an inter-agent communication medium.
+
+
+\begin{algorithm}[t]
+\caption{Co-interpretation. A meta agent interprets a blueprint to orchestrate a task-specific agentic system. The offline process can override the entrypoint to run a different interpretation strategy, with this default loop as a callback if desired.}
+\label{alg:cointerpret}
+\small
+\newcommand{\algcomm}[1]{\hfill{\color{synComment}\itshape$\triangleright$ #1}}
+\newcommand{\algln}[1]{\textbf{#1:}}
+\begin{tabbing}
+\hspace{1.6em}\=\hspace{1.5em}\=\hspace{1.5em}\=\hspace{1.5em}\=\kill
+\algln{1} \> \textbf{procedure} \textsc{CoInterpret}($B, T$) \\
+        \> \> \textbf{in:} blueprint $B = (O,C)$;\; task $T$ \\
+        \> \> \textbf{out:} result $R$;\; profile $P$ \\
+\algln{2} \> \> \textbf{if} $B$.\textsc{Entrypoint}() exists \algcomm{pre-designed scaffold} \\
+\algln{3} \> \> \> \textbf{return} $B$.\textsc{Entrypoint}($B, T$) \algcomm{may call back \textsc{CoInterpret}} \\
+\algln{4} \> \> $M \gets \textsc{MetaAgent}(O.\mathrm{meta},\; C,\; T)$;\; $H \gets \emptyset$ \\
+\algln{5} \> \> \textbf{repeat select} \textit{\textcolor{synComment}{--- select step given $B$, $T$, trajectories:}} \\
+\algln{6} \> \> \> \textsc{SynthesizeAgent}(\textit{s}, \textit{subtask}) \algcomm{$\textit{s} \subseteq B$} \\
+\algln{7} \> \> \> \quad\textsc{AnalyzeTrajectory}(\textit{agent}, \textit{purpose}) \algcomm{inspect} \\
+\algln{8} \> \> \> \quad\textsc{InjectAndCompactRun}(\textit{agent}, \textit{ctx}) \algcomm{steer} \\
+\algln{9} \> \> \> \textsc{SynthesizeScaffold}(\textit{s}, \textit{subtask}) \algcomm{DAGs, pipelines, \ldots} \\
+\algln{10} \> \> \> \textsc{SynthesizeArtifact}($a$);\; $B \gets B \cup \{a\}$ \algcomm{extend $B$} \\
+\algln{11} \> \> \> \textsc{CoInterpret}(\textit{s}, \textit{subtask}) \algcomm{recurse} \\
+\algln{12} \> \> \> \textsc{EscalateToHuman}($q$);\; $H \gets H \cup \{\cdot\}$ \algcomm{query operator} \\
+\algln{13} \> \> \> \textsc{Think}() \algcomm{reason, no action} \\
+\algln{14} \> \> \> \textsc{BridgeOp}(\ldots);\; $H \gets H \cup \{\cdot\}$ \algcomm{event-driven} \\
+\algln{15} \> \> \> \textsc{Execute}(\ldots) \algcomm{code / shell} \\
+\algln{16} \> \> \textbf{until} $M$ yields result $R$ \\
+\algln{17} \> \> $P \gets B \cup H \cup M.\mathrm{stats}() \cup \{\, a.\textsc{AnalyzeTrajectory}() \mid a \in M.\mathrm{agents} \,\}$ \\
+\algln{18} \> \> \textbf{return} $R,\; P$ \\
+\end{tabbing}
+\end{algorithm}
+
+\subsection{The Interpreter's Toolkit}
+\label{sec:toolkit}
+
+A \sysname agent acts on its environment through \emph{SDK Services}: a uniform abstraction over any backend exposing named tool calls and optional streaming subscriptions. SDK services wrap MCP servers, local libraries declared in the IB, IB skills/subagents/workflows, or arbitrary APIs, and can be added or removed at runtime alongside a small built-in core (Listing~\ref{lst:toolkit}), so the visible toolkit is shaped by the IB rather than hard-coded. Every tool is invoked the same way: \texttt{sdk(service, tool, arguments)}. To stay scalable as the registered set grows, services adopt \emph{progressive disclosure}~\cite{fielding2017rest,agentskills2026}: a concise overview appears in the system prompt, and full documentation can be searched on demand.
+
+The agent emits one of three command types per turn (Listing~\ref{lst:commands}), trading security for flexibility. \texttt{SDKCommand} carries a single JSON tool call with no inline logic, and is therefore the most constrained. At the other end, \texttt{IPythonCommand} uses a persistent IPython process where state accumulates across calls; this is maximally flexible but harder to sandbox. \texttt{LuaCommand}, the default, is in-between: it runs in a Lua runtime where every potentially unsafe call passes through the framework, which can intercept it and check user-specified policies or ask the user for confirmation.
+
+\begin{listing}[t]
+\begin{lstlisting}[morestring={[b]"},morecomment={[l]{--}},morekeywords={SDKCommand,IPythonCommand,LuaCommand,local,for,in,do,end},keywordstyle=\color{accentXML}\bfseries,stringstyle=\color{synString},commentstyle=\color{synComment}]
+<SDKCommand service_name="core" tool_name="shell">
+{"command": "cmake --build build/ && ctest -R ipc_bench"}
+</SDKCommand>
+<IPythonCommand>
+result = sdk(
+  "agent", "spawn_and_run", model_spec="advanced",
+  task=f"{context}. Add profiling to the IPC layer."
+)
+</IPythonCommand>
+<LuaCommand>
+local out = sdk("core", "parallel_tool_calls", {...})
+for i, call in ipairs(calls) do
+  ...
+end
+</LuaCommand>
+\end{lstlisting}
+\caption{The three principal SDK execution command types.}
+\label{lst:commands}
+\end{listing}
+
+\begin{listing}[t]
+\begin{lstlisting}[morecomment={[l]{\#}},morekeywords={service,hidden},keywordstyle=\color{accentPython}\bfseries,commentstyle=\color{synComment}]
+service agent:        # primary; orchestrates sub-agents
+  spawn(task, attach, model_spec, preset, temp)
+  compact_run(agent_id, inject_ctx, injected_attach, rounds)
+  analyze_trajectory(agent_id, purpose)
+  pause | resume | steer | compact | terminate | stats | subscribe | ...
+
+service core:         # foundational ops
+  shell | read_lines | write_replacement | rgrep | rglob |
+  multimodal_view | parallel_tool_calls | ...
+
+service llm | web | embed:   # one-shot utilities
+  invoke, parse_tag, search, read, embed_text, ...
+
+service ib: # Live IB management and progressive disclosure into the IB
+  search_components(pattern) | register_mcp(spec) | ...
+  # IB components are inspectable/editable with core ops by design (Sec. 2.2)
+
+service perm: hidden  # runtime-only; gates SDK calls per policy
+\end{lstlisting}
+\caption{The built-in SDK services agents see by default. \texttt{perm} is hidden from the agent's call surface. Custom services (MCPs, IB libraries, skills) register explicitly (external APIs) or implicitly (with filesystem writes).}
+\label{lst:toolkit}
+\end{listing}
+
+\sparagraph{Agent management.}
+The agent management service (\texttt{agent}) is the primary interface for architecting multi-agent patterns. Its main entry point, \texttt{spawn}, spawns a sub-agent with a task, multimodal attachments (images, PDFs, videos), a capability tier, and a context preset that limits its default capabilities. Several design choices are worth highlighting.
+
+First, \texttt{compact\_run} treats context management as a first-class operation using a novel programmatic compaction technique. When a long-horizon task exceeds the model's effective context, the agent writes code that inspects its live runtime state and emits a string capturing progress, acquired insights/skills, remaining work, and useful snippets. This is denser than natural-language summarization: the agent can dump data structures, re-invoke helpers, or read file fragments. The meta agent callers can also inject additional context on each resumption, enabling online feedback without our advanced event-driven methods (discussed below); it allows steering while still using simple caller/callee synchronous primitives.
+
+Second, \texttt{analyze\_trajectory} exposes introspection: a caller can query the full sequence of thoughts, actions, and observations for a stated purpose (e.g., ``diagnose where the agent got stuck''). This serves double duty as both a runtime steering tool and the mechanism behind task profiles (\cref{sec:profiles}).
+
+Third, \texttt{model\_spec} abstracts over concrete model identifiers. The same quality/cost tiers (\texttt{advanced}, \texttt{fast}, \texttt{simple}, plus multimodal variants) work across many providers.
+
+Fourth, the \texttt{preset} parameter specifies a sub-agent's visible context and guidance; the meta preset, in particular, enables recursive meta agents when coordination itself exceeds a single agent.
+
+
+\sparagraph{Complex coordination as ordinary code.}
+A common concern is that runtime multi-agent coordination requires specialized frameworks or protocols. In \sysname, by ensuring that all primitives, including agent management ones, are regular function calls, any coordination pattern expressible in code is immediately available. Listing~\ref{lst:dag} illustrates this with a cost-aware parallel DAG executor. The meta agent builds a dependency graph, iterates over ready nodes, fans out sub-agents (each with its own \texttt{model\_spec} quality/cost control), and collects results, all in a few lines of code. Pipelines, map-reduce, hierarchical decomposition, and retry-with-fallback follow the same shape.
+
+\begin{listing}[t]
+\begin{lstlisting}[morestring={[b]"},morecomment={[l]{\#}},morekeywords={def,while,not,or},keywordstyle=\color{accentPython}\bfseries,stringstyle=\color{synString},commentstyle=\color{synComment}]
+dag = build_task_graph(spec)  # nodes = subtasks, edges = dependencies.
+def run_node(n):
+  subtask = dag.collect_deps(n) + dag.task(n)
+  model_spec = n.model_spec or "fast"  # control cost.
+  out = sdk("agent", "spawn_and_run", task=subtask, model_spec=model_spec)
+  dag.mark_done(n, out)
+
+while not dag.done():
+  ready_list = dag.get_ready()
+  parallel_for(run_node, ready_list)  # any parallel library
+\end{lstlisting}
+\caption{Coordination Example (Non-Interactive): parallel DAG execution over sub-agents with fine-grained cost control. Pipelines, hierarchical decomposition, etc. all reduce to similar code.}
+\label{lst:dag}
+\end{listing}
+
+\sparagraph{Event-driven coordination.}
+Beyond the synchronous caller/callee pattern, the agent service also exposes advanced tools for pause, resume, communication, steering, and subscriptions. Human steering naturally uses this same surface: an operator can inject context, trigger compactions, spawn agents, etc., through the same primitives the meta agents use, so the HIL frontend is an additional caller of the existing SDK rather than a separate API.
+
+\sparagraph{Supporting Primitives.}
+Aside from the agent service, \sysname ships other built-in utility services. \texttt{core} provides shell, file editing/search, pattern-matching, and parallel tool execution even in restricted JSON/Lua modes. The \texttt{llm} service exposes direct LLM invocation without the overhead of an agentic loop; \texttt{web} provides web search and reading; \texttt{embed} provides embedding utilities. The special \texttt{ib} service discovers and instantiates IB components, with \texttt{search\_components} enabling progressive discovery and supporting MCPs, agent skills, subagent templates, local libraries (that can themselves compose other sdk operations), etc.
+
+\sparagraph{Task profiles.}
+\label{sec:profiles}
+On task completion, each spawned agent produces a structured trajectory analysis via \texttt{analyze\_trajectory}: key steps, challenges, and resolutions. Human interventions are preserved verbatim alongside any agent-generated artifacts (scripts, tool configurations, design notes). The resulting \emph{task profiles} are the raw material for offline learning (\cref{sec:ibs}): they record not only what the system did and what a human corrected, but which artifacts proved reusable, making both human guidance and emergent best practices available as learning signals.
+
+This toolkit alone handles complex, long-horizon tasks across tools, languages, and sub-agents. \sysname's full strength comes from pairing it with interpretable blueprints, discussed next.
+
+\subsection{Interpretable Blueprints}
+\label{sec:ibs}
+An \emph{interpretable blueprint} $B = (O, C)$ provides ontology documents $O$ that describe strategy and domain knowledge, paired with materialized components $C$ (code, scaffolds, tools, services, etc.) that agents can invoke directly.
+Together, they form a structured, human-readable contract between the developer (human or AI) who authors the system and the meta agent that interprets it at runtime.
+
+
+\sparagraph{Complex blueprints as ordinary OS constructs.}
+Just like coordination as ordinary code (\cref{sec:toolkit}) allows complex patterns without special training, we avoid introducing abstractions that the models are unfamiliar with. Therefore, our initial design decision is to structure blueprints as ordinary operating system (OS) constructs that the model is already skilled at manipulating. Prompts are plain-text files, agentic scaffolds are plain code reading these prompts and accessing the SDK, ontology graphs are linked files (through their frontmatter), tools are regular libraries or scripts, shared services are files, daemons, or containers (e.g., databases). Root ontology documents provide a general map of the IB. This abstraction is simple and human- and agent-interpretable and editable. It also fits cleanly with existing development workflows: we can use existing standards (\texttt{CLAUDE.md}, \texttt{AGENTs.md}, \texttt{SKILL.md}, \texttt{SUBAGENT.md}) as the initial blueprint specification and evolve it from there. Remote APIs are an exception: they remain a black box to the system, though the skills for using them may evolve. Further, it remains to be seen whether more advanced, fine-grained knowledge graphs offer additional/alternative benefits over our linked files ontologies, which is a promising direction for future work.
+
+Listing~\ref{lst:blueprints} contrasts two real blueprints at very different scales. We note that the layouts and names have been simplified for readability.
+
+\sparagraph{A minimal, static blueprint.}
+Listing~\ref{lst:blueprints}(a) shows a subset of the blueprint for ScreenSpot-Pro, a visual UI interaction benchmark (see \cref{sec:evaluation} for more details).
+The blueprint consists of two agent ontologies and implementations describing a progressive cropping strategy and a box-based clicking strategy, the Python helper tools they reference, and a runner script that serves as the entrypoint.
+Importantly, it also contains the offline learning artifacts: test scripts to perform rollouts with different strategies (tiling, voting ensembles, varying crop depths), and markdown files to record the results, lessons learned from these rollouts, and the overall current design. 
+This simple blueprint would be very difficult to encode in a more formal data structure, but, as it is, is straightforward for both humans and models to read, edit, and extend. Despite its simplicity, it lifts a cheap model to near-SOTA performance.
+
+\sparagraph{A complex, dynamic blueprint.}
+Listing~\ref{lst:blueprints}(b) shows a simplified view of the blueprint for our agent-driven distributed DuckDB case study (\cref{sec:usecases}). 
+The blueprint is divided into two main sections: the meta agent ontology is only read by meta agents, and focuses on high-level coordination patterns, prompt engineering techniques (done by the meta agent, not the developer), and general lessons learned from past runs. We include a meta agent spec in \cref{sec:app_duckdb}, as it is a good example of a gradually evolved document that has strongly improved meta agent behavior over time, and is still evolving as we continue to run the system and learn from it. \texttt{uplifter.spec.md} is for the offline-learning meta agents.
+The agent ontology is shared by all agents and spans OS-native artifacts: a curriculum dataset that agents use to measure optimization impacts, human-verified golden tests providing a stable correctness baseline that agents cannot erode, and module-level ontologies.
+Learning infrastructure (curriculum dataset, uplifter) is part of the blueprint itself, evolving alongside the rest. The TOML files are pre-designed entrypoint workflows; we discuss these further below.
+
+
+\begin{listing}[t]
+\begin{minipage}[t]{0.38\columnwidth}
+\begin{lstlisting}[rulecolor=\color{accentShell}]
+# crop strategy
+# prompt, scaffold, tool
+cropper.agent.md
+cropper.py
+cropper_helper.py
+
+# click strategy
+# prompt, scaffold, tool
+clicker.agent.md
+clicker.py
+clicker_helper.py
+
+# entrypoint
+runner.py
+
+# learning-only
+README.md # Design notes.
+run_cropper.py # rollouts
+run_clicker.py # rollouts
+... # feedback md files.
+\end{lstlisting}
+\centerline{\scriptsize (a) ScreenSpot-Pro}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.60\columnwidth}
+\begin{lstlisting}[rulecolor=\color{accentShell}]
+meta_agents.spec/
+  human_meta_guidance.md
+  general_lessons.md
+  planning_lessons.md
+  uplifter.spec.md # learning
+agent.spec/
+  human_agent_guidance.md
+  impl_lessons.md
+  duckdb_lessons.md
+  curriculum_dataset.md # learning
+    curriculum_dataset/...
+  golden_tests_and_examples/
+    test_distributed_txns.cpp
+    test_e2e_tpch_docker_compose.py
+    test_optimize_udfs.cpp
+    ...
+  code_views/
+    architecture.md
+    txn_protocol.md
+    nanoarrow_ipc.md
+    ...
+next_planning.toml # entrypoint
+next_impl.toml     # entrypoint
+uplift.toml        # entrypoint
+interactive.toml   # entrypoint
+\end{lstlisting}
+\centerline{\scriptsize (b) Distributed DuckDB}
+\end{minipage}
+\caption{Blueprints at different scales. (a)~A minimal, static blueprint (\cref{sec:evaluation}). (b)~A production blueprint that evolves online and offline. Names and structure are simplified for readability.}
+\label{lst:blueprints}
+\end{listing}
+
+\sparagraph{Interpretation.}
+At runtime, $M$ draws on coordination patterns described in the meta agent ontology to select actions in the co-interpretation loop (Algorithm~\ref{alg:cointerpret}).
+Crucially, the blueprint is not static during execution: \textsc{SynthesizeArtifact} (line~10) allows agents to produce new ontologies, tools, or scaffolds that are merged into $B$, making them available to all subsequent steps.
+This dynamic extension is what enables a tool-installer agent to produce a library and a usage guide that a later agent consumes, all within a single task, making blueprints a natural communication medium between agents aside from the event-driven primitives.
+When the blueprint includes a pre-designed entry scaffold (line~2), interpretation skips the meta agent loop entirely and dispatches to the scaffold, which may itself call \textsc{CoInterpret} on sub-problems.
+This allows developers to hard-code high-level structure (e.g., a three-phase workflow) while leaving fine-grained decisions to the meta agent.
+
+
+\sparagraph{Multi-meta agent workflows.}
+\label{sec:workflows}
+A single meta agent in Algorithm~\ref{alg:cointerpret} with sub-agents can in principle handle an entire task, but two factors make this impractical.
+First, in HIL settings, developers typically want structured checkpoints for review and redirection (e.g., approving a design before implementation begins, or reviewing integration tests before merging).
+Second, very long tasks (hours to days of continuous work) bottleneck on coordination itself, which may be more reliable when each meta agent owns a cleanly delineated phase.
+The solution is \emph{workflows}: sequences of meta agents with explicit transition criteria between phases.
+Workflows can be predefined by developers assisted by AI through entrypoint config files (the TOML scaffolds in Listing~\ref{lst:blueprints}(b)) or synthesized at runtime by a top-level meta agent tasked with creating the multi-phase structure itself. Listing~\ref{lst:multimeta_workflow} shows a concrete example for complex software development.
+
+\sparagraph{Semi-Formal Invariant Checking.}
+\label{sec:semiformal}
+Each ontology frontmatter and TOML file can declare a structured rules section listing invariants the system should respect (e.g., ``an agent's SDK calls must go through the dispatcher and permission system'' or ``golden tests must not be updated without human approval''). When the user or the active meta agent triggers a built-in rule-checking tool, the framework parses the rules and spawns a built-in meta agent that reviews the performed changes and makes sure they comply with the rules. Rules evolve along with the IB, prioritizing human feedback (stored in profiles) for refinement. This does not rise to true formal verification or verification-aware programming~\cite{bertot2004coq,leino2010dafny}, but it provides stronger guarantees than trusting the main meta agent to respect every invariant. Making this approach more formal is an interesting direction for future work.
+
+\sparagraph{Construction and offline learning.}
+Blueprints emerge from human authorship, agent-generated learning, or (most productively) human-agent collaboration. All three produce the same artifact format, so human-written, agent-generated, and collaboratively developed ontologies coexist in a single blueprint and are freely editable by either party.
+Offline learning is itself a special case of co-interpretation (Algorithm~\ref{alg:cointerpret}) where the output is an improved blueprint rather than a task result.
+The interpreter can tweak blueprint ontologies, execute agent rollouts to A/B-test changes (e.g., try $V$ variants of a tool and prompt on $N$ sample instances, record success rate and cost, synthesize the best variant), perform cheaper agents-as-judge analysis on existing task profiles (categorizing human interventions, failure modes, successful delegation patterns, and useful artifacts into improved ontologies), or combine both.
+All approaches are open to HIL steering.
+In practice, the boundary between online and offline learning is often blurry: a tool written for one task can become a permanent fixture.

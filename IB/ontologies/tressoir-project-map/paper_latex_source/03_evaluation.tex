@@ -1,0 +1,89 @@
+\section{Evaluation}
+\label{sec:evaluation}
+We evaluate \sysname across three modes of operation to demonstrate that IB co-interpretation unifies diverse forms of agentic design under a single framework. To respect the rules of these benchmarks, we provide human steering only during offline learning (if applicable) and let the system operate autonomously online. Since no formal benchmark we are aware of exercises the full HIL setting (\cref{fig:main}c) that Tressoir is made for, we discuss more use cases in \cref{sec:usecases} to complement these results.
+
+We evaluate on the following settings:
+\squishlist
+\item \textbf{Pure online} (\cref{sec:eval_online}): No offline phase; the interpreter only interprets the task. IBs are still used for online communication.
+\item \textbf{Pure offline} (\cref{sec:eval_offline}): The offline phase designs a complete agentic system; the online phase simply executes it without further involvement of the interpreter.
+\item \textbf{Two-Step Hybrid} (\cref{sec:eval_hybrid}): The offline phase develops tools; the online phase uses them with continued interpreter involvement. There is no cycle of improvement.
+\squishend
+We also vary the domains (SWE, UI, Text-to-SQL) and compare a wide range of baselines with different models to underscore Tressoir's generality and strength.
+
+
+
+\Cref{fig:eval_results} summarizes all results. All models use high thinking mode unless otherwise noted. For baselines, we use the default configurations from their original repositories or directly report official numbers when available. When we report official numbers, we may not have access to the cost breakdown.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{figures/eval_results.pdf}
+\caption{\textbf{Evaluation results across three modes.}
+(a,b)~Online adaptation on SWE-Bench Pro (Qute, 79 instances) and SWE-Bench-Live (C/C++, 48 instances): a single \sysname meta agent already provides a quality jump over baselines across languages and benchmarks.
+(c)~Offline-designed system on ScreenSpot-Pro (1,581 instances): a simple blueprint lifts a cheap model close to frontier performance at low cost.
+(d)~Hybrid on Bird-Critic (flash, 200 instances): offline tool development with online adaptation lets Gemini~3 Flash exceed Claude~4.6 Opus-level performance.
+Annotations show per-instance cost, average sub-agents spawned (agts), and average inference steps where available. Hatched bars denote \sysname configurations.}
+\label{fig:eval_results}
+\end{figure*}
+
+
+\subsection{Pure Online Adaptation: SWE-Bench Pro and SWE-Bench-Live}
+\label{sec:eval_online}
+Pure online adaptation is Tressoir's default mode of operation in the absence of any offline learning. The benefits of this mode are clearest on long tasks (e.g., hours to days) when sophisticated adaptation is crucial. Still, we show meaningful improvements even on shorter SWE-Bench-style tasks (which generally take up to 15 minutes), albeit at higher costs for the same model.
+SWE-Bench Pro~\cite{swebenchpro2025} is a harder alternative to SWE-Bench with 731 instances total.
+SWE-Bench-Live~\cite{zhang2025swebenchgoeslive} is a continuously updated alternative to SWE-Bench meant to prevent training leakage. For cost reasons, we selected two diverse subsets:
+(1) {\em Qute} subset of SWE-Bench-Pro (79 instances): tasks involving the Qutebrowser Python repository;
+and (2) {\em C/C++} subset of SWE-Bench-Live Multilang (48 instances from 43 repositories): tasks involving all C/C++ repositories.
+
+Tressoir has two configurations: (1) \textbf{\sysname lite}: our default \texttt{CoInterpret} approach with a single meta agent; (2) \textbf{\sysname max}: multiple meta agents following our workflow for complex debugging, but without HIL. \cref{sec:app_eval_setup} contains more details.
+
+\sparagraph{Results.}
+\Cref{fig:eval_results}(a) shows all configurations sorted by success rate.
+Four patterns stand out.
+
+First, a single meta agent running Algorithm~\ref{alg:cointerpret} is enough to turn a cheap model into a strong competitor. Consider the 58.2\% success rate of \sysname lite on Gemini~3 Flash at a cost of \$1.07 per instance. It slightly surpasses 57.0\% of the full SWE-Agent on Claude~4.6~Opus. While this difference is not statistically significant, it does occur at a lower cost (\$1.07 vs. \$1.67), due to using a cheaper model. On Claude~4.6~Opus, \sysname lite reaches 70.9\%, a +13.9\% improvement over SWE-Agent on the same model though at higher costs (\$2.43 vs.\ \$1.67).
+
+Second, the multi-meta workflow (\sysname max) helps Claude (75.9\%, +5.0\%) but slightly hurts Gemini (54.4\%, $-$4.0\%). We hypothesize that added specialization leads Gemini meta agents to overcomplicate: each phase's agent tends to overplan, producing more brittle solutions than a single meta agent. Claude agents do not exhibit this, benefiting from cleaner phase separation instead.
+
+Third, on short SWE issues, the multi-meta workflow's extra phases are overkill (\$2.43 vs.\ \$6.04 per instance, 2.5 vs.\ 9.6 sub-agents for just a +5.0\% improvement); they pay off only on larger repository-wide planning that motivates the extra research, planning, and fine-grained implementation/validation phases.
+
+Fourth, the two leftmost bars in \cref{fig:eval_results}(a) aim to ablate parts of our system. \emph{standard ablation} (54.4\%, \$0.21) runs Gemini~3 Flash with our tools and prompts reduced to a minimum (the core service only, no guiding ontology), while \emph{meta ablation} (51.9\%, \$0.21) keeps the agent management service list, but strips its guiding principles and recommended use cases. Both perform worse than \sysname lite, though their costs are much lower (5x) since they do little test-time scaling. Note how the mere presence of our agent tools with no co-interpretation guidance leads to no delegation behavior and lower performance.
+
+
+\sparagraph{SWE-Bench-Live C/C++ results.}
+\Cref{fig:eval_results}(b) shows the same pattern on a different benchmark and language family. \sysname lite on Gemini~3 Flash achieves 60.4\% at \$1.17 per instance, surpassing every baseline, including OpenHands and SWE-Agent on Claude~4.5~Sonnet (both 43.8\%), SWE-Agent on GPT~5.2 (41.7\%), and all Gemini~3~Flash baselines (35.4\%). \sysname lite on Sonnet~4.5 reaches 52.1\%, a +8.3\% lift over the best non-Tressoir system on the same model. Here we do not have access to cost breakdowns, as the results are from the official leaderboard.
+
+The consistency across a Python repository (Qute) and C/C++ repositories confirms that the gains from co-interpretation are not language- or benchmark-specific.
+
+\subsection{Pure Offline Learning: ScreenSpot-Pro}
+\label{sec:eval_offline}
+In this section, we show how offline learning can design high-quality, lightweight agentic systems that run efficiently. We also demonstrate \sysname's generality beyond SWE tasks.
+
+ScreenSpot-Pro~\cite{screenspotpro2025} is a benchmark for visual UI interaction: each instance consists of a large screenshot of a desktop application and an instruction to click a specific UI element. The model must predict the correct coordinates. The challenge lies in the large input space and complex layouts of professional software.
+
+\sparagraph{Offline phase.}
+We used five randomly sampled instances (0.3\% of the benchmark) for few-shot offline learning. The offline process combined human guidance with frontier-model exploration (Claude~4.5 Opus meta agent), taking one day of asynchronous work. The meta agent performed rollouts, collected stats, and provided summary ontologies for review. We explored several strategies: convolution-style tiling, parallel voting with proximity ensembles, and varying crop depths.
+
+The resulting blueprint (shown in Listing~\ref{lst:blueprints}(a)) is far simpler than what we expected: two rounds of progressive cropping that halve the image each time, followed by box-based clicking with pre-determined box granularities. Three agents participate: two croppers and one clicker, each described by a short ontology and a helper tool. The croppers keep track of a cropping trajectory summary to prevent the clicker from losing surrounding context that was cut. A runner script serves as the entrypoint. The full agent prompts are shown in \cref{sec:app_screenspot}. More complex strategies consistently failed on some sample instances, while this simple one scored 5/5 and was simple enough to be trusted to generalize.
+
+\sparagraph{Results.}
+\Cref{fig:eval_results}(c) shows results sorted by accuracy. The \sysname-designed system, running on Gemini~3 Flash, achieves 83.1\% accuracy, a +14.0\% lift over the same model called naively (69.1\%). This approaches the OpenAI Scaffold with GPT~5.2 xHigh at 86.3\%, while using a cheaper model. Compared to other hand-designed agentic methods, \sysname is close to the step count of ZoomClick~\cite{zoomclick2025} (8.9 vs.\ 8 steps) while outperforming it by 10.0\%, and outperforms open-source SOTA Holo2 Agentic~\cite{holo2_2025} (78.5\%, 3 steps) at a cost of \$0.05/instance. Unfortunately, we cannot compare costs directly, as the baselines are either proprietary or use local models.
+
+We note that existing scaffolds like ScreenSeeker and ZoomClick, designed for UI-specific models, did not transfer well to Gemini~3 Flash in our experiments (worse than the 1-step naive approach on a 200-instance sample). We do not report these results for fairness. This suggests that scaffold-model co-design matters, and \sysname's ability to tailor the scaffold to the model is a meaningful advantage.
+
+\subsection{Hybrid: Bird-Critic}
+\label{sec:eval_hybrid}
+Bird-Critic is a text-to-SQL benchmark where the input is a database, a broken or suboptimal SQL query, and a natural-language description of the user's intent. The task is to produce a corrected query. Fixes span DML corrections, DDL changes, and performance optimizations. We evaluate on the full \textit{flash} split (200 instances).
+
+\sparagraph{Offline phase.}
+We used five sample instances. Here, 5/200 = 2.5\% is a non-negligible fraction of the dataset, so we manually tweaked the final IB to avoid leaking the solutions. The meta agent (Claude 4.5 Sonnet) focused on tool development and installation, as well as on fast rollouts. Rollouts were done with Claude~4.5~Haiku, though we ended up evaluating on Gemini~3~Flash due to its Pareto-lower cost and higher quality.
+The final blueprint contains:
+\squishlist
+\item A pair of \texttt{pg\_snapshot.sh} and \texttt{pg\_restore.sh} tools that let the agent safely experiment with fixes in a reversible way.
+\item A \texttt{psycopg2} and \texttt{psql} installation for testing fixes.
+\item Benchmark guidelines, edited by us to contain only general tips and no database- or instance-specific details (in particular, we removed instance-specific heuristics that the learning agent had begun hardcoding to handle a single underspecified query; such heuristics would not have generalized to the remaining 195 instances).
+\squishend
+
+The online phase uses a single meta agent.
+
+\sparagraph{Results.}
+\Cref{fig:eval_results}(d) shows the two systems compared. \sysname lite with Gemini~3 Flash achieves 56.0\%, surpassing the verified SOTA of SQL-ACT~\cite{birdcritic2025} with Claude~4.6 Opus at 52.0\%, at a cost of \$0.28 per instance with 3.1 agents on average. This demonstrates Tressoir's ability to lift a cheaper model past SOTA performance through combined offline/online design.

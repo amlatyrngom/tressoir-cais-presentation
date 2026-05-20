@@ -1,0 +1,190 @@
+% \usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+% \usepackage{amssymb}
+\usepackage{xspace}
+\usepackage{balance}  % for  \balance command ON LAST PAGE  (only there!)
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{hyperref}
+\usepackage[capitalize]{cleveref}
+\usepackage{multirow}
+\usepackage{makecell}
+\usepackage{rotating}
+\usepackage{listings}
+\usepackage{xcolor}
+% \ceil/\floor were unused, so the paired-delimiter package was dropped.
+
+\newcommand{\unsim}{\mathord{\sim}}
+
+% \newcommand*{\newblock}{}
+% \usepackage[numbers]{natbib}
+% \setlength{\bibsep}{1pt plus 0.3ex}
+
+% font selection
+% \usepackage[final]{microtype}
+% \usepackage[scaled]{inconsolata}
+% \usepackage[T1]{fontenc}
+\usepackage{graphicx}
+% \usepackage{soul}
+\usepackage{pifont}
+
+% standard packages that must be loaded after hyperref
+\usepackage{algorithm}
+\usepackage{float}
+
+% paragraph headings
+\newcommand{\sparagraph}[1]{\vspace{1mm}\noindent {\bf #1}}
+
+% editing macros
+% \newenvironment{newcontent}
+%     {\color{blue}}
+%     {}
+\newcommand{\newcontent}[1]{{\color{blue} #1}}
+\newcommand{\tim}[1]{\textbf{\color{red}Tim: #1}}
+\newcommand{\jason}[1]{\textbf{\color{purple}Jason: #1}}
+\newcommand{\Amadou}[1]{\textbf{\color[rgb]{.1,.5,.1}Amadou: #1}}
+\newcommand{\tl}[1]{\textnormal{\textcolor{red}{\textbf{TL: #1}}}\unskip}
+\newcommand{\frameworkname}{Tressoir\xspace}
+\newcommand{\dsname}{SCODS\xspace}
+\newcommand{\sysname}{Tressoir\xspace}
+
+
+
+\newcommand{\cmark}{\ding{51}}%
+\newcommand{\xmark}{\ding{55}}%
+\newcommand{\qmark}{\textbf{?}}%
+
+% cleveref goes last to get alg name right
+\newcommand{\algorithmname}{Algorithm}
+\newcommand{\theoremname}{Theorem}
+\newcommand{\definitionname}{Definition}
+\newcommand{\lemmaname}{Lemma} 
+
+% captions
+% \captionsetup{font=small}
+% \captionsetup{labelfont=bf}
+% \captionsetup{textfont={}}
+% \captionsetup[subfloat]{font=footnotesize}
+% \captionsetup[subfloat]{farskip=3pt}
+% \captionsetup[subfloat]{captionskip=1pt}
+% \captionsetup[table]{belowskip=3pt}
+
+% \captionsetup[table]{position=t}
+% \captionsetup[table]{skip=\medskipamount}
+
+% captions placed on the bottom for figures
+% \captionsetup[figure]{position=b}
+%figures and tables numbered by section
+%\captionsetup{figurewithin=section}
+%\captionsetup{tablewithin=section}
+
+\clubpenalty=10000
+\widowpenalty = 10000
+
+\newcommand{\tabitem}{\textbullet~}
+
+% multi-line in table
+\newcommand{\mlbegin}{\shortstack\bgroup}
+\newcommand{\mlend}{\egroup}
+
+%% Squished Lists
+\newcommand{\squishitemize}{
+ \begin{list}{$\bullet$}
+  { \setlength{\itemsep}{0pt}
+     \setlength{\parsep}{3pt}
+     \setlength{\topsep}{3pt}
+     \setlength{\partopsep}{0pt}
+     \setlength{\leftmargin}{1.5em}
+     \setlength{\labelwidth}{1.5em}
+     \setlength{\labelsep}{0.5em} } }
+
+\newcounter{Lcount}
+\newcommand{\squishlist}{
+    \begin{list}{\arabic{Lcount}. }
+   { \usecounter{Lcount}
+        \setlength{\itemsep}{0pt}
+        \setlength{\parsep}{3pt}
+        \setlength{\topsep}{3pt}
+        \setlength{\partopsep}{0pt}
+        \setlength{\leftmargin}{2em}
+        \setlength{\labelwidth}{1.5em}
+        \setlength{\labelsep}{0.5em} } }
+
+\newcommand{\squishend}{\end{list}}
+
+\definecolor{todo-color}{rgb}{1,0,0}
+\newcommand{\todo}[1]{\textnormal{\color{todo-color}{\textbf{#1}}}\unskip}
+
+\definecolor{pmenon-color}{rgb}{0,0.5,0}
+\newcommand{\pmenon}[1]{\textnormal{\color{pmenon-color}{\textbf{PM: #1}}}\unskip}
+
+\definecolor{comment-color}{rgb}{0.25,0.25,0.25}
+\newcommand{\codeComment}[1]{\textnormal{\color{comment-color}{\textit{\textbf{\# #1}}}}\unskip}
+
+\newcommand\mybar{\kern1pt\rule[-\dp\strutbox]{1pt}{\baselineskip}\kern1pt}
+
+% ====================================================================
+% LISTING STYLES (plain listings for TAPS compatibility).
+% Keep line wrapping, but avoid custom styles/environments and language modes
+% because TAPS XML conversion does not map those commands reliably.
+% See specs/styling.md for the full style guide.
+% ====================================================================
+
+% --- Color palette ---
+\definecolor{accentPython}{HTML}{0D7377}   % deep teal
+\definecolor{accentXML}{HTML}{0D7377}      % deep teal (matches Python)
+\definecolor{accentShell}{HTML}{B7950B}    % warm amber
+\definecolor{synString}{HTML}{C0392B}      % warm red
+\definecolor{synComment}{HTML}{7F8C8D}     % slate gray
+\definecolor{synNumber}{HTML}{2471A3}      % steel blue
+\definecolor{lstBg}{HTML}{FAFAF8}          % warm off-white
+\definecolor{lstBorder}{HTML}{E0E0E0}      % light gray border
+
+% Shared listing defaults. Deliberately avoid language-specific options so
+% listings does not load extra language files during TAPS processing.
+\lstset{
+    basicstyle=\scriptsize\ttfamily,
+    columns=fullflexible,
+    showstringspaces=false,
+    numberblanklines=false,
+    tabsize=2,
+    breaklines=true,
+    breakatwhitespace=false,
+    frame=leftline,
+    framerule=1.2pt,
+    framesep=3pt,
+    rulecolor=\color{accentPython},
+    xleftmargin=2pt,
+    aboveskip=1.5pt,
+    belowskip=1.5pt,
+}
+
+% --- "Listing" float type ---
+\newfloat{listing}{tbp}{lol}
+\floatname{listing}{Listing}
+
+% \captionsetup[listing]{skip=4pt}     % removed with `caption' package
+\crefname{listing}{Listing}{Listings}
+\Crefname{listing}{Listing}{Listings}
+
+%% ==================================================================
+%% MAGIC FIGURE SPACING
+%% ==================================================================
+
+% \usepackage{titlesec}
+% \titlespacing*{\paragraph}{0pt}{2.00ex}{1ex}
+% \titleformat{\paragraph}[runin]{\normalfont\normalsize\bfseries}{\theparagraph}{1em}{}
+
+% \Crefname{section}{Sec.}{Secs.}
+% \Crefname{subsection}{Sec.}{Secs.}
+% \Crefname{algorithm}{Alg.}{Algs.}
+
+% Single-Column Figures
+% \setlength{\floatsep}{3pt}
+% \setlength{\textfloatsep}{3pt}
+% \setlength{\abovecaptionskip}{0.5em}
+% \setlength{\belowcaptionskip}{0.5em}
+
+% % Multi-Column Figures
+% \setlength{\dbltextfloatsep}{3pt}
+% \setlength{\dblfloatsep}{3pt}

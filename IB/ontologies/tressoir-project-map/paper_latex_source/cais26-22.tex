@@ -1,0 +1,2340 @@
+\documentclass[sigconf]{acmart}
+
+
+
+
+
+%%%% setup.tex starts here %%%%
+
+% \usepackage[utf8]{inputenc}
+\usepackage{amsmath,acmart-taps}
+% \usepackage{amssymb}
+\usepackage{xspace}
+\usepackage{balance}  % for  \balance command ON LAST PAGE  (only there!)
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{hyperref}
+\usepackage[capitalize]{cleveref}
+\usepackage{multirow}
+\usepackage{makecell}
+\usepackage{rotating}
+\usepackage{listings}
+\usepackage{xcolor}
+% \ceil/\floor were unused, so the paired-delimiter package was dropped.
+
+\newcommand{\unsim}{\mathord{\sim}}
+
+% \newcommand*{\newblock}{}
+% \usepackage[numbers]{natbib}
+% \setlength{\bibsep}{1pt plus 0.3ex}
+
+% font selection
+% \usepackage[final]{microtype}
+% \usepackage[scaled]{inconsolata}
+% \usepackage[T1]{fontenc}
+\usepackage{graphicx}
+% \usepackage{soul}
+\usepackage{pifont}
+
+% standard packages that must be loaded after hyperref
+\usepackage{algorithm}
+\usepackage{float}
+
+% paragraph headings
+\newcommand{\sparagraph}[1]{\vspace{1mm}\noindent {\bf #1}}
+
+% editing macros
+% \newenvironment{newcontent}
+%     {\color{blue}}
+%     {}
+\newcommand{\newcontent}[1]{{\color{blue} #1}}
+\newcommand{\tim}[1]{\textbf{\color{red}Tim: #1}}
+\newcommand{\jason}[1]{\textbf{\color{purple}Jason: #1}}
+\newcommand{\Amadou}[1]{\textbf{\color[rgb]{.1,.5,.1}Amadou: #1}}
+\newcommand{\tl}[1]{\textnormal{\textcolor{red}{\textbf{TL: #1}}}\unskip}
+\newcommand{\frameworkname}{Tressoir\xspace}
+\newcommand{\dsname}{SCODS\xspace}
+\newcommand{\sysname}{Tressoir\xspace}
+
+
+
+\newcommand{\cmark}{\ding{51}}%
+\newcommand{\xmark}{\ding{55}}%
+\newcommand{\qmark}{\textbf{?}}%
+
+% cleveref goes last to get alg name right
+\newcommand{\algorithmname}{Algorithm}
+\newcommand{\theoremname}{Theorem}
+\newcommand{\definitionname}{Definition}
+\newcommand{\lemmaname}{Lemma} 
+
+% captions
+% \captionsetup{font=small}
+% \captionsetup{labelfont=bf}
+% \captionsetup{textfont={}}
+% \captionsetup[subfloat]{font=footnotesize}
+% \captionsetup[subfloat]{farskip=3pt}
+% \captionsetup[subfloat]{captionskip=1pt}
+% \captionsetup[table]{belowskip=3pt}
+
+% \captionsetup[table]{position=t}
+% \captionsetup[table]{skip=\medskipamount}
+
+% captions placed on the bottom for figures
+% \captionsetup[figure]{position=b}
+%figures and tables numbered by section
+%\captionsetup{figurewithin=section}
+%\captionsetup{tablewithin=section}
+
+\clubpenalty=10000
+\widowpenalty = 10000
+
+\newcommand{\tabitem}{\textbullet~}
+
+% multi-line in table
+\newcommand{\mlbegin}{\shortstack\bgroup}
+\newcommand{\mlend}{\egroup}
+
+%% Squished Lists
+\newcommand{\squishitemize}{
+ \begin{list}{$\bullet$}
+  { \setlength{\itemsep}{0pt}
+     \setlength{\parsep}{3pt}
+     \setlength{\topsep}{3pt}
+     \setlength{\partopsep}{0pt}
+     \setlength{\leftmargin}{1.5em}
+     \setlength{\labelwidth}{1.5em}
+     \setlength{\labelsep}{0.5em} } }
+
+\newcounter{Lcount}
+\newcommand{\squishlist}{
+    \begin{list}{\arabic{Lcount}. }
+   { \usecounter{Lcount}
+        \setlength{\itemsep}{0pt}
+        \setlength{\parsep}{3pt}
+        \setlength{\topsep}{3pt}
+        \setlength{\partopsep}{0pt}
+        \setlength{\leftmargin}{2em}
+        \setlength{\labelwidth}{1.5em}
+        \setlength{\labelsep}{0.5em} } }
+
+\newcommand{\squishend}{\end{list}}
+
+\definecolor{todo-color}{rgb}{1,0,0}
+\newcommand{\todo}[1]{\textnormal{\color{todo-color}{\textbf{#1}}}\unskip}
+
+\definecolor{pmenon-color}{rgb}{0,0.5,0}
+\newcommand{\pmenon}[1]{\textnormal{\color{pmenon-color}{\textbf{PM: #1}}}\unskip}
+
+\definecolor{comment-color}{rgb}{0.25,0.25,0.25}
+\newcommand{\codeComment}[1]{\textnormal{\color{comment-color}{\textit{\textbf{\# #1}}}}\unskip}
+
+\newcommand\mybar{\kern1pt\rule[-\dp\strutbox]{1pt}{\baselineskip}\kern1pt}
+
+% ====================================================================
+% LISTING STYLES (plain listings for TAPS compatibility).
+% Keep line wrapping, but avoid custom styles/environments and language modes
+% because TAPS XML conversion does not map those commands reliably.
+% See specs/styling.md for the full style guide.
+% ====================================================================
+
+% --- Color palette ---
+\definecolor{accentPython}{HTML}{0D7377}   % deep teal
+\definecolor{accentXML}{HTML}{0D7377}      % deep teal (matches Python)
+\definecolor{accentShell}{HTML}{B7950B}    % warm amber
+\definecolor{synString}{HTML}{C0392B}      % warm red
+\definecolor{synComment}{HTML}{7F8C8D}     % slate gray
+\definecolor{synNumber}{HTML}{2471A3}      % steel blue
+\definecolor{lstBg}{HTML}{FAFAF8}          % warm off-white
+\definecolor{lstBorder}{HTML}{E0E0E0}      % light gray border
+
+% Shared listing defaults. Deliberately avoid language-specific options so
+% listings does not load extra language files during TAPS processing.
+\usepackage{lstlisting}
+
+% --- "Listing" float type ---
+\newfloat{listing}{tbp}{lol}
+\floatname{listing}{Listing}
+
+% \captionsetup[listing]{skip=4pt}     % removed with `caption' package
+\crefname{listing}{Listing}{Listings}
+\Crefname{listing}{Listing}{Listings}
+
+%% ==================================================================
+%% MAGIC FIGURE SPACING
+%% ==================================================================
+
+% \usepackage{titlesec}
+% \titlespacing*{\paragraph}{0pt}{2.00ex}{1ex}
+% \titleformat{\paragraph}[runin]{\normalfont\normalsize\bfseries}{\theparagraph}{1em}{}
+
+% \Crefname{section}{Sec.}{Secs.}
+% \Crefname{subsection}{Sec.}{Secs.}
+% \Crefname{algorithm}{Alg.}{Algs.}
+
+% Single-Column Figures
+% \setlength{\floatsep}{3pt}
+% \setlength{\textfloatsep}{3pt}
+% \setlength{\abovecaptionskip}{0.5em}
+% \setlength{\belowcaptionskip}{0.5em}
+
+% % Multi-Column Figures
+% \setlength{\dbltextfloatsep}{3pt}
+% \setlength{\dblfloatsep}{3pt}
+
+
+%%%% setup.tex ends here %%%%
+
+
+
+
+
+
+%%%% figures_setup.tex starts here %%%%
+
+% TikZ removed: only main_ib_figure.tex used it, and that figure is not
+% included in the build. Dropped to keep TAPS happy (tikz isn't on the
+% accepted-package list).
+
+
+%%%% figures/figures_setup.tex ends here %%%%
+
+
+
+\settopmatter{authorsperrow=4}
+
+\AtBeginDocument{%
+  \providecommand\BibTeX{{%
+    Bib\TeX}}}
+
+\copyrightyear{2026}
+\acmYear{2026}
+\setcopyright{cc}
+\setcctype{by-nc-nd}
+\acmConference[CAIS '26]{ACM Conference on AI and Agentic Systems}{May 26--29, 2026}{San Jose, CA, USA}
+\acmBooktitle{ACM Conference on AI and Agentic Systems (CAIS '26), May 26--29, 2026, San Jose, CA, USA}
+\acmDOI{10.1145/3786335.3813143}
+\acmISBN{979-8-4007-2415-2/2026/05}
+
+\hypersetup{
+  pdftitle={Tressoir: Unifying Online, Offline, and HIL Design and Evolution of Multi-Agent Systems via Interpretable Blueprints},
+  pdfauthor={Amadou Ngom, Ziniu Wu, Jason Mohoney, James Moore, Alex Zhang, Samuel Madden, Tim Kraska}
+}
+
+
+\begin{document}
+
+% \title{Tressoir: Online Generation of Agentic Systems by Interpreting Evolving Specifications}
+\title{Tressoir: Unifying Online, Offline, and HIL Design and Evolution of Multi-Agent Systems via Interpretable Blueprints}
+
+\author{Amadou Latyr Ngom}
+\affiliation{%
+  \institution{MIT, G5 Labs}
+  \city{Cambridge}
+  \state{MA}
+  \country{USA}
+}
+\email{ngom@mit.edu}
+
+\author{Ziniu Wu}
+\affiliation{%
+  \institution{MIT, G5 Labs}
+  \city{Cambridge}
+  \state{MA}
+  \country{USA}
+}
+\email{ziniuw@mit.edu}
+
+\author{Jason Mohoney}
+\affiliation{%
+  \institution{MIT}
+  \city{Cambridge}
+  \state{MA}
+  \country{USA}
+}
+\email{mohoney@mit.edu}
+
+\author{James Moore}
+\affiliation{%
+  \institution{MIT, G5 Labs}
+  \city{Cambridge}
+  \state{MA}
+  \country{USA}
+}
+\email{lumost@mit.edu}
+
+\author{Alex Zhang}
+\affiliation{%
+  \institution{MIT}
+  \city{Cambridge}
+  \state{MA}
+  \country{USA}
+}
+\email{altzhang@mit.edu}
+
+\author{Samuel Madden}
+\affiliation{%
+  \institution{MIT, G5 Labs}
+  \city{Cambridge}
+  \state{MA}
+  \country{USA}
+}
+\email{madden@csail.mit.edu}
+
+\author{Tim Kraska}
+\affiliation{%
+  \institution{MIT, G5 Labs}
+  \city{Cambridge}
+  \state{MA}
+  \country{USA}
+}
+\email{kraska@mit.edu}
+
+
+
+
+
+%%%% 00_abstract.tex starts here %%%%
+
+\begin{abstract}
+We explore a principled approach that jointly designs and evolves the architectures, prompts, tools, and knowledge of multi-agent systems, whether online, offline, or with human guidance.
+
+We first propose \textit{Interpretable Blueprints (IBs)}, which pair an online-interpretable \textit{system ontology} (describing architectures, invariants, domain knowledge, etc.) with offline-\textit{materialized} components proven to be high-quality or cost-effective.
+Second, we propose a \textit{supervising interpreter} that co-interprets the IB and the task to construct a specialized agentic system on the fly, without assuming any pre-existing implementation, thereby enabling maximal adaptation to the task.
+IBs are also the primary online communication mechanism between agents.
+Offline learning is a subset of this approach; \textit{learning IBs} encode learning strategies that let the interpreter orchestrate metrics collection and IB improvement.
+Human guidance is enabled at every layer, whether by co-editing IBs or by steering online or offline interpretation in ways that the system learns from over time.
+
+To instantiate this vision, we develop \textit{Tressoir}, an IB-centric framework that unifies online, offline, and human-guided evolution under a single mechanism. Tressoir is tailored for long-running, complex projects with tasks that build on each other and require continual learning during or in between executions. Its generality further allows it to bootstrap itself, where its own features are now self-generated with high-level human guidance.
+
+We also evaluate Tressoir on shorter-term benchmarks. On SWE-Bench-Pro's Qutebrowser subset, Tressoir with Claude 4.6 Opus reaches 75.9\% vs.\ 57.0\% for SWE-Agent; on ScreenSpot-Pro, it lifts Gemini 3 Flash from a 69.1\% baseline to 83.1\%; and on Bird-Critic Flash, Tressoir with Gemini 3 Flash tools scores 56.0\%, exceeding SQL-ACT with Claude 4.6 Opus at 52.0\%.
+\end{abstract}
+
+%%%% 00_abstract.tex ends here %%%%
+
+
+
+\begin{CCSXML}
+<ccs2012>
+   <concept>
+       <concept_id>10010147.10010178</concept_id>
+       <concept_desc>Computing methodologies~Artificial intelligence</concept_desc>
+       <concept_significance>500</concept_significance>
+       </concept>
+ </ccs2012>
+\end{CCSXML}
+
+\ccsdesc[500]{Computing methodologies~Artificial intelligence}
+
+\keywords{multi-agent systems, self-evolving agents, specification-driven development}
+
+\maketitle
+
+
+
+
+
+%%%% 01_introduction.tex starts here %%%%
+
+\section{Introduction}
+
+% === Combined triptych: (a) online, (b) offline, (c) unified ===
+% (a) and (b) are vertically centered with (c); (c) gets more height.
+% \figmainscale shrinks only the images; sublabels stay at \scriptsize.
+\providecommand{\figmainscale}{1.0}
+\begin{figure*}[t]
+\centering
+\begin{minipage}[c]{0.24\textwidth}
+  \centering
+  \includegraphics[width=\figmainscale\linewidth]{figures/svg_pdf/TressoirSimpleOnline.pdf}\\[2pt]
+  {\scriptsize (a) Pure Online}
+\end{minipage}\hfill
+\vrule width 0.4pt\hfill
+\begin{minipage}[c]{0.3\textwidth}
+  \centering
+  \includegraphics[width=\figmainscale\linewidth]{figures/svg_pdf/TressoirSimpleOffline.pdf}\\[2pt]
+  {\scriptsize (b) Pure Offline}
+\end{minipage}\hfill
+\vrule width 0.4pt\hfill
+\begin{minipage}[c]{0.45\textwidth}
+  \centering
+  \includegraphics[width=\figmainscale\linewidth]{figures/svg_pdf/TressoirFullOnlineOffline.pdf}\\[2pt]
+  {\scriptsize (c) Unified Framework}
+\end{minipage}
+\caption{\textbf{The spectrum of agentic system design supported by Tressoir.} (a)~\textit{Pure online}: meta agents interactively spawn and steer specialized agents and tools in response to runtime observations. (b)~\textit{Pure offline}: meta agents search for and synthesize an optimal design using rollouts to collect learning signals. (c)~\textit{Unified:} ~\sysname unifies both under a single interpretation mechanism. Offline learning uses past runs as experiences to produce improved IBs that online execution uses to better solve a task. IBs balance flexible online interpretation with materialization of proven components. Human guidance is enabled throughout and serves as a learning signal for both the online and offline processes. Circled numbers indicate the sequence of operations; identical numbers denote parallel or co-interpreted steps.}
+\label{fig:main}
+\end{figure*}
+
+Agentic systems, which augment large language models (LLMs) with tool environments, feedback loops, and multi-agent coordination~\cite{react2023,sweagent2024,openhands2024,autogen2024,metagpt2024}, have become the dominant paradigm for autonomous problem-solving across complex domains \cite{agentsurvey2024, anthropic2025claudecode,github2025copilot,anthropic2026agentteams,github2025copilotsubagents,moonshot2026agentswarm}. A consistent finding across this landscape is that \emph{specialization} is a primary driver of performance \cite{dgm2025,robeyns2025selfimproving,agentsurvey2024}: systems whose prompts, multi-agent architectures, tool libraries, and retrieval strategies are tailored to their target domain consistently outperform general-purpose alternatives, motivating a growing body of work on self-evolving agents~\cite{gao2025selfevolvingsurvey}. Achieving such specialization, however, requires co-optimizing many tightly interdependent design decisions, with optimization signals that often only emerge online \cite{livesweagent2025,wang2025mas2}. Most existing approaches adapt only offline, or fragment this problem, optimizing prompts \cite{dspy2024,evoprompt2024}, rigid workflows \cite{aflow2025,adas2025,wang2025mas2}, or tools \cite{latm2024,craft2024,livesweagent2025} in isolation.
+
+Some self-evolving frameworks attempt to be holistic, yet remain rigid in their ability to adapt online and in their learning mechanism. For example, in the software engineering (SWE) domain, the most holistic approaches we are aware of are DGM, SICA, and HGM \cite{dgm2025,robeyns2025selfimproving,wang2025huxley}, which optimize a complete agentic system. All three show that a minimal coding agent, augmented with simple tools and workflows (e.g., better editing, navigation, parallel generate-and-rank), can substantially outperform its simplistic baseline on subsets of SWE-Bench \cite{swebench2024}, with improvements of over 30 percentage points. Still, the resulting agents are \textit{static code artifacts} that do not further evolve online, nor are their evolution mechanisms themselves subject to improvement; they are general-purpose, resource-intensive, hand-written search procedures (evolutionary in DGM/HGM, hill-climbing in SICA). In our view, since the search procedure is still just code, there is no fundamental reason why it should not be automatically generated and improved in a manner tailored to the task or the user's intent; frontier LLMs have already proven capable of generating learning algorithms \cite{alphaevolve2025,romeraparedes2024funsearch}. These holistic frameworks are, therefore, still insufficiently adaptive.
+
+This rigidity is compounded by the fact that human expertise, essential for high-level design strategy and complex problem-solving, is largely absent from these automated pipelines; they do not allow users to steer the online or offline design process, and to have their expertise automatically learned from for future tasks. For example, the optimization processes cited above are slow and costly (e.g., \$22{,}000 for a DGM optimization on SWE-Bench), yet they lack a mechanism for a human expert to inject guidance into the search. We argue that enabling such steering is critical to improving both the quality and efficiency of the discovery process.
+
+
+\textbf{Our Approach.} In this paper, we propose a unified framework that jointly handles holistic specialization across all design axes, online adaptation that continues at runtime, offline learning of proven patterns, generation and improvement of the learning mechanism itself, and human-in-the-loop (HIL) guidance throughout. We draw inspiration from Spec-Driven Development (SDD)~\cite{piskala2025sdd,meng2025wysiwid,bockeler2025sddtools,gu2025challenges}, which, in its ideal form, argues that code should be \emph{synthesized or derived from} a specification by an agentic interpreter. 
+Currently, SDD is applied mainly to static programs, not to the evolving agentic interpreters that generate them. Its scope is limited to feature-generation time and typically focuses on a bounded set of tasks, failing to capture key design decisions accumulated over a system’s lifetime. 
+First, we elevate SDD into the broader construct of a \emph{System Ontology}, a directed graph that encodes the complete semantic intent of a system, its architectural rationale, design constraints, governing invariants, and embedded domain knowledge, as a new source of truth that guides code synthesis. 
+In its simplest form, the ontology may be represented as a set of files organized within a hierarchical system with cross-links (as adopted in this paper). In its more advanced form, it may take the shape of a fine-grained directed knowledge graph stored in a specialized data structure, which is beyond the scope of this paper.
+Second, we include the design of not just the codebase, but its agentic system in the ontology. In this view, the ontology can be interpreted to interactively synthesize, at runtime, an agentic system whose every dimension is tailored to the task.
+This reframing naturally addresses all limitations above: (1) a specification can be holistic, jointly capturing all interdependent design decisions; (2) on-demand synthesis enables per-task online adaptation; (3) specifications are human-interpretable, allowing easy guidance. However, shifting all synthesis to online runtime can be costly and may fail to capture offline, deterministic tools/scaffolds known to be high-quality and/or cost-effective. We therefore allow the system to \textit{materialize} proven reusable components and introduce the concept of \textit{Interpretable Blueprints (IBs)}.
+
+Concretely, an IB pairs (1) a \textit{system ontology} describing prompts, agent architectures, tool-use guidelines, lessons learned, and task-specific information (e.g., codebase ontologies) with (2) materialized components (tools, agentic scaffolds, shared services) generated offline.
+A \textit{supervising interpreter} co-interprets the IB and a task to orchestrate a task-specific system, guided by the effective patterns described in the ontology, constantly adapting to signals that emerge online, and capable of re-using proven components with reliable quality, cost, or latency.
+
+\Cref{fig:main} illustrates the range of settings this mechanism supports. In the pure online setting (\cref{fig:main}a), the interpreter designs the system on the fly, monitoring agent trajectories and spawning specialized sub-agents as needed. IBs serve only as the online communication medium between agents, enabling clean exchange of online-generated knowledge and tools. This setting enables per-task adaptation but lacks predictability and cross-run improvement. In the pure offline setting (\cref{fig:main}b), a Learning IB encodes strategies for exploring design alternatives through rollouts and evaluation, producing a static IB that runs without interpreter involvement at inference time. The strategies can be formal algorithms, or natural-language intent that the interpreter synthesizes into code. This setting provides more predictability, but little runtime flexibility.
+
+The unified setting (\cref{fig:main}c) combines both: \textit{task profiles} collected from previous runs feed into offline learning, which uses the lessons therein to produce improved IBs with better specifications and materialized components. The online interpreter co-interprets this improved IB with incoming tasks to further adapt to emergent signals while re-using any available component. A human expert can steer either process or directly edit the IBs and have their expertise preserved in task profiles. Notably, the Learning IB itself evolves when the offline process discovers a better learning strategy or receives human expertise it can learn from. This setting is most comprehensive and general, and is effective on long-running projects with complex tasks that build upon one another and require domain expertise from humans.
+
+All of these settings rely on the same underlying mechanism of IB co-interpretation through a powerful supervising interpreter. Using these principles, we develop \textit{Tressoir}, an IB-centric framework that implements this mechanism. Tressoir was designed for long-term, complex systems research and development, hence its need to support the comprehensive workflow described above. This includes its own bootstrapping: its own features are now self-generated with human guidance that it gradually learns from. While not its main focus, Tressoir also achieves state-of-the-art results on diverse benchmarks on a subset of SWE-Bench-Pro (software engineering), ScreenSpot-Pro (UI navigation), and Bird-Critic (text-to-SQL). The primary trade-off is cost, mitigated by offline-designed IB components and per-role model selection.
+
+
+\textbf{Outline and Summary of Contributions.}
+\begin{enumerate}
+\item[1.] We propose specification/task co-interpretation with IBs, a single mechanism that unifies online, offline, and human-guided evolution of long-term, multi-agent systems (\cref{sec:approach}).
+\item[2.] We implement this mechanism in Tressoir, achieving strong results on benchmarks across diverse domains and settings (\cref{sec:evaluation}).
+\item[3.] We show that Tressoir can develop complex systems and has reached safe bootstrapping: its own features are now self-generated with HIL guidance (\cref{sec:usecases}).
+\end{enumerate}
+
+
+These principles are also being generalized beyond single-user agentic systems into the G5 platform \cite{G5}, which formalizes intent, multi-user collaboration, and domain knowledge as an evolving knowledge graph and abstraction layer. However, both this broader effort and the role of the system ontology in enabling semantic (rather than code-level) reasoning—for example, to identify specification conflicts and to simplify the maintenance of large systems—are outside the scope of this paper.
+
+
+
+% === Old figures (commented out, replaced by triptych above) ===
+% \begin{figure*}[t]
+% \includegraphics[width=0.75\textwidth]{figures/svg_pdf/TressoirMainFigureOnline.pdf}
+% \label{fig:main_online}
+% \end{figure*}
+% \begin{figure}[t]
+% \includegraphics[width=\columnwidth]{figures/svg_pdf/TressoirMainFigureOffline.pdf}
+% \label{fig:main_offline}
+% \end{figure}
+
+
+
+
+%%%% 01_introduction.tex ends here %%%%
+
+
+
+
+
+
+%%%% 02_approach.tex starts here %%%%
+
+\section{Approach}
+\label{sec:approach}
+
+Given a task $T$, \sysname works by \emph{co-interpreting} it with an \emph{interpretable blueprint} $B$: a pair of ontology documents $O$ and materialized components $C$ that together guide a meta agent's decisions.
+Algorithm~\ref{alg:cointerpret} summarizes the resulting loop.
+The meta agent $M$ iteratively selects from a rich action space: spawning sub-agents configured by the blueprint, synthesizing multi-agent scaffolds (e.g., parallel DAGs), producing runtime artifacts that extend the blueprint itself, escalating to human operators, or recursing into sub-problems.
+Human interventions $H$ are recorded verbatim.
+At termination, a \emph{task profile} $P$ captures the blueprint, all human exchanges, and a trajectory analysis of every spawned agent, providing the raw material for offline improvement.
+
+The rest of this section makes each element of the loop concrete.
+\Cref{sec:toolkit} presents the interpreter's toolkit: the primitives that implement lines~6--15 of the algorithm.
+\Cref{sec:ibs} defines interpretable blueprints and explains how they are authored, interpreted, and used as an inter-agent communication medium.
+
+
+\begin{algorithm}[t]
+\caption{Co-interpretation. A meta agent interprets a blueprint to orchestrate a task-specific agentic system. The offline process can override the entrypoint to run a different interpretation strategy, with this default loop as a callback if desired.}
+\label{alg:cointerpret}
+\small
+\newcommand{\algcomm}[1]{\hfill{\color{synComment}\itshape$\triangleright$ #1}}
+\newcommand{\algln}[1]{\textbf{#1:}}
+\begin{tabbing}
+\hspace{1.6em}\=\hspace{1.5em}\=\hspace{1.5em}\=\hspace{1.5em}\=\kill
+\algln{1} \> \textbf{procedure} \textsc{CoInterpret}($B, T$) \\
+        \> \> \textbf{in:} blueprint $B = (O,C)$;\; task $T$ \\
+        \> \> \textbf{out:} result $R$;\; profile $P$ \\
+\algln{2} \> \> \textbf{if} $B$.\textsc{Entrypoint}() exists \algcomm{pre-designed scaffold} \\
+\algln{3} \> \> \> \textbf{return} $B$.\textsc{Entrypoint}($B, T$) \algcomm{may call back \textsc{CoInterpret}} \\
+\algln{4} \> \> $M \gets \textsc{MetaAgent}(O.\mathrm{meta},\; C,\; T)$;\; $H \gets \emptyset$ \\
+\algln{5} \> \> \textbf{repeat select} \textit{\textcolor{synComment}{--- select step given $B$, $T$, trajectories:}} \\
+\algln{6} \> \> \> \textsc{SynthesizeAgent}(\textit{s}, \textit{subtask}) \algcomm{$\textit{s} \subseteq B$} \\
+\algln{7} \> \> \> \quad\textsc{AnalyzeTrajectory}(\textit{agent}, \textit{purpose}) \algcomm{inspect} \\
+\algln{8} \> \> \> \quad\textsc{InjectAndCompactRun}(\textit{agent}, \textit{ctx}) \algcomm{steer} \\
+\algln{9} \> \> \> \textsc{SynthesizeScaffold}(\textit{s}, \textit{subtask}) \algcomm{DAGs, pipelines, \ldots} \\
+\algln{10} \> \> \> \textsc{SynthesizeArtifact}($a$);\; $B \gets B \cup \{a\}$ \algcomm{extend $B$} \\
+\algln{11} \> \> \> \textsc{CoInterpret}(\textit{s}, \textit{subtask}) \algcomm{recurse} \\
+\algln{12} \> \> \> \textsc{EscalateToHuman}($q$);\; $H \gets H \cup \{\cdot\}$ \algcomm{query operator} \\
+\algln{13} \> \> \> \textsc{Think}() \algcomm{reason, no action} \\
+\algln{14} \> \> \> \textsc{BridgeOp}(\ldots);\; $H \gets H \cup \{\cdot\}$ \algcomm{event-driven} \\
+\algln{15} \> \> \> \textsc{Execute}(\ldots) \algcomm{code / shell} \\
+\algln{16} \> \> \textbf{until} $M$ yields result $R$ \\
+\algln{17} \> \> $P \gets B \cup H \cup M.\mathrm{stats}() \cup \{\, a.\textsc{AnalyzeTrajectory}() \mid a \in M.\mathrm{agents} \,\}$ \\
+\algln{18} \> \> \textbf{return} $R,\; P$ \\
+\end{tabbing}
+\end{algorithm}
+
+\subsection{The Interpreter's Toolkit}
+\label{sec:toolkit}
+
+A \sysname agent acts on its environment through \emph{SDK Services}: a uniform abstraction over any backend exposing named tool calls and optional streaming subscriptions. SDK services wrap MCP servers, local libraries declared in the IB, IB skills/subagents/workflows, or arbitrary APIs, and can be added or removed at runtime alongside a small built-in core (Listing~\ref{lst:toolkit}), so the visible toolkit is shaped by the IB rather than hard-coded. Every tool is invoked the same way: \texttt{sdk(service, tool, arguments)}. To stay scalable as the registered set grows, services adopt \emph{progressive disclosure}~\cite{fielding2017rest,agentskills2026}: a concise overview appears in the system prompt, and full documentation can be searched on demand.
+
+The agent emits one of three command types per turn (Listing~\ref{lst:commands}), trading security for flexibility. \texttt{SDKCommand} carries a single JSON tool call with no inline logic, and is therefore the most constrained. At the other end, \texttt{IPythonCommand} uses a persistent IPython process where state accumulates across calls; this is maximally flexible but harder to sandbox. \texttt{LuaCommand}, the default, is in-between: it runs in a Lua runtime where every potentially unsafe call passes through the framework, which can intercept it and check user-specified policies or ask the user for confirmation.
+
+\begin{listing}[t]
+\begin{lstlisting}[morestring={[b]"},morecomment={[l]{--}},morekeywords={SDKCommand,IPythonCommand,LuaCommand,local,for,in,do,end},keywordstyle=\color{accentXML}\bfseries,stringstyle=\color{synString},commentstyle=\color{synComment}]
+<SDKCommand service_name="core" tool_name="shell">
+{"command": "cmake --build build/ && ctest -R ipc_bench"}
+</SDKCommand>
+<IPythonCommand>
+result = sdk(
+  "agent", "spawn_and_run", model_spec="advanced",
+  task=f"{context}. Add profiling to the IPC layer."
+)
+</IPythonCommand>
+<LuaCommand>
+local out = sdk("core", "parallel_tool_calls", {...})
+for i, call in ipairs(calls) do
+  ...
+end
+</LuaCommand>
+\end{lstlisting}
+\caption{The three principal SDK execution command types.}
+\label{lst:commands}
+\end{listing}
+
+\begin{listing}[t]
+\begin{lstlisting}[morecomment={[l]{\#}},morekeywords={service,hidden},keywordstyle=\color{accentPython}\bfseries,commentstyle=\color{synComment}]
+service agent:        # primary; orchestrates sub-agents
+  spawn(task, attach, model_spec, preset, temp)
+  compact_run(agent_id, inject_ctx, injected_attach, rounds)
+  analyze_trajectory(agent_id, purpose)
+  pause | resume | steer | compact | terminate | stats | subscribe | ...
+
+service core:         # foundational ops
+  shell | read_lines | write_replacement | rgrep | rglob |
+  multimodal_view | parallel_tool_calls | ...
+
+service llm | web | embed:   # one-shot utilities
+  invoke, parse_tag, search, read, embed_text, ...
+
+service ib: # Live IB management and progressive disclosure into the IB
+  search_components(pattern) | register_mcp(spec) | ...
+  # IB components are inspectable/editable with core ops by design (Sec. 2.2)
+
+service perm: hidden  # runtime-only; gates SDK calls per policy
+\end{lstlisting}
+\caption{The built-in SDK services agents see by default. \texttt{perm} is hidden from the agent's call surface. Custom services (MCPs, IB libraries, skills) register explicitly (external APIs) or implicitly (with filesystem writes).}
+\label{lst:toolkit}
+\end{listing}
+
+\sparagraph{Agent management.}
+The agent management service (\texttt{agent}) is the primary interface for architecting multi-agent patterns. Its main entry point, \texttt{spawn}, spawns a sub-agent with a task, multimodal attachments (images, PDFs, videos), a capability tier, and a context preset that limits its default capabilities. Several design choices are worth highlighting.
+
+First, \texttt{compact\_run} treats context management as a first-class operation using a novel programmatic compaction technique. When a long-horizon task exceeds the model's effective context, the agent writes code that inspects its live runtime state and emits a string capturing progress, acquired insights/skills, remaining work, and useful snippets. This is denser than natural-language summarization: the agent can dump data structures, re-invoke helpers, or read file fragments. The meta agent callers can also inject additional context on each resumption, enabling online feedback without our advanced event-driven methods (discussed below); it allows steering while still using simple caller/callee synchronous primitives.
+
+Second, \texttt{analyze\_trajectory} exposes introspection: a caller can query the full sequence of thoughts, actions, and observations for a stated purpose (e.g., ``diagnose where the agent got stuck''). This serves double duty as both a runtime steering tool and the mechanism behind task profiles (\cref{sec:profiles}).
+
+Third, \texttt{model\_spec} abstracts over concrete model identifiers. The same quality/cost tiers (\texttt{advanced}, \texttt{fast}, \texttt{simple}, plus multimodal variants) work across many providers.
+
+Fourth, the \texttt{preset} parameter specifies a sub-agent's visible context and guidance; the meta preset, in particular, enables recursive meta agents when coordination itself exceeds a single agent.
+
+
+\sparagraph{Complex coordination as ordinary code.}
+A common concern is that runtime multi-agent coordination requires specialized frameworks or protocols. In \sysname, by ensuring that all primitives, including agent management ones, are regular function calls, any coordination pattern expressible in code is immediately available. Listing~\ref{lst:dag} illustrates this with a cost-aware parallel DAG executor. The meta agent builds a dependency graph, iterates over ready nodes, fans out sub-agents (each with its own \texttt{model\_spec} quality/cost control), and collects results, all in a few lines of code. Pipelines, map-reduce, hierarchical decomposition, and retry-with-fallback follow the same shape.
+
+\begin{listing}[t]
+\begin{lstlisting}[morestring={[b]"},morecomment={[l]{\#}},morekeywords={def,while,not,or},keywordstyle=\color{accentPython}\bfseries,stringstyle=\color{synString},commentstyle=\color{synComment}]
+dag = build_task_graph(spec)  # nodes = subtasks, edges = dependencies.
+def run_node(n):
+  subtask = dag.collect_deps(n) + dag.task(n)
+  model_spec = n.model_spec or "fast"  # control cost.
+  out = sdk("agent", "spawn_and_run", task=subtask, model_spec=model_spec)
+  dag.mark_done(n, out)
+
+while not dag.done():
+  ready_list = dag.get_ready()
+  parallel_for(run_node, ready_list)  # any parallel library
+\end{lstlisting}
+\caption{Coordination Example (Non-Interactive): parallel DAG execution over sub-agents with fine-grained cost control. Pipelines, hierarchical decomposition, etc. all reduce to similar code.}
+\label{lst:dag}
+\end{listing}
+
+\sparagraph{Event-driven coordination.}
+Beyond the synchronous caller/callee pattern, the agent service also exposes advanced tools for pause, resume, communication, steering, and subscriptions. Human steering naturally uses this same surface: an operator can inject context, trigger compactions, spawn agents, etc., through the same primitives the meta agents use, so the HIL frontend is an additional caller of the existing SDK rather than a separate API.
+
+\sparagraph{Supporting Primitives.}
+Aside from the agent service, \sysname ships other built-in utility services. \texttt{core} provides shell, file editing/search, pattern-matching, and parallel tool execution even in restricted JSON/Lua modes. The \texttt{llm} service exposes direct LLM invocation without the overhead of an agentic loop; \texttt{web} provides web search and reading; \texttt{embed} provides embedding utilities. The special \texttt{ib} service discovers and instantiates IB components, with \texttt{search\_components} enabling progressive discovery and supporting MCPs, agent skills, subagent templates, local libraries (that can themselves compose other sdk operations), etc.
+
+\sparagraph{Task profiles.}
+\label{sec:profiles}
+On task completion, each spawned agent produces a structured trajectory analysis via \texttt{analyze\_trajectory}: key steps, challenges, and resolutions. Human interventions are preserved verbatim alongside any agent-generated artifacts (scripts, tool configurations, design notes). The resulting \emph{task profiles} are the raw material for offline learning (\cref{sec:ibs}): they record not only what the system did and what a human corrected, but which artifacts proved reusable, making both human guidance and emergent best practices available as learning signals.
+
+This toolkit alone handles complex, long-horizon tasks across tools, languages, and sub-agents. \sysname's full strength comes from pairing it with interpretable blueprints, discussed next.
+
+\subsection{Interpretable Blueprints}
+\label{sec:ibs}
+An \emph{interpretable blueprint} $B = (O, C)$ provides ontology documents $O$ that describe strategy and domain knowledge, paired with materialized components $C$ (code, scaffolds, tools, services, etc.) that agents can invoke directly.
+Together, they form a structured, human-readable contract between the developer (human or AI) who authors the system and the meta agent that interprets it at runtime.
+
+
+\sparagraph{Complex blueprints as ordinary OS constructs.}
+Just like coordination as ordinary code (\cref{sec:toolkit}) allows complex patterns without special training, we avoid introducing abstractions that the models are unfamiliar with. Therefore, our initial design decision is to structure blueprints as ordinary operating system (OS) constructs that the model is already skilled at manipulating. Prompts are plain-text files, agentic scaffolds are plain code reading these prompts and accessing the SDK, ontology graphs are linked files (through their frontmatter), tools are regular libraries or scripts, shared services are files, daemons, or containers (e.g., databases). Root ontology documents provide a general map of the IB. This abstraction is simple and human- and agent-interpretable and editable. It also fits cleanly with existing development workflows: we can use existing standards (\texttt{CLAUDE.md}, \texttt{AGENTs.md}, \texttt{SKILL.md}, \texttt{SUBAGENT.md}) as the initial blueprint specification and evolve it from there. Remote APIs are an exception: they remain a black box to the system, though the skills for using them may evolve. Further, it remains to be seen whether more advanced, fine-grained knowledge graphs offer additional/alternative benefits over our linked files ontologies, which is a promising direction for future work.
+
+Listing~\ref{lst:blueprints} contrasts two real blueprints at very different scales. We note that the layouts and names have been simplified for readability.
+
+\sparagraph{A minimal, static blueprint.}
+Listing~\ref{lst:blueprints}(a) shows a subset of the blueprint for ScreenSpot-Pro, a visual UI interaction benchmark (see \cref{sec:evaluation} for more details).
+The blueprint consists of two agent ontologies and implementations describing a progressive cropping strategy and a box-based clicking strategy, the Python helper tools they reference, and a runner script that serves as the entrypoint.
+Importantly, it also contains the offline learning artifacts: test scripts to perform rollouts with different strategies (tiling, voting ensembles, varying crop depths), and markdown files to record the results, lessons learned from these rollouts, and the overall current design. 
+This simple blueprint would be very difficult to encode in a more formal data structure, but, as it is, is straightforward for both humans and models to read, edit, and extend. Despite its simplicity, it lifts a cheap model to near-SOTA performance.
+
+\sparagraph{A complex, dynamic blueprint.}
+Listing~\ref{lst:blueprints}(b) shows a simplified view of the blueprint for our agent-driven distributed DuckDB case study (\cref{sec:usecases}). 
+The blueprint is divided into two main sections: the meta agent ontology is only read by meta agents, and focuses on high-level coordination patterns, prompt engineering techniques (done by the meta agent, not the developer), and general lessons learned from past runs. We include a meta agent spec in \cref{sec:app_duckdb}, as it is a good example of a gradually evolved document that has strongly improved meta agent behavior over time, and is still evolving as we continue to run the system and learn from it. \texttt{uplifter.spec.md} is for the offline-learning meta agents.
+The agent ontology is shared by all agents and spans OS-native artifacts: a curriculum dataset that agents use to measure optimization impacts, human-verified golden tests providing a stable correctness baseline that agents cannot erode, and module-level ontologies.
+Learning infrastructure (curriculum dataset, uplifter) is part of the blueprint itself, evolving alongside the rest. The TOML files are pre-designed entrypoint workflows; we discuss these further below.
+
+
+\begin{listing}[t]
+\begin{minipage}[t]{0.38\columnwidth}
+\begin{lstlisting}[rulecolor=\color{accentShell}]
+# crop strategy
+# prompt, scaffold, tool
+cropper.agent.md
+cropper.py
+cropper_helper.py
+
+# click strategy
+# prompt, scaffold, tool
+clicker.agent.md
+clicker.py
+clicker_helper.py
+
+# entrypoint
+runner.py
+
+# learning-only
+README.md # Design notes.
+run_cropper.py # rollouts
+run_clicker.py # rollouts
+... # feedback md files.
+\end{lstlisting}
+\centerline{\scriptsize (a) ScreenSpot-Pro}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.60\columnwidth}
+\begin{lstlisting}[rulecolor=\color{accentShell}]
+meta_agents.spec/
+  human_meta_guidance.md
+  general_lessons.md
+  planning_lessons.md
+  uplifter.spec.md # learning
+agent.spec/
+  human_agent_guidance.md
+  impl_lessons.md
+  duckdb_lessons.md
+  curriculum_dataset.md # learning
+    curriculum_dataset/...
+  golden_tests_and_examples/
+    test_distributed_txns.cpp
+    test_e2e_tpch_docker_compose.py
+    test_optimize_udfs.cpp
+    ...
+  code_views/
+    architecture.md
+    txn_protocol.md
+    nanoarrow_ipc.md
+    ...
+next_planning.toml # entrypoint
+next_impl.toml     # entrypoint
+uplift.toml        # entrypoint
+interactive.toml   # entrypoint
+\end{lstlisting}
+\centerline{\scriptsize (b) Distributed DuckDB}
+\end{minipage}
+\caption{Blueprints at different scales. (a)~A minimal, static blueprint (\cref{sec:evaluation}). (b)~A production blueprint that evolves online and offline. Names and structure are simplified for readability.}
+\label{lst:blueprints}
+\end{listing}
+
+\sparagraph{Interpretation.}
+At runtime, $M$ draws on coordination patterns described in the meta agent ontology to select actions in the co-interpretation loop (Algorithm~\ref{alg:cointerpret}).
+Crucially, the blueprint is not static during execution: \textsc{SynthesizeArtifact} (line~10) allows agents to produce new ontologies, tools, or scaffolds that are merged into $B$, making them available to all subsequent steps.
+This dynamic extension is what enables a tool-installer agent to produce a library and a usage guide that a later agent consumes, all within a single task, making blueprints a natural communication medium between agents aside from the event-driven primitives.
+When the blueprint includes a pre-designed entry scaffold (line~2), interpretation skips the meta agent loop entirely and dispatches to the scaffold, which may itself call \textsc{CoInterpret} on sub-problems.
+This allows developers to hard-code high-level structure (e.g., a three-phase workflow) while leaving fine-grained decisions to the meta agent.
+
+
+\sparagraph{Multi-meta agent workflows.}
+\label{sec:workflows}
+A single meta agent in Algorithm~\ref{alg:cointerpret} with sub-agents can in principle handle an entire task, but two factors make this impractical.
+First, in HIL settings, developers typically want structured checkpoints for review and redirection (e.g., approving a design before implementation begins, or reviewing integration tests before merging).
+Second, very long tasks (hours to days of continuous work) bottleneck on coordination itself, which may be more reliable when each meta agent owns a cleanly delineated phase.
+The solution is \emph{workflows}: sequences of meta agents with explicit transition criteria between phases.
+Workflows can be predefined by developers assisted by AI through entrypoint config files (the TOML scaffolds in Listing~\ref{lst:blueprints}(b)) or synthesized at runtime by a top-level meta agent tasked with creating the multi-phase structure itself. Listing~\ref{lst:multimeta_workflow} shows a concrete example for complex software development.
+
+\sparagraph{Semi-Formal Invariant Checking.}
+\label{sec:semiformal}
+Each ontology frontmatter and TOML file can declare a structured rules section listing invariants the system should respect (e.g., ``an agent's SDK calls must go through the dispatcher and permission system'' or ``golden tests must not be updated without human approval''). When the user or the active meta agent triggers a built-in rule-checking tool, the framework parses the rules and spawns a built-in meta agent that reviews the performed changes and makes sure they comply with the rules. Rules evolve along with the IB, prioritizing human feedback (stored in profiles) for refinement. This does not rise to true formal verification or verification-aware programming~\cite{bertot2004coq,leino2010dafny}, but it provides stronger guarantees than trusting the main meta agent to respect every invariant. Making this approach more formal is an interesting direction for future work.
+
+\sparagraph{Construction and offline learning.}
+Blueprints emerge from human authorship, agent-generated learning, or (most productively) human-agent collaboration. All three produce the same artifact format, so human-written, agent-generated, and collaboratively developed ontologies coexist in a single blueprint and are freely editable by either party.
+Offline learning is itself a special case of co-interpretation (Algorithm~\ref{alg:cointerpret}) where the output is an improved blueprint rather than a task result.
+The interpreter can tweak blueprint ontologies, execute agent rollouts to A/B-test changes (e.g., try $V$ variants of a tool and prompt on $N$ sample instances, record success rate and cost, synthesize the best variant), perform cheaper agents-as-judge analysis on existing task profiles (categorizing human interventions, failure modes, successful delegation patterns, and useful artifacts into improved ontologies), or combine both.
+All approaches are open to HIL steering.
+In practice, the boundary between online and offline learning is often blurry: a tool written for one task can become a permanent fixture.
+
+
+%%%% 02_approach.tex ends here %%%%
+
+
+
+
+
+
+%%%% 03_evaluation.tex starts here %%%%
+
+\section{Evaluation}
+\label{sec:evaluation}
+We evaluate \sysname across three modes of operation to demonstrate that IB co-interpretation unifies diverse forms of agentic design under a single framework. To respect the rules of these benchmarks, we provide human steering only during offline learning (if applicable) and let the system operate autonomously online. Since no formal benchmark we are aware of exercises the full HIL setting (\cref{fig:main}c) that Tressoir is made for, we discuss more use cases in \cref{sec:usecases} to complement these results.
+
+We evaluate on the following settings:
+\begin{enumerate}
+\item[1.] \textbf{Pure online} (\cref{sec:eval_online}): No offline phase; the interpreter only interprets the task. IBs are still used for online communication.
+\item[2.] \textbf{Pure offline} (\cref{sec:eval_offline}): The offline phase designs a complete agentic system; the online phase simply executes it without further involvement of the interpreter.
+\item[3.] \textbf{Two-Step Hybrid} (\cref{sec:eval_hybrid}): The offline phase develops tools; the online phase uses them with continued interpreter involvement. There is no cycle of improvement.
+\end{enumerate}
+We also vary the domains (SWE, UI, Text-to-SQL) and compare a wide range of baselines with different models to underscore Tressoir's generality and strength.
+
+
+
+\Cref{fig:eval_results} summarizes all results. All models use high thinking mode unless otherwise noted. For baselines, we use the default configurations from their original repositories or directly report official numbers when available. When we report official numbers, we may not have access to the cost breakdown.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{figures/eval_results.pdf}
+\caption{\textbf{Evaluation results across three modes.}
+(a,b)~Online adaptation on SWE-Bench Pro (Qute, 79 instances) and SWE-Bench-Live (C/C++, 48 instances): a single \sysname meta agent already provides a quality jump over baselines across languages and benchmarks.
+(c)~Offline-designed system on ScreenSpot-Pro (1,581 instances): a simple blueprint lifts a cheap model close to frontier performance at low cost.
+(d)~Hybrid on Bird-Critic (flash, 200 instances): offline tool development with online adaptation lets Gemini~3 Flash exceed Claude~4.6 Opus-level performance.
+Annotations show per-instance cost, average sub-agents spawned (agts), and average inference steps where available. Hatched bars denote \sysname configurations.}
+\label{fig:eval_results}
+\end{figure*}
+
+
+\subsection{Pure Online Adaptation: SWE-Bench Pro and SWE-Bench-Live}
+\label{sec:eval_online}
+Pure online adaptation is Tressoir's default mode of operation in the absence of any offline learning. The benefits of this mode are clearest on long tasks (e.g., hours to days) when sophisticated adaptation is crucial. Still, we show meaningful improvements even on shorter SWE-Bench-style tasks (which generally take up to 15 minutes), albeit at higher costs for the same model.
+SWE-Bench Pro~\cite{swebenchpro2025} is a harder alternative to SWE-Bench with 731 instances total.
+SWE-Bench-Live~\cite{zhang2025swebenchgoeslive} is a continuously updated alternative to SWE-Bench meant to prevent training leakage. For cost reasons, we selected two diverse subsets:
+(1) {\em Qute} subset of SWE-Bench-Pro (79 instances): tasks involving the Qutebrowser Python repository;
+and (2) {\em C/C++} subset of SWE-Bench-Live Multilang (48 instances from 43 repositories): tasks involving all C/C++ repositories.
+
+Tressoir has two configurations: (1) \textbf{\sysname lite}: our default \texttt{CoInterpret} approach with a single meta agent; (2) \textbf{\sysname max}: multiple meta agents following our workflow for complex debugging, but without HIL. \cref{sec:app_eval_setup} contains more details.
+
+\sparagraph{Results.}
+\Cref{fig:eval_results}(a) shows all configurations sorted by success rate.
+Four patterns stand out.
+
+First, a single meta agent running Algorithm~\ref{alg:cointerpret} is enough to turn a cheap model into a strong competitor. Consider the 58.2\% success rate of \sysname lite on Gemini~3 Flash at a cost of \$1.07 per instance. It slightly surpasses 57.0\% of the full SWE-Agent on Claude~4.6~Opus. While this difference is not statistically significant, it does occur at a lower cost (\$1.07 vs. \$1.67), due to using a cheaper model. On Claude~4.6~Opus, \sysname lite reaches 70.9\%, a +13.9\% improvement over SWE-Agent on the same model though at higher costs (\$2.43 vs.\ \$1.67).
+
+Second, the multi-meta workflow (\sysname max) helps Claude (75.9\%, +5.0\%) but slightly hurts Gemini (54.4\%, $-$4.0\%). We hypothesize that added specialization leads Gemini meta agents to overcomplicate: each phase's agent tends to overplan, producing more brittle solutions than a single meta agent. Claude agents do not exhibit this, benefiting from cleaner phase separation instead.
+
+Third, on short SWE issues, the multi-meta workflow's extra phases are overkill (\$2.43 vs.\ \$6.04 per instance, 2.5 vs.\ 9.6 sub-agents for just a +5.0\% improvement); they pay off only on larger repository-wide planning that motivates the extra research, planning, and fine-grained implementation/validation phases.
+
+Fourth, the two leftmost bars in \cref{fig:eval_results}(a) aim to ablate parts of our system. \emph{standard ablation} (54.4\%, \$0.21) runs Gemini~3 Flash with our tools and prompts reduced to a minimum (the core service only, no guiding ontology), while \emph{meta ablation} (51.9\%, \$0.21) keeps the agent management service list, but strips its guiding principles and recommended use cases. Both perform worse than \sysname lite, though their costs are much lower (5x) since they do little test-time scaling. Note how the mere presence of our agent tools with no co-interpretation guidance leads to no delegation behavior and lower performance.
+
+
+\sparagraph{SWE-Bench-Live C/C++ results.}
+\Cref{fig:eval_results}(b) shows the same pattern on a different benchmark and language family. \sysname lite on Gemini~3 Flash achieves 60.4\% at \$1.17 per instance, surpassing every baseline, including OpenHands and SWE-Agent on Claude~4.5~Sonnet (both 43.8\%), SWE-Agent on GPT~5.2 (41.7\%), and all Gemini~3~Flash baselines (35.4\%). \sysname lite on Sonnet~4.5 reaches 52.1\%, a +8.3\% lift over the best non-Tressoir system on the same model. Here we do not have access to cost breakdowns, as the results are from the official leaderboard.
+
+The consistency across a Python repository (Qute) and C/C++ repositories confirms that the gains from co-interpretation are not language- or benchmark-specific.
+
+\subsection{Pure Offline Learning: ScreenSpot-Pro}
+\label{sec:eval_offline}
+In this section, we show how offline learning can design high-quality, lightweight agentic systems that run efficiently. We also demonstrate \sysname's generality beyond SWE tasks.
+
+ScreenSpot-Pro~\cite{screenspotpro2025} is a benchmark for visual UI interaction: each instance consists of a large screenshot of a desktop application and an instruction to click a specific UI element. The model must predict the correct coordinates. The challenge lies in the large input space and complex layouts of professional software.
+
+\sparagraph{Offline phase.}
+We used five randomly sampled instances (0.3\% of the benchmark) for few-shot offline learning. The offline process combined human guidance with frontier-model exploration (Claude~4.5 Opus meta agent), taking one day of asynchronous work. The meta agent performed rollouts, collected stats, and provided summary ontologies for review. We explored several strategies: convolution-style tiling, parallel voting with proximity ensembles, and varying crop depths.
+
+The resulting blueprint (shown in Listing~\ref{lst:blueprints}(a)) is far simpler than what we expected: two rounds of progressive cropping that halve the image each time, followed by box-based clicking with pre-determined box granularities. Three agents participate: two croppers and one clicker, each described by a short ontology and a helper tool. The croppers keep track of a cropping trajectory summary to prevent the clicker from losing surrounding context that was cut. A runner script serves as the entrypoint. The full agent prompts are shown in \cref{sec:app_screenspot}. More complex strategies consistently failed on some sample instances, while this simple one scored 5/5 and was simple enough to be trusted to generalize.
+
+\sparagraph{Results.}
+\Cref{fig:eval_results}(c) shows results sorted by accuracy. The \sysname-designed system, running on Gemini~3 Flash, achieves 83.1\% accuracy, a +14.0\% lift over the same model called naively (69.1\%). This approaches the OpenAI Scaffold with GPT~5.2 xHigh at 86.3\%, while using a cheaper model. Compared to other hand-designed agentic methods, \sysname is close to the step count of ZoomClick~\cite{zoomclick2025} (8.9 vs.\ 8 steps) while outperforming it by 10.0\%, and outperforms open-source SOTA Holo2 Agentic~\cite{holo2_2025} (78.5\%, 3 steps) at a cost of \$0.05/instance. Unfortunately, we cannot compare costs directly, as the baselines are either proprietary or use local models.
+
+We note that existing scaffolds like ScreenSeeker and ZoomClick, designed for UI-specific models, did not transfer well to Gemini~3 Flash in our experiments (worse than the 1-step naive approach on a 200-instance sample). We do not report these results for fairness. This suggests that scaffold-model co-design matters, and \sysname's ability to tailor the scaffold to the model is a meaningful advantage.
+
+\subsection{Hybrid: Bird-Critic}
+\label{sec:eval_hybrid}
+Bird-Critic is a text-to-SQL benchmark where the input is a database, a broken or suboptimal SQL query, and a natural-language description of the user's intent. The task is to produce a corrected query. Fixes span DML corrections, DDL changes, and performance optimizations. We evaluate on the full \textit{flash} split (200 instances).
+
+\sparagraph{Offline phase.}
+We used five sample instances. Here, 5/200 = 2.5\% is a non-negligible fraction of the dataset, so we manually tweaked the final IB to avoid leaking the solutions. The meta agent (Claude 4.5 Sonnet) focused on tool development and installation, as well as on fast rollouts. Rollouts were done with Claude~4.5~Haiku, though we ended up evaluating on Gemini~3~Flash due to its Pareto-lower cost and higher quality.
+The final blueprint contains:
+\begin{enumerate}
+\item[1.] A pair of \texttt{pg\_snapshot.sh} and \texttt{pg\_restore.sh} tools that let the agent safely experiment with fixes in a reversible way.
+\item[2.] A \texttt{psycopg2} and \texttt{psql} installation for testing fixes.
+\item[3.] Benchmark guidelines, edited by us to contain only general tips and no database- or instance-specific details (in particular, we removed instance-specific heuristics that the learning agent had begun hardcoding to handle a single underspecified query; such heuristics would not have generalized to the remaining 195 instances).
+\end{enumerate}
+
+The online phase uses a single meta agent.
+
+\sparagraph{Results.}
+\Cref{fig:eval_results}(d) shows the two systems compared. \sysname lite with Gemini~3 Flash achieves 56.0\%, surpassing the verified SOTA of SQL-ACT~\cite{birdcritic2025} with Claude~4.6 Opus at 52.0\%, at a cost of \$0.28 per instance with 3.1 agents on average. This demonstrates Tressoir's ability to lift a cheaper model past SOTA performance through combined offline/online design.
+
+
+%%%% 03_evaluation.tex ends here %%%%
+
+
+
+
+
+
+%%%% 04_usecases.tex starts here %%%%
+
+\section{Building with Tressoir}
+\label{sec:usecases}
+
+The benchmarks in \cref{sec:evaluation} necessarily restrict human involvement. This section complements those results by showing \sysname as it is primarily intended: as a HIL-first development platform for complex systems.
+
+\subsection{Interfaces}
+\label{sec:interfaces}
+
+\sysname exposes two interfaces.
+A \textit{non-interactive CLI} drives the benchmark runs of \cref{sec:evaluation}: it accepts a configuration file encoding the task description, model configuration, and blueprint paths, then executes Algorithm~\ref{alg:cointerpret} (except for ablations) to completion and writes the result and task profile to disk.
+An \textit{interactive frontend} (Fig.~\ref{fig:duckdb_debug}) is the primary surface for HIL workflows: developers can monitor agent trees in real time, inspect trajectories, send messages via the Bridge, spawn or terminate agents, and approve checkpoints between workflow phases.
+
+\subsection{Bootstrapping}
+\label{sec:bootstrapping}
+
+Once the core backend reached stability, we began using \sysname to build \sysname itself. The architecture (Fig.~\ref{fig:bootstrapping}) shows our nested sandbox design for safe bootstrapping: an \textit{outer} sandbox runs the current stable version, while an \textit{inner} sandbox contains the code under development, which may be transiently broken. The outer agents (based on stable code) edit, build, and test code inside the inner sandbox (which may spawn unstable sub-agents); once the inner version passes all checks, the outer code is updated to match, yielding a new stable release. Multiple inner sandboxes can run in parallel on independent features.
+
+\begin{figure}[t]
+\centering
+\begin{subfigure}[t]{0.49\columnwidth}
+\centering
+\includegraphics[width=\textwidth]{figures/svg_pdf/BootstrappingFigure.pdf}
+\caption{Bootstrapping architecture.}
+\label{fig:bootstrapping}
+\end{subfigure}
+\hfill
+\begin{subfigure}[t]{0.49\columnwidth}
+\centering
+\includegraphics[width=\textwidth]{figures/Duckdb-Arrow-Debug-Zoomed.pdf}
+\caption{DuckDB debugging session.}
+\label{fig:duckdb_debug}
+\end{subfigure}
+\caption{\textbf{Building with \sysname.} (a) shows the bootstrapping architecture. The outer sandbox runs stable \sysname; agents edit, build, and test code in the inner sandbox, promoting it once validated. (b)~A zoomed-in view of the agent tree from a complex debugging session for the distributed DuckDB feature described in \cref{sec:systems}.}
+\label{fig:building}
+\end{figure}
+
+The bootstrapping blueprint follows the same structure as Listing~\ref{lst:blueprints}(b): meta agent specs, agent specs, code views covering backend and frontend components, and workflow entrypoints. As an example, the entire web frontend of \sysname shown in Fig.~\ref{fig:duckdb_debug} (real-time agent monitoring, trajectory inspection, Bridge-based interaction) was built through IB co-interpretation without any manual code authorship, with only human guidance on desired functionality and review of end-to-end results. Much of the backend is now also agent-generated. We estimate (using files that were hand-created, weighted by line count) that in the non-test codebase, roughly 79\% is fully \sysname-generated and 21\% is human/\sysname co-written; within that 21\%, most lines are still \sysname-written or refactored, with only the initial runnable core authored manually with the help of Copilot~\cite{github2025copilotide}. The test suite is 100\% \sysname-generated.
+
+\subsection{Complex Systems Engineering}
+\label{sec:systems}
+
+To illustrate \sysname on a heavily human-in-the-loop task, we describe a debugging session from an ongoing project: building a distributed, ACID-compliant version of DuckDB with Apache Arrow as the inter-node data interchange format.
+
+\sparagraph{Task.}
+We tasked \sysname with running a full TPC-H benchmark comparing vanilla DuckDB against our Arrow-based distributed variant and identifying the bottleneck. Figure~\ref{fig:duckdb_debug} shows the resulting agent tree. Throughout, the meta agent had access to the IB document shown in \cref{sec:app_duckdb} to guide it, as well as code views providing a high-level map of which key points to instrument.
+
+\sparagraph{Execution.}
+The meta agent first spawned a \textit{Benchmark Planner} and \textit{Benchmark Implementer} that used DuckDB's \texttt{tpch} extension for data generation, Docker Compose for multi-node simulation, and a mix of Python and C++ profiling libraries to measure performance. These agents identified IPC serialization as the general bottleneck but could not pinpoint the root cause; the meta agent escalated to the developer.
+
+With human guidance to focus on TPC-H Q1 (which produces only four rows yet exhibited the IPC slowdown), the meta agent spawned a \textit{Q1 Investigator} that isolated Arrow IPC as the culprit, then an \textit{IPC Investigator} that wrote standalone C++ tests to further narrow the problem to DuckDB's \texttt{to\_arrow\_ipc} extension function. A second escalation asked the developer whether to attempt a non-invasive fix or an in-extension patch. We chose the former to avoid a diverging extension fork.
+
+The meta agent then spawned an \textit{IPC Fixer} that discovered the root cause: the extension discards optimizer statistics for nested subqueries, forcing a slow \texttt{HASH\_GROUP\_BY} instead of \texttt{PERFECT\_\-HASH\_\-GROUP\_BY}. The agent proposed and implemented a fix using materialized CTEs to preserve the statistics, a DuckDB feature we were unaware of. After benchmarking confirmed the fix, the task profile was generated and the uplifter incorporated the lesson into the blueprint's ontology for future runs.
+
+\sparagraph{Discussion.}
+This single task spanned Python (benchmarking, agent orchestration), SQL (query formulation and analysis), shell (Docker, CMake builds), and C++ (extension code, isolated tests, patch), required several specialized agents coordinated by a meta agent aware of learned delegation patterns, and benefited from HIL steering at natural decision points. This combination of multi-language, multi-tool, multi-agent, complex operations with HIL steering and learned experiences from previous tasks is hard to achieve in traditional agentic systems, and exemplifies \sysname's target workflow.
+
+
+
+%%%% 04_usecases.tex ends here %%%%
+
+
+
+
+
+
+%%%% 05_related_works.tex starts here %%%%
+
+\section{Related Works}
+\label{sec:relatedworks}
+We summarize the main related works here, and defer to \cite{gao2025selfevolvingsurvey} for a dedicated survey of the broad and fast-growing landscape of self-evolving, multi-agent systems.
+
+Early multi-agent frameworks such as AutoGen \cite{autogen2024}, MetaGPT \cite{metagpt2024}, and ChatDev \cite{chatdev2024} establish fixed role assignments and topologies at design time. AgentVerse \cite{agentverse2024} and DyLAN \cite{dylan2024} adjust team composition at runtime, while MoA \cite{moa2025} layers heterogeneous models into collaborative ensembles. Commercial offerings increasingly embrace this paradigm: Claude Code Agent Teams \cite{anthropic2026agentteams}, GitHub Copilot Agents \cite{github2025copilotsubagents}, and Kimi K2.5 Agent Swarm \cite{moonshot2026agentswarm} all deploy multi-agent orchestration in production, but lack a principled way to holistically evolve them online and offline.
+
+A growing line of work automates individual axes of the design space. DSPy \cite{dspy2024} and EvoPrompt \cite{evoprompt2024} optimize prompts; TextGrad \cite{textgrad2025} and Trace \cite{trace2024} back-propagate language-level feedback through computational graphs; ADAS \cite{adas2025} and AFlow \cite{aflow2025} search over workflow graphs; LATM \cite{latm2024} and CRAFT \cite{craft2024} synthesize and retrieve tools; GPTSwarm \cite{gptswarm2024} jointly optimizes node prompts and edge connectivity. MaAS \cite{maas2025} and G-Designer \cite{gdesigner2025} cast architecture selection as neural architecture search and graph generation, respectively.
+
+Voyager \cite{voyager2023}, Reflexion \cite{reflexion2023}, and Live-SWE-Agent \cite{livesweagent2025} accumulate skills or verbal feedback within a task. AgentGym \cite{agentgym2025} and Agent-Pro \cite{agentpro2024} learn policies across environments via trajectory-level reflection or RL. EvoMAC \cite{evomac2025} evolves multi-agent collaboration networks through textual back-propagation, and DGM, SICA, and HGM \cite{dgm2025,robeyns2025selfimproving,wang2025huxley} attempt holistic optimization of complete agents but produce static artifacts that do not further evolve online. On the human side, Magentic-UI \cite{magenticui2025} and HULA \cite{hula2025} structure human--agent interaction, and ARIA \cite{aria2025} requests human help when uncertain, to improve its RAG for a single, fixed agent.
+
+The idea that specifications, not code, should be the source of truth for software systems has roots in SDD \cite{piskala2025sdd,meng2025wysiwid,bockeler2025sddtools,gu2025challenges}, and \sysname's reliance on plain-text, file-system-native artifacts whose capabilities are progressively discoverable from the representation itself echoes long-standing principles for interpretable, self-describing systems, most notably the HATEOAS principle~\cite{fielding2017rest}.
+% Tim: I don't think you need the rest. It also raises the question regarding IB and ontology and it is not consistent. Alternatively, you need to fix it ans say that system ontology generalizes it and IB makes it more dynamic or something. 
+%Tressoir instantiates this vision for agentic systems, generalizing previous work. First, IBs can contain learning strategies: \cref{sec:eval_offline} showed an end-to-end example where the rollouts, A/B tests, and final syntheses were performed by the interpreter itself. This indicates that most optimizations or evolution strategies, whether RL-based policy search, textual back-propagation, evolutionary mutation, or trajectory mining, can be encoded (and evolved) inside an IB, editable in plain text or code, and executed by the same interpreter that runs tasks. Second, on-demand co-interpretation enables full online, cross-axis adaptation to signals that emerge only at runtime, while keeping every design decision human-readable and editable. Thus, we consider Tressoir a unifying framework for holistically designing and evolving multi-agent systems with algorithmic, human, or hybrid strategies, online or offline.
+
+
+%%%% 05_related_works.tex ends here %%%%
+
+
+
+
+
+
+%%%% 06_conclusion.tex starts here %%%%
+
+\section{Conclusion}
+\label{sec:conclusion}
+
+We presented Tressoir, a framework that unifies online, offline, and human-guided design and evolution of multi-agent systems through a single mechanism: co-interpretation of Interpretable Blueprints and tasks. Inspired by SDD, IBs jointly encode interpretable ontologies and materialized components, enabling on-the-fly adaptation specific to a given task, learning of reusable effective patterns, and generation and improvement of the learning mechanism itself, all editable and steerable with human guidance, which the framework learns from over time.
+
+Our evaluation demonstrated that this approach is general and effective in online, offline, and hybrid settings across SWE-Bench-style, UI, and Text-to-SQL domains. Beyond benchmarks, Tressoir has reached safe bootstrapping, generating its own features through the same IB co-interpretation mechanism, and is actively used for the complex systems research and development we are pursuing.
+
+%%%% 06_conclusion.tex ends here %%%%
+
+
+
+\begin{acks}
+Our work has been supported by contributions from Amazon, Google, Intel, Accenture, InterSystems, and TWG as part of the Everest initiative and DSAIL at MIT.
+\end{acks}
+
+\bibliographystyle{ACM-Reference-Format}
+
+
+%%%% bibliography starts here %%%%
+
+%%% -*-BibTeX-*-
+%%% Do NOT edit. File created by BibTeX with style
+%%% ACM-Reference-Format-Journals [18-Jan-2012].
+
+\begin{thebibliography}{61}
+
+%%% ====================================================================
+%%% NOTE TO THE USER: you can override these defaults by providing
+%%% customized versions of any of these macros before the \bibliography
+%%% command.  Each of them MUST provide its own final punctuation,
+%%% except for \shownote{} and \showURL{}.  The latter two
+%%% do not use final punctuation, in order to avoid confusing it with
+%%% the Web address.
+%%%
+%%% To suppress output of a particular field, define its macro to expand
+%%% to an empty string, or better, \unskip, like this:
+%%%
+%%% \newcommand{\showURL}[1]{\unskip}   % LaTeX syntax
+%%%
+%%% \def \showURL #1{\unskip}           % plain TeX syntax
+%%%
+%%% ====================================================================
+
+\ifx \showCODEN    \undefined \def \showCODEN     #1{\unskip}     \fi
+\ifx \showISBNx    \undefined \def \showISBNx     #1{\unskip}     \fi
+\ifx \showISBNxiii \undefined \def \showISBNxiii  #1{\unskip}     \fi
+\ifx \showISSN     \undefined \def \showISSN      #1{\unskip}     \fi
+\ifx \showLCCN     \undefined \def \showLCCN      #1{\unskip}     \fi
+\ifx \shownote     \undefined \def \shownote      #1{#1}          \fi
+\ifx \showarticletitle \undefined \def \showarticletitle #1{#1}   \fi
+\ifx \showURL      \undefined \def \showURL       {\relax}        \fi
+% The following commands are used for tagged output and should be
+% invisible to TeX
+\providecommand\bibfield[2]{#2}
+\providecommand\bibinfo[2]{#2}
+\providecommand\natexlab[1]{#1}
+\providecommand\showeprint[2][]{arXiv:#2}
+
+\bibitem[{Agent Skills}(2026)]%
+        {agentskills2026}
+\bibfield{author}{\bibinfo{person}{{Agent Skills}}.}
+  \bibinfo{year}{2026}\natexlab{}.
+\newblock \bibinfo{title}{Agent Skills Specification}.
+\newblock \bibinfo{howpublished}{\url{https://agentskills.io/specification}}.
+\newblock
+
+
+\bibitem[{Anthropic}(2025)]%
+        {anthropic2025claudecode}
+\bibfield{author}{\bibinfo{person}{{Anthropic}}.}
+  \bibinfo{year}{2025}\natexlab{}.
+\newblock \bibinfo{title}{Claude Code: An Agentic Coding Tool}.
+\newblock
+  \bibinfo{howpublished}{\url{https://docs.anthropic.com/en/docs/claude-code}}.
+\newblock
+\newblock
+\shownote{Released February 2025; generally available May 2025}.
+
+
+\bibitem[{Anthropic}(2026)]%
+        {anthropic2026agentteams}
+\bibfield{author}{\bibinfo{person}{{Anthropic}}.}
+  \bibinfo{year}{2026}\natexlab{}.
+\newblock \bibinfo{title}{Claude Code Agent Teams: Multi-Session
+  Orchestration}.
+\newblock
+  \bibinfo{howpublished}{\url{https://code.claude.com/docs/en/agent-teams}}.
+\newblock
+\newblock
+\shownote{Accessed: 2026-02-15}.
+
+
+\bibitem[Badertdinov et~al\mbox{.}(2025)]%
+        {swebenchrebench2025}
+\bibfield{author}{\bibinfo{person}{Ibragim Badertdinov},
+  \bibinfo{person}{Alexander Golubev}, \bibinfo{person}{Maksim Nekrashevich},
+  \bibinfo{person}{Anton Shevtsov}, \bibinfo{person}{Simon Karasik},
+  \bibinfo{person}{Andrei Andriushchenko}, \bibinfo{person}{Maria Trofimova},
+  \bibinfo{person}{Daria Litvintseva}, {and} \bibinfo{person}{Boris Yangel}.}
+  \bibinfo{year}{2025}\natexlab{}.
+\newblock \showarticletitle{SWE-rebench: An Automated Pipeline for Task
+  Collection and Decontaminated Evaluation of Software Engineering Agents}.
+\newblock \bibinfo{journal}{\emph{arXiv preprint arXiv:2505.20411}}
+  (\bibinfo{year}{2025}).
+\newblock
+
+
+\bibitem[Bertot and Cast{\'e}ran(2004)]%
+        {bertot2004coq}
+\bibfield{author}{\bibinfo{person}{Yves Bertot} {and} \bibinfo{person}{Pierre
+  Cast{\'e}ran}.} \bibinfo{year}{2004}\natexlab{}.
+\newblock \bibinfo{booktitle}{\emph{Interactive Theorem Proving and Program
+  Development. {Coq'Art}: The Calculus of Inductive Constructions}}.
+\newblock \bibinfo{publisher}{Springer}.
+\newblock
+
+
+\bibitem[B{\"o}ckeler(2025)]%
+        {bockeler2025sddtools}
+\bibfield{author}{\bibinfo{person}{Birgitta B{\"o}ckeler}.}
+  \bibinfo{year}{2025}\natexlab{}.
+\newblock \bibinfo{title}{Understanding Spec-Driven-Development: {Kiro},
+  spec-kit, and {Tessl}}.
+\newblock
+\urldef\tempurl%
+\url{https://martinfowler.com/articles/exploring-gen-ai/sdd-3-tools.html}
+\showURL{%
+\tempurl}
+\newblock
+\shownote{martinfowler.com}.
+
+
+\bibitem[Cai et~al\mbox{.}(2024)]%
+        {latm2024}
+\bibfield{author}{\bibinfo{person}{Tianle Cai}, \bibinfo{person}{Xuezhi Wang},
+  \bibinfo{person}{Tengyu Ma}, \bibinfo{person}{Xinyun Chen}, {and}
+  \bibinfo{person}{Denny Zhou}.} \bibinfo{year}{2024}\natexlab{}.
+\newblock \showarticletitle{Large Language Models as Tool Makers}. In
+  \bibinfo{booktitle}{\emph{Proceedings of the Twelfth International Conference
+  on Learning Representations (ICLR)}}.
+\newblock
+\newblock
+\shownote{arXiv:2305.17126}.
+
+
+\bibitem[Chen et~al\mbox{.}(2024)]%
+        {agentverse2024}
+\bibfield{author}{\bibinfo{person}{Weize Chen}, \bibinfo{person}{Yusheng Su},
+  \bibinfo{person}{Jingwei Zuo}, \bibinfo{person}{Cheng Yang},
+  \bibinfo{person}{Chenfei Yuan}, \bibinfo{person}{Chi-Min Chan},
+  \bibinfo{person}{Heyang Yu}, \bibinfo{person}{Yaxi Lu},
+  \bibinfo{person}{Yi-Hsin Hung}, \bibinfo{person}{Chen Qian},
+  \bibinfo{person}{Yujia Qin}, \bibinfo{person}{Xin Cong},
+  \bibinfo{person}{Ruobing Xie}, \bibinfo{person}{Zhiyuan Liu},
+  \bibinfo{person}{Maosong Sun}, {and} \bibinfo{person}{Jie Zhou}.}
+  \bibinfo{year}{2024}\natexlab{}.
+\newblock \showarticletitle{{AgentVerse}: Facilitating Multi-Agent
+  Collaboration and Exploring Emergent Behaviors}. In
+  \bibinfo{booktitle}{\emph{Proceedings of the Twelfth International Conference
+  on Learning Representations (ICLR)}}.
+\newblock
+\newblock
+\shownote{arXiv:2308.10848}.
+
+
+\bibitem[Cheng et~al\mbox{.}(2024)]%
+        {trace2024}
+\bibfield{author}{\bibinfo{person}{Ching-An Cheng}, \bibinfo{person}{Allen
+  Nie}, {and} \bibinfo{person}{Adith Swaminathan}.}
+  \bibinfo{year}{2024}\natexlab{}.
+\newblock \showarticletitle{Trace is the Next {AutoDiff}: Generative
+  Optimization with Rich Feedback, Execution Traces, and {LLMs}}. In
+  \bibinfo{booktitle}{\emph{Advances in Neural Information Processing Systems
+  (NeurIPS)}}.
+\newblock
+\newblock
+\shownote{arXiv:2406.16218}.
+
+
+\bibitem[Deng et~al\mbox{.}(2025)]%
+        {swebenchpro2025}
+\bibfield{author}{\bibinfo{person}{Xiang Deng}, \bibinfo{person}{Jeff Da},
+  \bibinfo{person}{Edwin Pan}, \bibinfo{person}{Yannis~Yiming He},
+  \bibinfo{person}{Charles Ide}, \bibinfo{person}{Kanak Garg},
+  \bibinfo{person}{Niklas Lauffer}, \bibinfo{person}{Andrew Park},
+  \bibinfo{person}{Nitin Pasari}, \bibinfo{person}{Chetan Rane},
+  \bibinfo{person}{Karmini Sampath}, \bibinfo{person}{Maya Krishnan},
+  \bibinfo{person}{Srivatsa Kundurthy}, \bibinfo{person}{Sean Hendryx},
+  \bibinfo{person}{Zifan Wang}, \bibinfo{person}{Vijay Bharadwaj},
+  \bibinfo{person}{Jeff Holm}, \bibinfo{person}{Raja Aluri},
+  \bibinfo{person}{Chen Bo~Calvin Zhang}, \bibinfo{person}{Noah Jacobson},
+  \bibinfo{person}{Bing Liu}, {and} \bibinfo{person}{Brad Kenstler}.}
+  \bibinfo{year}{2025}\natexlab{}.
+\newblock \showarticletitle{{SWE-Bench Pro}: Can {AI} Agents Solve Long-Horizon
+  Software Engineering Tasks?}
+\newblock \bibinfo{journal}{\emph{arXiv preprint arXiv:2509.16941}}
+  (\bibinfo{year}{2025}).
+\newblock
+
+
+\bibitem[Fielding et~al\mbox{.}(2017)]%
+        {fielding2017rest}
+\bibfield{author}{\bibinfo{person}{Roy~T. Fielding},
+  \bibinfo{person}{Richard~N. Taylor}, \bibinfo{person}{Justin~R. Erenkrantz},
+  \bibinfo{person}{Michael~M. Gorlick}, \bibinfo{person}{Jim Whitehead},
+  \bibinfo{person}{Rohit Khare}, {and} \bibinfo{person}{Peyman Oreizy}.}
+  \bibinfo{year}{2017}\natexlab{}.
+\newblock \showarticletitle{Reflections on the {REST} architectural style and
+  ``principled design of the modern web architecture'' (impact paper award)}.
+  In \bibinfo{booktitle}{\emph{Proceedings of the 2017 11th Joint Meeting on
+  Foundations of Software Engineering (ESEC/FSE)}}. \bibinfo{publisher}{ACM},
+  \bibinfo{pages}{4--14}.
+\newblock
+\showISBNx{9781450351058}
+\href{https://doi.org/10.1145/3106237.3121282}{doi:\nolinkurl{10.1145/3106237.3121282}}
+
+
+\bibitem[{G5 Labs}(2026)]%
+        {G5}
+\bibfield{author}{\bibinfo{person}{{G5 Labs}}.}
+  \bibinfo{year}{2026}\natexlab{}.
+\newblock \bibinfo{title}{{G5}: Generation 5 Programming}.
+\newblock \bibinfo{howpublished}{\url{https://g5labs.ai/}}.
+\newblock
+
+
+\bibitem[Gao et~al\mbox{.}(2025)]%
+        {gao2025selfevolvingsurvey}
+\bibfield{author}{\bibinfo{person}{{Huan-ang} Gao}, \bibinfo{person}{Jiayi
+  Geng}, \bibinfo{person}{Wenyue Hua}, \bibinfo{person}{Mengkang Hu},
+  \bibinfo{person}{Xinzhe Juan}, \bibinfo{person}{Hongzhang Liu},
+  \bibinfo{person}{Shilong Liu}, \bibinfo{person}{Jiahao Qiu},
+  \bibinfo{person}{Xuan Qi}, \bibinfo{person}{Yiran Wu},
+  \bibinfo{person}{Hongru Wang}, \bibinfo{person}{Han Xiao},
+  \bibinfo{person}{Yuhang Zhou}, \bibinfo{person}{Shaokun Zhang},
+  \bibinfo{person}{Jiayi Zhang}, \bibinfo{person}{Jinyu Xiang},
+  \bibinfo{person}{Yixiong Fang}, \bibinfo{person}{Qiwen Zhao},
+  \bibinfo{person}{Dongrui Liu}, \bibinfo{person}{Qihan Ren},
+  \bibinfo{person}{Cheng Qian}, \bibinfo{person}{Zhenghailong Wang},
+  \bibinfo{person}{Minda Hu}, \bibinfo{person}{Huazheng Wang},
+  \bibinfo{person}{Qingyun Wu}, \bibinfo{person}{Heng Ji}, {and}
+  \bibinfo{person}{Mengdi Wang}.} \bibinfo{year}{2025}\natexlab{}.
+\newblock \showarticletitle{A Survey of Self-Evolving Agents: What, When, How,
+  and Where to Evolve on the Path to Artificial Super Intelligence}.
+\newblock \bibinfo{journal}{\emph{arXiv preprint arXiv:2507.21046}}
+  (\bibinfo{year}{2025}).
+\newblock
+
+
+\bibitem[{GitHub}(2025a)]%
+        {github2025copilotide}
+\bibfield{author}{\bibinfo{person}{{GitHub}}.}
+  \bibinfo{year}{2025}\natexlab{a}.
+\newblock \bibinfo{title}{{GitHub Copilot}}.
+\newblock \bibinfo{howpublished}{\url{https://github.com/copilot}}.
+\newblock
+
+
+\bibitem[{GitHub}(2025b)]%
+        {github2025copilot}
+\bibfield{author}{\bibinfo{person}{{GitHub}}.}
+  \bibinfo{year}{2025}\natexlab{b}.
+\newblock \bibinfo{title}{{GitHub Copilot}: Agents on {GitHub}}.
+\newblock
+  \bibinfo{howpublished}{\url{https://github.com/features/copilot/agents}}.
+\newblock
+\newblock
+\shownote{Accessed: 2026-02-15}.
+
+
+\bibitem[{GitHub}(2025c)]%
+        {github2025copilotsubagents}
+\bibfield{author}{\bibinfo{person}{{GitHub}}.}
+  \bibinfo{year}{2025}\natexlab{c}.
+\newblock \bibinfo{title}{A Unified Experience for All Coding Agents}.
+\newblock
+  \bibinfo{howpublished}{\url{https://code.visualstudio.com/blogs/2025/11/03/unified-agent-experience}}.
+\newblock
+\newblock
+\shownote{Accessed: 2026-02-15}.
+
+
+\bibitem[Gu et~al\mbox{.}(2025)]%
+        {gu2025challenges}
+\bibfield{author}{\bibinfo{person}{Alex Gu}, \bibinfo{person}{Naman Jain},
+  \bibinfo{person}{Wen-Ding Li}, \bibinfo{person}{Manish Shetty},
+  \bibinfo{person}{Yijia Shao}, \bibinfo{person}{Ziyang Li},
+  \bibinfo{person}{Diyi Yang}, \bibinfo{person}{Kevin Ellis},
+  \bibinfo{person}{Koushik Sen}, {and} \bibinfo{person}{Armando Solar-Lezama}.}
+  \bibinfo{year}{2025}\natexlab{}.
+\newblock \showarticletitle{Challenges and Paths Towards {AI} for Software
+  Engineering}.
+\newblock \bibinfo{journal}{\emph{arXiv preprint arXiv:2503.22625}}
+  (\bibinfo{year}{2025}).
+\newblock
+
+
+\bibitem[Guo et~al\mbox{.}(2024)]%
+        {evoprompt2024}
+\bibfield{author}{\bibinfo{person}{Qingyan Guo}, \bibinfo{person}{Rui Wang},
+  \bibinfo{person}{Junliang Guo}, \bibinfo{person}{Bei Li},
+  \bibinfo{person}{Kaitao Song}, \bibinfo{person}{Xu Tan},
+  \bibinfo{person}{Guoqing Liu}, \bibinfo{person}{Jiang Bian}, {and}
+  \bibinfo{person}{Yujiu Yang}.} \bibinfo{year}{2024}\natexlab{}.
+\newblock \showarticletitle{Connecting Large Language Models with Evolutionary
+  Algorithms Yields Powerful Prompt Optimizers}. In
+  \bibinfo{booktitle}{\emph{Proceedings of the Twelfth International Conference
+  on Learning Representations (ICLR)}}.
+\newblock
+\newblock
+\shownote{arXiv:2309.08532}.
+
+
+\bibitem[{H Company}(2025)]%
+        {holo2_2025}
+\bibfield{author}{\bibinfo{person}{{H Company}}.}
+  \bibinfo{year}{2025}\natexlab{}.
+\newblock \bibinfo{title}{Holo2: Open Foundation Models for Navigation and
+  Computer Use Agents}.
+\newblock
+\urldef\tempurl%
+\url{https://huggingface.co/collections/Hcompany/holo2}
+\showURL{%
+\tempurl}
+\newblock
+\shownote{Model release}.
+
+
+\bibitem[He et~al\mbox{.}(2025)]%
+        {aria2025}
+\bibfield{author}{\bibinfo{person}{Zishun He}, \bibinfo{person}{Mengqi Li},
+  \bibinfo{person}{Dongyuan Chen}, {and} \bibinfo{person}{Xinyu Liu}.}
+  \bibinfo{year}{2025}\natexlab{}.
+\newblock \showarticletitle{Enabling Self-Improving Agents to Learn at Test
+  Time With Human-In-The-Loop Guidance}.
+\newblock \bibinfo{journal}{\emph{arXiv preprint arXiv:2507.17131}}
+  (\bibinfo{year}{2025}).
+\newblock
+
+
+\bibitem[Hong et~al\mbox{.}(2024)]%
+        {metagpt2024}
+\bibfield{author}{\bibinfo{person}{Sirui Hong}, \bibinfo{person}{Mingchen
+  Zhuge}, \bibinfo{person}{Jiaqi Chen}, \bibinfo{person}{Xiawu Zheng},
+  \bibinfo{person}{Yuheng Cheng}, \bibinfo{person}{Ceyao Zhang},
+  \bibinfo{person}{Jinlin Wang}, \bibinfo{person}{Zili Wang},
+  \bibinfo{person}{Steven Ka~Shing Yau}, \bibinfo{person}{Zijuan Lin},
+  \bibinfo{person}{Liyang Zhou}, \bibinfo{person}{Chenyu Ran},
+  \bibinfo{person}{Lingfeng Xiao}, \bibinfo{person}{Chenglin Wu}, {and}
+  \bibinfo{person}{J{\"u}rgen Schmidhuber}.} \bibinfo{year}{2024}\natexlab{}.
+\newblock \showarticletitle{{MetaGPT}: Meta Programming for A Multi-Agent
+  Collaborative Framework}. In \bibinfo{booktitle}{\emph{Proceedings of the
+  Twelfth International Conference on Learning Representations (ICLR)}}.
+\newblock
+\newblock
+\shownote{arXiv:2308.00352}.
+
+
+\bibitem[Hu et~al\mbox{.}(2025b)]%
+        {adas2025}
+\bibfield{author}{\bibinfo{person}{Shengran Hu}, \bibinfo{person}{Cong Lu},
+  {and} \bibinfo{person}{Jeff Clune}.} \bibinfo{year}{2025}\natexlab{b}.
+\newblock \showarticletitle{Automated Design of Agentic Systems}. In
+  \bibinfo{booktitle}{\emph{Proceedings of the Thirteenth International
+  Conference on Learning Representations (ICLR)}}.
+\newblock
+\newblock
+\shownote{arXiv:2408.08435}.
+
+
+\bibitem[Hu et~al\mbox{.}(2025a)]%
+        {evomac2025}
+\bibfield{author}{\bibinfo{person}{Yue Hu}, \bibinfo{person}{Yuzhu Cai},
+  \bibinfo{person}{Yaxin Du}, \bibinfo{person}{Xinyu Zhu},
+  \bibinfo{person}{Xiangrui Liu}, \bibinfo{person}{Zijie Yu},
+  \bibinfo{person}{Yuchen Hou}, \bibinfo{person}{Shuo Tang}, {and}
+  \bibinfo{person}{Siheng Chen}.} \bibinfo{year}{2025}\natexlab{a}.
+\newblock \showarticletitle{{EvoMAC}: Self-Evolving Multi-Agent Collaboration
+  Networks for Software Development}. In \bibinfo{booktitle}{\emph{Proceedings
+  of the Thirteenth International Conference on Learning Representations
+  (ICLR)}}.
+\newblock
+\newblock
+\shownote{arXiv:2410.16946}.
+
+
+\bibitem[Jiang et~al\mbox{.}(2025)]%
+        {zoomclick2025}
+\bibfield{author}{\bibinfo{person}{Zhiyuan Jiang}, \bibinfo{person}{Shenghao
+  Xie}, \bibinfo{person}{Wenyi Li}, \bibinfo{person}{Wenqiang Zu},
+  \bibinfo{person}{Peihang Li}, \bibinfo{person}{Jiahao Qiu},
+  \bibinfo{person}{Siqi Pei}, \bibinfo{person}{Lei Ma}, \bibinfo{person}{Tiejun
+  Huang}, \bibinfo{person}{Mengdi Wang}, {and} \bibinfo{person}{Shilong Liu}.}
+  \bibinfo{year}{2025}\natexlab{}.
+\newblock \showarticletitle{Zoom in, Click out: Unlocking and Evaluating the
+  Potential of Zooming for {GUI} Grounding}.
+\newblock \bibinfo{journal}{\emph{arXiv preprint arXiv:2512.05941}}
+  (\bibinfo{year}{2025}).
+\newblock
+
+
+\bibitem[Jimenez et~al\mbox{.}(2024)]%
+        {swebench2024}
+\bibfield{author}{\bibinfo{person}{Carlos~E. Jimenez}, \bibinfo{person}{John
+  Yang}, \bibinfo{person}{Alexander Wettig}, \bibinfo{person}{Shunyu Yao},
+  \bibinfo{person}{Kexin Pei}, \bibinfo{person}{Ofir Press}, {and}
+  \bibinfo{person}{Karthik~R. Narasimhan}.} \bibinfo{year}{2024}\natexlab{}.
+\newblock \showarticletitle{{SWE-bench}: Can Language Models Resolve Real-World
+  {GitHub} Issues?}. In \bibinfo{booktitle}{\emph{Proceedings of the Twelfth
+  International Conference on Learning Representations (ICLR)}}.
+\newblock
+\newblock
+\shownote{Oral presentation. arXiv:2310.06770}.
+
+
+\bibitem[Khattab et~al\mbox{.}(2024)]%
+        {dspy2024}
+\bibfield{author}{\bibinfo{person}{Omar Khattab}, \bibinfo{person}{Arnav
+  Singhvi}, \bibinfo{person}{Paridhi Maheshwari}, \bibinfo{person}{Zhiyuan
+  Zhang}, \bibinfo{person}{Keshav Santhanam}, \bibinfo{person}{Sri
+  Vardhamanan}, \bibinfo{person}{Saiful Haq}, \bibinfo{person}{Ashutosh
+  Sharma}, \bibinfo{person}{Thomas~T. Joshi}, \bibinfo{person}{Hanna Moazam},
+  \bibinfo{person}{Heather Miller}, \bibinfo{person}{Matei Zaharia}, {and}
+  \bibinfo{person}{Christopher Potts}.} \bibinfo{year}{2024}\natexlab{}.
+\newblock \showarticletitle{{DSPy}: Compiling Declarative Language Model Calls
+  into State-of-the-Art Pipelines}. In \bibinfo{booktitle}{\emph{Proceedings of
+  the Twelfth International Conference on Learning Representations (ICLR)}}.
+\newblock
+\newblock
+\shownote{Oral presentation. arXiv:2310.03714}.
+
+
+\bibitem[Leino(2010)]%
+        {leino2010dafny}
+\bibfield{author}{\bibinfo{person}{K.~Rustan~M. Leino}.}
+  \bibinfo{year}{2010}\natexlab{}.
+\newblock \showarticletitle{{Dafny}: An Automatic Program Verifier for
+  Functional Correctness}. In \bibinfo{booktitle}{\emph{Proceedings of the 16th
+  International Conference on Logic for Programming, Artificial Intelligence,
+  and Reasoning (LPAR)}}. \bibinfo{publisher}{Springer},
+  \bibinfo{pages}{348--370}.
+\newblock
+\href{https://doi.org/10.1007/978-3-642-17511-4_20}{doi:\nolinkurl{10.1007/978-3-642-17511-4_20}}
+
+
+\bibitem[Li et~al\mbox{.}(2025a)]%
+        {birdcritic2025}
+\bibfield{author}{\bibinfo{person}{Jinyang Li}, \bibinfo{person}{Xiaolong Li},
+  \bibinfo{person}{Ge Qu}, \bibinfo{person}{Per Jacobsson},
+  \bibinfo{person}{Bowen Qin}, \bibinfo{person}{Binyuan Hui},
+  \bibinfo{person}{Shuzheng Si}, \bibinfo{person}{Nan Huo},
+  \bibinfo{person}{Xiaohan Xu}, \bibinfo{person}{Yue Zhang},
+  \bibinfo{person}{Ziwei Tang}, \bibinfo{person}{Yuanshuai Li},
+  \bibinfo{person}{Florensia Widjaja}, \bibinfo{person}{Xintong Zhu},
+  \bibinfo{person}{Feige Zhou}, \bibinfo{person}{Yongfeng Huang},
+  \bibinfo{person}{Yannis Papakonstantinou}, \bibinfo{person}{Fatma Ozcan},
+  \bibinfo{person}{Chenhao Ma}, {and} \bibinfo{person}{Reynold Cheng}.}
+  \bibinfo{year}{2025}\natexlab{a}.
+\newblock \showarticletitle{{SWE-SQL}: Illuminating {LLM} Pathways to Solve
+  User {SQL} Issues in Real-World Applications}. In
+  \bibinfo{booktitle}{\emph{Advances in Neural Information Processing Systems
+  (NeurIPS)}}.
+\newblock
+\newblock
+\shownote{Introduces the BIRD-CRITIC benchmark. arXiv:2506.18951}.
+
+
+\bibitem[Li et~al\mbox{.}(2025b)]%
+        {screenspotpro2025}
+\bibfield{author}{\bibinfo{person}{Kaixin Li}, \bibinfo{person}{Ziyang Meng},
+  \bibinfo{person}{Hongzhan Lin}, \bibinfo{person}{Ziyang Luo},
+  \bibinfo{person}{Yuchen Tian}, \bibinfo{person}{Jing Ma},
+  \bibinfo{person}{Zhiyong Huang}, {and} \bibinfo{person}{Tat-Seng Chua}.}
+  \bibinfo{year}{2025}\natexlab{b}.
+\newblock \showarticletitle{{ScreenSpot-Pro}: {GUI} Grounding for Professional
+  High-Resolution Computer Use}. In \bibinfo{booktitle}{\emph{Proceedings of
+  the 33rd ACM International Conference on Multimedia (MM)}}.
+\newblock
+\href{https://doi.org/10.1145/3746027.3755688}{doi:\nolinkurl{10.1145/3746027.3755688}}
+\newblock
+\shownote{arXiv:2504.07981}.
+
+
+\bibitem[Liu et~al\mbox{.}(2024)]%
+        {dylan2024}
+\bibfield{author}{\bibinfo{person}{Zijun Liu}, \bibinfo{person}{Yanzhe Zhang},
+  \bibinfo{person}{Peng Li}, \bibinfo{person}{Yang Liu}, {and}
+  \bibinfo{person}{Diyi Yang}.} \bibinfo{year}{2024}\natexlab{}.
+\newblock \showarticletitle{{DyLAN}: A Dynamic {LLM}-Powered Agent Network for
+  Task-Oriented Agent Collaboration}. In \bibinfo{booktitle}{\emph{Proceedings
+  of the Conference on Language Modeling (COLM)}}.
+\newblock
+\newblock
+\shownote{arXiv:2310.02170}.
+
+
+\bibitem[Meng and Jackson(2025)]%
+        {meng2025wysiwid}
+\bibfield{author}{\bibinfo{person}{Eagon Meng} {and} \bibinfo{person}{Daniel
+  Jackson}.} \bibinfo{year}{2025}\natexlab{}.
+\newblock \showarticletitle{What You See Is What It Does: A Structural Pattern
+  for Legible Software}. In \bibinfo{booktitle}{\emph{Onward! at SPLASH 2025}}.
+\newblock
+\href{https://doi.org/10.1145/3759429.3762628}{doi:\nolinkurl{10.1145/3759429.3762628}}
+
+
+\bibitem[{Moonshot AI}(2026)]%
+        {moonshot2026agentswarm}
+\bibfield{author}{\bibinfo{person}{{Moonshot AI}}.}
+  \bibinfo{year}{2026}\natexlab{}.
+\newblock \bibinfo{title}{{Kimi K2.5 Agent Swarm}}.
+\newblock
+  \bibinfo{howpublished}{\url{https://www.kimi.com/ai-models/kimi-k2-5}}.
+\newblock
+
+
+\bibitem[Mozannar et~al\mbox{.}(2025)]%
+        {magenticui2025}
+\bibfield{author}{\bibinfo{person}{Hussein Mozannar}, \bibinfo{person}{Gagan
+  Bansal}, \bibinfo{person}{Cheng Tan}, \bibinfo{person}{Adam Fourney},
+  \bibinfo{person}{Victor Dibia}, \bibinfo{person}{Jingya Chen},
+  \bibinfo{person}{Jack Gerrits}, \bibinfo{person}{Tyler Payne},
+  \bibinfo{person}{Matheus~Kunzler Maldaner}, \bibinfo{person}{Madeleine
+  Grunde-McLaughlin}, \bibinfo{person}{Eric Zhu}, \bibinfo{person}{Griffin
+  Bassman}, \bibinfo{person}{Jacob Alber}, \bibinfo{person}{Peter Chang},
+  \bibinfo{person}{Ricky Loynd}, \bibinfo{person}{Friederike Niedtner},
+  \bibinfo{person}{Ece Kamar}, \bibinfo{person}{Maya Murad},
+  \bibinfo{person}{Rafah Hosn}, {and} \bibinfo{person}{Saleema Amershi}.}
+  \bibinfo{year}{2025}\natexlab{}.
+\newblock \showarticletitle{{Magentic-UI}: Towards Human-in-the-Loop Agentic
+  Systems}.
+\newblock \bibinfo{journal}{\emph{arXiv preprint arXiv:2507.22358}}
+  (\bibinfo{year}{2025}).
+\newblock
+
+
+\bibitem[Novikov et~al\mbox{.}(2025)]%
+        {alphaevolve2025}
+\bibfield{author}{\bibinfo{person}{Alexander Novikov},
+  \bibinfo{person}{Ng\^{a}n V\~{u}}, \bibinfo{person}{Marvin Eisenberger},
+  \bibinfo{person}{Emilien Dupont}, \bibinfo{person}{Po-Sen Huang},
+  \bibinfo{person}{Adam~Zsolt Wagner}, \bibinfo{person}{Sergey Shirobokov},
+  \bibinfo{person}{Borislav Kozlovskii}, \bibinfo{person}{Francisco J.~R.
+  Ruiz}, \bibinfo{person}{Abbas Mehrabian}, \bibinfo{person}{M.~Pawan Kumar},
+  \bibinfo{person}{Abigail See}, \bibinfo{person}{Swarat Chaudhuri},
+  \bibinfo{person}{George Holland}, \bibinfo{person}{Alex Davies},
+  \bibinfo{person}{Sebastian Nowozin}, \bibinfo{person}{Pushmeet Kohli}, {and}
+  \bibinfo{person}{Matej Balog}.} \bibinfo{year}{2025}\natexlab{}.
+\newblock \showarticletitle{Alpha{E}volve: A coding agent for scientific and
+  algorithmic discovery}.
+\newblock \bibinfo{journal}{\emph{arXiv preprint arXiv:2506.13131}}
+  (\bibinfo{year}{2025}).
+\newblock
+
+
+\bibitem[{OpenAI}(2026)]%
+        {openai2026_swebench_verified_audit}
+\bibfield{author}{\bibinfo{person}{{OpenAI}}.} \bibinfo{year}{2026}\natexlab{}.
+\newblock \bibinfo{title}{Why SWE-bench Verified no longer measures frontier
+  coding capabilities}.
+\newblock
+  \bibinfo{howpublished}{\url{https://openai.com/index/why-we-no-longer-evaluate-swe-bench-verified/}}.
+\newblock
+\newblock
+\shownote{OpenAI Research publication. Accessed 2026-02-23}.
+
+
+\bibitem[Piskala(2026)]%
+        {piskala2025sdd}
+\bibfield{author}{\bibinfo{person}{Deepak~Babu Piskala}.}
+  \bibinfo{year}{2026}\natexlab{}.
+\newblock \showarticletitle{Spec-Driven Development: From Code to Contract in
+  the Age of {AI} Coding Assistants}.
+\newblock \bibinfo{journal}{\emph{arXiv preprint arXiv:2602.00180}}
+  (\bibinfo{year}{2026}).
+\newblock
+
+
+\bibitem[Qian et~al\mbox{.}(2024)]%
+        {chatdev2024}
+\bibfield{author}{\bibinfo{person}{Chen Qian}, \bibinfo{person}{Wei Liu},
+  \bibinfo{person}{Hongzhang Liu}, \bibinfo{person}{Nuo Chen},
+  \bibinfo{person}{Yufan Dang}, \bibinfo{person}{Jiahao Li},
+  \bibinfo{person}{Cheng Yang}, \bibinfo{person}{Weize Chen},
+  \bibinfo{person}{Yusheng Su}, \bibinfo{person}{Xin Cong},
+  \bibinfo{person}{Juyuan Xu}, \bibinfo{person}{Dahai Li},
+  \bibinfo{person}{Zhiyuan Liu}, {and} \bibinfo{person}{Maosong Sun}.}
+  \bibinfo{year}{2024}\natexlab{}.
+\newblock \showarticletitle{{ChatDev}: Communicative Agents for Software
+  Development}. In \bibinfo{booktitle}{\emph{Proceedings of the 62nd Annual
+  Meeting of the Association for Computational Linguistics (ACL)}}.
+\newblock
+\newblock
+\shownote{arXiv:2307.07924}.
+
+
+\bibitem[Robeyns et~al\mbox{.}(2025)]%
+        {robeyns2025selfimproving}
+\bibfield{author}{\bibinfo{person}{Maxime Robeyns}, \bibinfo{person}{Martin
+  Szummer}, {and} \bibinfo{person}{Laurence Aitchison}.}
+  \bibinfo{year}{2025}\natexlab{}.
+\newblock \showarticletitle{A Self-Improving Coding Agent}.
+\newblock \bibinfo{journal}{\emph{arXiv preprint arXiv:2504.15228}}
+  (\bibinfo{year}{2025}).
+\newblock
+\href{https://doi.org/10.48550/arXiv.2504.15228}{doi:\nolinkurl{10.48550/arXiv.2504.15228}}
+
+
+\bibitem[Romera-Paredes et~al\mbox{.}(2024)]%
+        {romeraparedes2024funsearch}
+\bibfield{author}{\bibinfo{person}{Bernardino Romera-Paredes},
+  \bibinfo{person}{Mohammadamin Barekatain}, \bibinfo{person}{Alexander
+  Novikov}, \bibinfo{person}{Matej Balog}, \bibinfo{person}{M.~Pawan Kumar},
+  \bibinfo{person}{Emilien Dupont}, \bibinfo{person}{Francisco J.~R. Ruiz},
+  \bibinfo{person}{Jordan~S. Ellenberg}, \bibinfo{person}{Pengming Wang},
+  \bibinfo{person}{Omar Fawzi}, \bibinfo{person}{Pushmeet Kohli}, {and}
+  \bibinfo{person}{Alhussein Fawzi}.} \bibinfo{year}{2024}\natexlab{}.
+\newblock \showarticletitle{Mathematical discoveries from program search with
+  large language models}.
+\newblock \bibinfo{journal}{\emph{Nature}} \bibinfo{volume}{625},
+  \bibinfo{number}{7995} (\bibinfo{year}{2024}), \bibinfo{pages}{468--475}.
+\newblock
+
+
+\bibitem[Shinn et~al\mbox{.}(2023)]%
+        {reflexion2023}
+\bibfield{author}{\bibinfo{person}{Noah Shinn}, \bibinfo{person}{Federico
+  Cassano}, \bibinfo{person}{Edward Berman}, \bibinfo{person}{Ashutosh
+  Gopinath}, \bibinfo{person}{Karthik Narasimhan}, {and}
+  \bibinfo{person}{Shunyu Yao}.} \bibinfo{year}{2023}\natexlab{}.
+\newblock \showarticletitle{Reflexion: Language Agents with Verbal
+  Reinforcement Learning}. In \bibinfo{booktitle}{\emph{Advances in Neural
+  Information Processing Systems (NeurIPS)}}.
+\newblock
+\newblock
+\shownote{arXiv:2303.11366}.
+
+
+\bibitem[Takerngsaksiri et~al\mbox{.}(2025)]%
+        {hula2025}
+\bibfield{author}{\bibinfo{person}{Wannita Takerngsaksiri},
+  \bibinfo{person}{Jirat Pasuksmit}, \bibinfo{person}{Patanamon Thongtanunam},
+  \bibinfo{person}{Chakkrit Tantithamthavorn}, \bibinfo{person}{Ruixiong
+  Zhang}, \bibinfo{person}{Fan Jiang}, \bibinfo{person}{Jing Li},
+  \bibinfo{person}{Evan Cook}, \bibinfo{person}{Kun Chen}, {and}
+  \bibinfo{person}{Ming Wu}.} \bibinfo{year}{2025}\natexlab{}.
+\newblock \showarticletitle{Human-In-the-Loop Software Development Agents}. In
+  \bibinfo{booktitle}{\emph{Proceedings of the 47th International Conference on
+  Software Engineering, Software Engineering in Practice (ICSE-SEIP)}}.
+\newblock
+\newblock
+\shownote{arXiv:2411.12924}.
+
+
+\bibitem[Wang et~al\mbox{.}(2024c)]%
+        {voyager2023}
+\bibfield{author}{\bibinfo{person}{Guanzhi Wang}, \bibinfo{person}{Yuqi Xie},
+  \bibinfo{person}{Yunfan Jiang}, \bibinfo{person}{Ajay Mandlekar},
+  \bibinfo{person}{Chaowei Xiao}, \bibinfo{person}{Yuke Zhu},
+  \bibinfo{person}{Linxi Fan}, {and} \bibinfo{person}{Anima Anandkumar}.}
+  \bibinfo{year}{2024}\natexlab{c}.
+\newblock \showarticletitle{Voyager: An Open-Ended Embodied Agent with Large
+  Language Models}.
+\newblock \bibinfo{journal}{\emph{Transactions on Machine Learning Research
+  (TMLR)}} (\bibinfo{year}{2024}).
+\newblock
+\newblock
+\shownote{Originally arXiv:2305.16291, May 2023}.
+
+
+\bibitem[Wang et~al\mbox{.}(2025b)]%
+        {moa2025}
+\bibfield{author}{\bibinfo{person}{Junlin Wang}, \bibinfo{person}{Jue Wang},
+  \bibinfo{person}{Ben Athiwaratkun}, \bibinfo{person}{Ce Zhang}, {and}
+  \bibinfo{person}{James Zou}.} \bibinfo{year}{2025}\natexlab{b}.
+\newblock \showarticletitle{Mixture-of-Agents Enhances Large Language Model
+  Capabilities}. In \bibinfo{booktitle}{\emph{Proceedings of the Thirteenth
+  International Conference on Learning Representations (ICLR)}}.
+\newblock
+\newblock
+\shownote{arXiv:2406.04692}.
+
+
+\bibitem[Wang et~al\mbox{.}(2025c)]%
+        {wang2025mas2}
+\bibfield{author}{\bibinfo{person}{Kun Wang}, \bibinfo{person}{Guibin Zhang},
+  \bibinfo{person}{ManKit Ye}, \bibinfo{person}{Xinyu Deng},
+  \bibinfo{person}{Dongxia Wang}, \bibinfo{person}{Xiaobin Hu},
+  \bibinfo{person}{Jinyang Guo}, \bibinfo{person}{Yang Liu}, {and}
+  \bibinfo{person}{Yufei Guo}.} \bibinfo{year}{2025}\natexlab{c}.
+\newblock \bibinfo{title}{{MAS}$^2$: Self-Generative, Self-Configuring,
+  Self-Rectifying Multi-Agent Systems}.
+\newblock
+\showeprint[arxiv]{2509.24323}~[cs.MA]
+\urldef\tempurl%
+\url{https://arxiv.org/abs/2509.24323}
+\showURL{%
+\tempurl}
+
+
+\bibitem[Wang et~al\mbox{.}(2024b)]%
+        {agentsurvey2024}
+\bibfield{author}{\bibinfo{person}{Lei Wang}, \bibinfo{person}{Chen Ma},
+  \bibinfo{person}{Xueyang Feng}, \bibinfo{person}{Zeyu Zhang},
+  \bibinfo{person}{Hao Yang}, \bibinfo{person}{Jingsen Zhang},
+  \bibinfo{person}{Zhiyuan Chen}, \bibinfo{person}{Jiakai Tang},
+  \bibinfo{person}{Xu Chen}, \bibinfo{person}{Yankai Lin},
+  \bibinfo{person}{Wayne~Xin Zhao}, \bibinfo{person}{Zhewei Wei}, {and}
+  \bibinfo{person}{Ji-Rong Wen}.} \bibinfo{year}{2024}\natexlab{b}.
+\newblock \showarticletitle{A Survey on Large Language Model based Autonomous
+  Agents}.
+\newblock \bibinfo{journal}{\emph{Frontiers of Computer Science}}
+  (\bibinfo{year}{2024}).
+\newblock
+\newblock
+\shownote{arXiv:2308.11432}.
+
+
+\bibitem[Wang et~al\mbox{.}(2025a)]%
+        {wang2025huxley}
+\bibfield{author}{\bibinfo{person}{Wenyi Wang}, \bibinfo{person}{Piotr
+  Piękos}, \bibinfo{person}{Li Nanbo}, \bibinfo{person}{Firas Laakom},
+  \bibinfo{person}{Yimeng Chen}, \bibinfo{person}{Mateusz Ostaszewski},
+  \bibinfo{person}{Mingchen Zhuge}, {and} \bibinfo{person}{Jürgen
+  Schmidhuber}.} \bibinfo{year}{2025}\natexlab{a}.
+\newblock \bibinfo{title}{Huxley-G{\"o}del Machine: Human-Level Coding Agent
+  Development by an Approximation of the Optimal Self-Improving Machine}.
+\newblock
+\showeprint[arxiv]{2510.21614}~[cs.AI]
+\urldef\tempurl%
+\url{https://arxiv.org/abs/2510.21614}
+\showURL{%
+\tempurl}
+
+
+\bibitem[Wang et~al\mbox{.}(2024a)]%
+        {openhands2024}
+\bibfield{author}{\bibinfo{person}{Xingyao Wang}, \bibinfo{person}{Boxuan Li},
+  \bibinfo{person}{Yufan Song}, \bibinfo{person}{Frank~F. Xu},
+  \bibinfo{person}{Xiangru Tang}, \bibinfo{person}{Mingchen Zhuge},
+  \bibinfo{person}{Jiayi Pan}, \bibinfo{person}{Yueqi Song},
+  \bibinfo{person}{Bowen Li}, \bibinfo{person}{Jaskirat Singh},
+  \bibinfo{person}{Hoang~H. Tran}, \bibinfo{person}{Fuqiang Li},
+  \bibinfo{person}{Ren Ma}, \bibinfo{person}{Mingzhang Zheng},
+  \bibinfo{person}{Bill Qian}, \bibinfo{person}{Yanjun Shao},
+  \bibinfo{person}{Niklas Muennighoff}, \bibinfo{person}{Yizhe Zhang},
+  \bibinfo{person}{Binyuan Hui}, \bibinfo{person}{Junyang Lin},
+  \bibinfo{person}{Robert Brennan}, \bibinfo{person}{Hao Peng},
+  \bibinfo{person}{Heng Ji}, {and} \bibinfo{person}{Graham Neubig}.}
+  \bibinfo{year}{2024}\natexlab{a}.
+\newblock \showarticletitle{{OpenHands}: An Open Platform for {AI} Software
+  Developers as Generalist Agents}.
+\newblock \bibinfo{journal}{\emph{arXiv preprint arXiv:2407.16741}}
+  (\bibinfo{year}{2024}).
+\newblock
+
+
+\bibitem[Wu et~al\mbox{.}(2024)]%
+        {autogen2024}
+\bibfield{author}{\bibinfo{person}{Qingyun Wu}, \bibinfo{person}{Gagan Bansal},
+  \bibinfo{person}{Jieyu Zhang}, \bibinfo{person}{Yiran Wu},
+  \bibinfo{person}{Beibin Li}, \bibinfo{person}{Erkang Zhu},
+  \bibinfo{person}{Li Jiang}, \bibinfo{person}{Xiaoyun Zhang},
+  \bibinfo{person}{Shaokun Zhang}, \bibinfo{person}{Jiale Liu},
+  \bibinfo{person}{Ahmed~Hassan Awadallah}, \bibinfo{person}{Ryen~W. White},
+  \bibinfo{person}{Doug Burger}, {and} \bibinfo{person}{Chi Wang}.}
+  \bibinfo{year}{2024}\natexlab{}.
+\newblock \showarticletitle{{AutoGen}: Enabling Next-Gen {LLM} Applications via
+  Multi-Agent Conversation Framework}. In \bibinfo{booktitle}{\emph{Proceedings
+  of the Conference on Language Modeling (COLM)}}.
+\newblock
+\newblock
+\shownote{arXiv:2308.08155}.
+
+
+\bibitem[Xi et~al\mbox{.}(2025)]%
+        {agentgym2025}
+\bibfield{author}{\bibinfo{person}{Zhiheng Xi}, \bibinfo{person}{Yiwen Ding},
+  \bibinfo{person}{Wenxiang Chen}, \bibinfo{person}{Boyang Hong},
+  \bibinfo{person}{Honglin Guo}, \bibinfo{person}{Junzhe Wang},
+  \bibinfo{person}{Dingwen Yang}, \bibinfo{person}{Chenyang Liao},
+  \bibinfo{person}{Xin Guo}, \bibinfo{person}{Wei He},
+  \bibinfo{person}{Songyang Gao}, \bibinfo{person}{Lu Chen},
+  \bibinfo{person}{Rui Zheng}, \bibinfo{person}{Yicheng Zou},
+  \bibinfo{person}{Tao Gui}, \bibinfo{person}{Qi Zhang},
+  \bibinfo{person}{Xipeng Qiu}, \bibinfo{person}{Xuanjing Huang},
+  \bibinfo{person}{Zuxuan Wu}, {and} \bibinfo{person}{Yu-Gang Jiang}.}
+  \bibinfo{year}{2025}\natexlab{}.
+\newblock \showarticletitle{{AgentGym}: Evolving Large Language Model-based
+  Agents across Diverse Environments}. In \bibinfo{booktitle}{\emph{Proceedings
+  of the 63rd Annual Meeting of the Association for Computational Linguistics
+  (ACL)}}.
+\newblock
+\newblock
+\shownote{arXiv:2406.04151}.
+
+
+\bibitem[Xia et~al\mbox{.}(2025)]%
+        {livesweagent2025}
+\bibfield{author}{\bibinfo{person}{Chunqiu~Steven Xia}, \bibinfo{person}{Zhe
+  Wang}, \bibinfo{person}{Yan Yang}, \bibinfo{person}{Yuxiang Wei}, {and}
+  \bibinfo{person}{Lingming Zhang}.} \bibinfo{year}{2025}\natexlab{}.
+\newblock \showarticletitle{{Live-SWE-agent}: Can Software Engineering Agents
+  Self-Evolve on the Fly?}
+\newblock \bibinfo{journal}{\emph{arXiv preprint arXiv:2511.13646}}
+  (\bibinfo{year}{2025}).
+\newblock
+
+
+\bibitem[Yang et~al\mbox{.}(2024)]%
+        {sweagent2024}
+\bibfield{author}{\bibinfo{person}{John Yang}, \bibinfo{person}{Carlos~E.
+  Jimenez}, \bibinfo{person}{Alexander Wettig}, \bibinfo{person}{Kilian
+  Lieret}, \bibinfo{person}{Shunyu Yao}, \bibinfo{person}{Karthik Narasimhan},
+  {and} \bibinfo{person}{Ofir Press}.} \bibinfo{year}{2024}\natexlab{}.
+\newblock \showarticletitle{{SWE-agent}: Agent-Computer Interfaces Enable
+  Automated Software Engineering}. In \bibinfo{booktitle}{\emph{Advances in
+  Neural Information Processing Systems (NeurIPS)}}, Vol.~\bibinfo{volume}{37}.
+\newblock
+\newblock
+\shownote{arXiv:2405.15793}.
+
+
+\bibitem[Yao et~al\mbox{.}(2023)]%
+        {react2023}
+\bibfield{author}{\bibinfo{person}{Shunyu Yao}, \bibinfo{person}{Jeffrey Zhao},
+  \bibinfo{person}{Dian Yu}, \bibinfo{person}{Nan Du}, \bibinfo{person}{Izhak
+  Shafran}, \bibinfo{person}{Karthik Narasimhan}, {and} \bibinfo{person}{Yuan
+  Cao}.} \bibinfo{year}{2023}\natexlab{}.
+\newblock \showarticletitle{{ReAct}: Synergizing Reasoning and Acting in
+  Language Models}. In \bibinfo{booktitle}{\emph{Proceedings of the Eleventh
+  International Conference on Learning Representations (ICLR)}}.
+\newblock
+\newblock
+\shownote{arXiv:2210.03629}.
+
+
+\bibitem[Yuan et~al\mbox{.}(2024)]%
+        {craft2024}
+\bibfield{author}{\bibinfo{person}{Lifan Yuan}, \bibinfo{person}{Yangyi Chen},
+  \bibinfo{person}{Xingyao Wang}, \bibinfo{person}{Yi~R. Fung},
+  \bibinfo{person}{Hao Peng}, {and} \bibinfo{person}{Heng Ji}.}
+  \bibinfo{year}{2024}\natexlab{}.
+\newblock \showarticletitle{{CRAFT}: Customizing {LLMs} by Creating and
+  Retrieving from Specialized Toolsets}. In
+  \bibinfo{booktitle}{\emph{Proceedings of the Twelfth International Conference
+  on Learning Representations (ICLR)}}.
+\newblock
+\newblock
+\shownote{arXiv:2309.17428}.
+
+
+\bibitem[Yuksekgonul et~al\mbox{.}(2025)]%
+        {textgrad2025}
+\bibfield{author}{\bibinfo{person}{Mert Yuksekgonul}, \bibinfo{person}{Federico
+  Bianchi}, \bibinfo{person}{Joseph Boen}, \bibinfo{person}{Sheng Liu},
+  \bibinfo{person}{Pan Lu}, \bibinfo{person}{Zhi Huang},
+  \bibinfo{person}{Carlos Guestrin}, {and} \bibinfo{person}{James Zou}.}
+  \bibinfo{year}{2025}\natexlab{}.
+\newblock \showarticletitle{Optimizing Generative {AI} by Backpropagating
+  Language Model Feedback}.
+\newblock \bibinfo{journal}{\emph{Nature}}  \bibinfo{volume}{639}
+  (\bibinfo{year}{2025}), \bibinfo{pages}{609--616}.
+\newblock
+\href{https://doi.org/10.1038/s41586-025-08661-4}{doi:\nolinkurl{10.1038/s41586-025-08661-4}}
+\newblock
+\shownote{arXiv:2406.07496 (``TextGrad'')}.
+
+
+\bibitem[Zhang et~al\mbox{.}(2025c)]%
+        {maas2025}
+\bibfield{author}{\bibinfo{person}{Guibin Zhang}, \bibinfo{person}{Luyang Niu},
+  \bibinfo{person}{Junfeng Fang}, \bibinfo{person}{Kun Wang},
+  \bibinfo{person}{Lei Bai}, {and} \bibinfo{person}{Xiang Wang}.}
+  \bibinfo{year}{2025}\natexlab{c}.
+\newblock \showarticletitle{{MaAS}: Multi-agent Architecture Search via Agentic
+  Supernet}.
+\newblock \bibinfo{journal}{\emph{arXiv preprint arXiv:2502.04180}}
+  (\bibinfo{year}{2025}).
+\newblock
+
+
+\bibitem[Zhang et~al\mbox{.}(2025e)]%
+        {gdesigner2025}
+\bibfield{author}{\bibinfo{person}{Guibin Zhang}, \bibinfo{person}{Yanwei Yue},
+  \bibinfo{person}{Xiangguo Sun}, \bibinfo{person}{Guancheng Wan},
+  \bibinfo{person}{Miao Yu}, \bibinfo{person}{Junfeng Fang},
+  \bibinfo{person}{Kun Wang}, \bibinfo{person}{Tianlong Chen}, {and}
+  \bibinfo{person}{Dawei Cheng}.} \bibinfo{year}{2025}\natexlab{e}.
+\newblock \showarticletitle{{G-Designer}: Architecting Multi-agent
+  Communication Topologies via Graph Neural Networks}. In
+  \bibinfo{booktitle}{\emph{Proceedings of the Thirteenth International
+  Conference on Learning Representations (ICLR)}}.
+\newblock
+\newblock
+\shownote{arXiv:2410.11782}.
+
+
+\bibitem[Zhang et~al\mbox{.}(2025b)]%
+        {dgm2025}
+\bibfield{author}{\bibinfo{person}{Jenny Zhang}, \bibinfo{person}{Shengran Hu},
+  \bibinfo{person}{Cong Lu}, \bibinfo{person}{Robert Lange}, {and}
+  \bibinfo{person}{Jeff Clune}.} \bibinfo{year}{2025}\natexlab{b}.
+\newblock \showarticletitle{Darwin G{\"o}del Machine: Open-Ended Evolution of
+  Self-Improving Agents}.
+\newblock \bibinfo{journal}{\emph{arXiv preprint arXiv:2505.22954}}
+  (\bibinfo{year}{2025}).
+\newblock
+
+
+\bibitem[Zhang et~al\mbox{.}(2025d)]%
+        {aflow2025}
+\bibfield{author}{\bibinfo{person}{Jiayi Zhang}, \bibinfo{person}{Jinyu Xiang},
+  \bibinfo{person}{Zhaoyang Yu}, \bibinfo{person}{Fengwei Teng},
+  \bibinfo{person}{Xiong-Hui Chen}, \bibinfo{person}{Jiaqi Chen},
+  \bibinfo{person}{Mingchen Zhuge}, \bibinfo{person}{Xin Cheng},
+  \bibinfo{person}{Sirui Hong}, \bibinfo{person}{Jinlin Wang},
+  \bibinfo{person}{Bingnan Zheng}, \bibinfo{person}{Bang Liu},
+  \bibinfo{person}{Yuyu Luo}, {and} \bibinfo{person}{Chenglin Wu}.}
+  \bibinfo{year}{2025}\natexlab{d}.
+\newblock \showarticletitle{{AFlow}: Automating Agentic Workflow Generation}.
+  In \bibinfo{booktitle}{\emph{Proceedings of the Thirteenth International
+  Conference on Learning Representations (ICLR)}}.
+\newblock
+\newblock
+\shownote{Oral presentation. arXiv:2410.10762}.
+
+
+\bibitem[Zhang et~al\mbox{.}(2025a)]%
+        {zhang2025swebenchgoeslive}
+\bibfield{author}{\bibinfo{person}{Linghao Zhang}, \bibinfo{person}{Shilin He},
+  \bibinfo{person}{Chaoyun Zhang}, \bibinfo{person}{Yu Kang},
+  \bibinfo{person}{Bowen Li}, \bibinfo{person}{Chengxing Xie},
+  \bibinfo{person}{Junhao Wang}, \bibinfo{person}{Maoquan Wang},
+  \bibinfo{person}{Yufan Huang}, \bibinfo{person}{Shengyu Fu},
+  \bibinfo{person}{Elsie Nallipogu}, \bibinfo{person}{Qingwei Lin},
+  \bibinfo{person}{Yingnong Dang}, \bibinfo{person}{Saravan Rajmohan}, {and}
+  \bibinfo{person}{Dongmei Zhang}.} \bibinfo{year}{2025}\natexlab{a}.
+\newblock \showarticletitle{SWE-bench Goes Live!}
+\newblock \bibinfo{journal}{\emph{arXiv preprint arXiv:2505.23419}}
+  (\bibinfo{year}{2025}).
+\newblock
+
+
+\bibitem[Zhang et~al\mbox{.}(2024)]%
+        {agentpro2024}
+\bibfield{author}{\bibinfo{person}{Wenqi Zhang}, \bibinfo{person}{Ke Tang},
+  \bibinfo{person}{Hai Wu}, \bibinfo{person}{Mengna Wang},
+  \bibinfo{person}{Yongliang Shen}, \bibinfo{person}{Guiyang Hou},
+  \bibinfo{person}{Zeqi Tan}, \bibinfo{person}{Peng Li},
+  \bibinfo{person}{Yueting Zhuang}, {and} \bibinfo{person}{Weiming Lu}.}
+  \bibinfo{year}{2024}\natexlab{}.
+\newblock \showarticletitle{{Agent-Pro}: Learning to Evolve via Policy-Level
+  Reflection and Optimization}. In \bibinfo{booktitle}{\emph{Proceedings of the
+  62nd Annual Meeting of the Association for Computational Linguistics (ACL)}}.
+\newblock
+\newblock
+\shownote{arXiv:2402.17574}.
+
+
+\bibitem[Zhuge et~al\mbox{.}(2024)]%
+        {gptswarm2024}
+\bibfield{author}{\bibinfo{person}{Mingchen Zhuge}, \bibinfo{person}{Wenyi
+  Wang}, \bibinfo{person}{Louis Kirsch}, \bibinfo{person}{Francesco Faccio},
+  \bibinfo{person}{Dmitrii Khizbullin}, {and} \bibinfo{person}{J{\"u}rgen
+  Schmidhuber}.} \bibinfo{year}{2024}\natexlab{}.
+\newblock \showarticletitle{{GPTSwarm}: Language Agents as Optimizable Graphs}.
+  In \bibinfo{booktitle}{\emph{Proceedings of the Forty-First International
+  Conference on Machine Learning (ICML)}}.
+\newblock
+\newblock
+\shownote{Oral presentation. arXiv:2402.16823}.
+
+
+\end{thebibliography}
+%\bibliography{references}%% Commented by merge tool
+
+
+
+\newpage
+\appendix
+
+
+
+
+%%%% 07_appendix.tex starts here %%%%
+
+% ====================================================================
+% APPENDIX
+% ====================================================================
+
+\section{Evaluation Setup Details}
+\label{sec:app_eval_setup}
+\label{sec:app_agent_configs}
+
+Listing~\ref{lst:singlemeta_prompt} shows the single-meta agent prompt used in \sysname lite for SWE tasks.
+Listing~\ref{lst:multimeta_workflow} shows the multi-meta agent workflow used in \sysname max.
+
+\begin{listing}[H]
+{\tiny
+\begin{lstlisting}[rulecolor=\color{accentShell}]
+# This is shared by all spawned agents.
+task = "... SWE problem statement ..."
+# This is only visible to the meta agent (or to any meta agent it chooses to spawn).
+meta_task = """
+We trying to an SWE task.
+Based on your responsibilities and experience, delegate to the appropriate agents to reach your goal.
+Be sure to produce the right deliverables before returning (whether in your artifacts or in-source).
+When previous deliverables exist, use them and pass them around as context.
+Throughout, emphasize the MDD guidelines to ensure clean communication and effective deliverables.
+
+REMEMBER to delegate rather than act directly.
+As a general rule, run agents for at most ~3 rounds, and make dynamic helpers when stuck,
+rather than trying to do everything in one agent.
+
+Here are the phases you must follow:
+**Pre-Resolution Phase**
+Emphasize broad research, information gathering, and bug reproduction.
+Avoid forming strong opinions or jumping to conclusions.
+- Research Sub-Agent: Thoroughly research the codebase and the specific issue we are trying to solve.
+    Focus on flow, likely integration points, similar patterns, likely helpers and relevant past changes.
+    - Produces a `<artifacts>/reports/research_synthesis.md` < 12k characters.
+- Reproduction, Testing and Tooling Sub-Agent: Figure out the current testing baseline,
+    make new failing tests that reproduce the issue reliably, and create necessary tooling.
+    - Produces tests, tools, scripts, etc. that later agents can use to focus on implementation.
+    - Produces `<artifacts>/reports/reproduction_testing_and_tooling_guide.md` < 12k characters.
+
+**Resolution Phase**
+Focus on implementation, validation, and fixing.
+- Planning Sub-Agent: Takes in the research synthesis, reproduction/tooling guide, and design guidelines,
+    and comes up with a plan for implementation.
+    - Produces `<artifacts>/reports/implementation_plan.md` < 8k characters.
+- Implementation Sub-Agent(s): For each testable step in the plan, create one specialized implementer
+    agent. Each runs for at most ~3 rounds at a time.
+    - Produces:
+        - `<artifacts>/final_patch.diff`: The clean final patch file.
+        - `<artifacts>/reports/final_implementation_summary.md`.
+        - `<artifacts>/reports/final_testing_summary.md`.
+- Validation and Fixing Sub-Agent: Validate and cleanup the final results.
+    - Produces `<artifacts>/reports/validation_summary.md`.
+"""
+\end{lstlisting}
+}
+\caption{\sysname lite single-meta agent prompt for SWE tasks.}
+\label{lst:singlemeta_prompt}
+\end{listing}
+
+\begin{listing}[H]
+{\tiny
+\begin{lstlisting}[rulecolor=\color{accentShell}]
+[workflow]
+title = "Software Engineering Task"
+task = "..." # Task-Specific: shared by all agents.
+meta_task = """
+We trying to an SWE task.
+Based on your responsibilities and experience, delegate to the appropriate agents to reach your goal.
+Be sure to produce the right deliverables before returning (whether in your artifacts or in-source).
+When previous deliverables exist, use them and pass them around as context.
+Throughout, emphasize the DD guidelines to ensure clean communication and effective deliverables.
+REMEMBER to delegate rather than act directly.
+As a general rule, run agents for at most ~3 rounds, and make dynamic helpers when stuck,
+rather than trying to do everything in one agent.
+"""
+
+[[workflow.phases]]
+loop_condition_pattern = ".*RESEARCH PHASE APPROVED.*"
+title = "Research Phase"
+task = """... Emphasize information gathering ..."""
+meta_task = """... Recommend Planner + Parallel Researchers + Synthesis pattern ..."""
+
+[[workflow.phases]]
+title = "Reproduction, Testing, and Tooling Phase"
+task = "... Emphasize reusable scripts, tools with a clear guide for using them ..."
+meta_task = """... Recommend Planner+Reproducer pattern ..."""
+
+[[workflow.phases]]
+loop_condition_pattern = ".*IMPLEMENTATION PHASE APPROVED.*"
+title = "Implementation Phase"
+task = """... Emphasize complete resolution ..."""
+meta_task = """... Recommend Planner + Multi-Phase implementers/testers ..."""
+
+[[workflow.phases]]
+loop_condition_pattern = ".*VALIDATION PHASE APPROVED.*"
+title = "Validation and Fixing Phase"
+task = """... Emphasize thorough validation, meaningful tests ..."""
+meta_task = """... Recommend simple validator, with dynamic fixers if bugs are found ..."""
+\end{lstlisting}
+}
+\caption{\sysname max multi-meta agent workflow for advanced software engineering tasks. Each phase has its own meta agent; HIL checkpoints are controlled by \texttt{loop\_condition\_pattern}. This is typically an overkill in small-to-moderate problems, hence the high costs.}
+\label{lst:multimeta_workflow}
+\end{listing}
+
+
+\section{Supplementary Evaluation Results}
+\label{sec:app_supplementary}
+
+Our main evaluation (\cref{sec:evaluation}) demonstrates that \sysname lifts performance when problem-solving ability is the bottleneck.
+Here we examine the converse: when additional problem-solving ability does not help (because the problems are too simple, mis-designed, or underspecified), \sysname does not help either.
+This is normal: when weaker models already match or exceed stronger ones on a benchmark, it means better problem-solving ability provides no value, and may even hurt performance by producing unexpected solutions that the evaluation script rejects.
+We present three such cases below.
+
+\subsection{SWE-Bench-Pro Flipt Subset}
+\label{sec:app_flipt}
+
+The Flipt repository (85 instances in SWE-Bench Pro) extends our online-evaluation language coverage to Go, complementing the Python (Qute) and C/C++ (SWE-Bench-Live) subsets in the main text. It exhibits a consistently low success rate across all baselines, with near-identical failure patterns between systems.
+After running \sysname with Claude 4.5 Sonnet on a sample of 37 instances and observing nearly the same failures as the SWE Agent baselines (differing in only one instance), we tasked the uplifter (which analyzes profiles) with analyzing the failure profiles to produce an ontology for the remaining instances.
+
+The uplifter concluded that most failures stem from missing test configuration files that are (a)~referenced only by \emph{new} test cases added in the reference patch, (b)~have filenames that cannot be inferred from the problem description or any other available information, and (c)~do not follow a discoverable naming pattern.
+In other words, the benchmark requires guessing filenames that cannot possibly be learned from the provided information.
+Listing~\ref{lst:flipt_analysis} shows the analysis tables produced by the learning agents.
+
+After discovering this, we intended to open a GitHub issue, only to find that another developer had already encountered and reported the same problem, though it has not been addressed as of this writing.\footnote{\url{https://github.com/scaleapi/SWE-bench_Pro-os/issues/45}}
+This corroborates our agent's conclusion and opens an interesting avenue for future work: using \sysname's learning capabilities to automatically identify design flaws in benchmarks.
+
+\begin{listing}[H]
+{\tiny
+\begin{lstlisting}
+## Category A: NEW Testdata + NEW Test Case (UNDISCOVERABLE)
+These instances have testdata files referenced ONLY by NEW test cases
+added in reference_tests.diff:
+
+| Instance | NEW Testdata File                       | Discoverable? |
+|----------|-----------------------------------------|---------------|
+| 756f00f  | deprecated/ui_disabled.yml              | NO            |
+| 524f277  | import_rule_multiple_segments.yml       | NO            |
+| 406f939  | cmd/flipt/testdata/config/advanced.yml  | NO            |
+| 406f939  | cmd/flipt/testdata/config/default.yml   | NO            |
+| f808b4d  | config/testdata/config/database.yml     | NO            |
+| abaa595  | storage/invalid_readonly.yml            | NO            |
+| 0fd09de  | authentication/kubernetes.yml           | NO            |
+| e91615c  | export.yml, import.yml, ...             | NO            |
+| ebb3f84  | token_bootstrap_token.yml               | NO            |
+| 5af0757  | session_domain_scheme_port.yml          | NO            |
+| c6a7b1f  | import_invalid_version.yml              | NO            |
+
+Verdict: ~10+ testdata files are UNDISCOVERABLE through running
+existing tests.
+
+## Category B: MODIFIED Testdata + MODIFIED Test Expectations
+                                               (PARTIAL DISCOVERY)
+These instances modify EXISTING testdata files, with corresponding
+test expectation changes:
+
+| Instance | EXISTING File Modified | What Changed            | Discov.? |
+|----------|-----------------------|-------------------------|----------|
+| 756f00f  | advanced.yml          | Removed ui.enabled      | PARTIAL  |
+| 518ec32  | advanced.yml          | Added baz.com origins   | PARTIAL  |
+| 5c7037e  | advanced.yml          | Modified config values  | PARTIAL  |
+| 524f277  | export.yml, etc.      | Added new fields        | PARTIAL  |
+| a42d38a  | advanced.yml          | Modified config values  | PARTIAL  |
+| c6a7b1f  | seed.yaml, export.yml | Added new fields        | PARTIAL  |
+\end{lstlisting}
+}
+\caption{Flipt failure analysis produced by \sysname learning agents. Category~A instances require testdata files whose names are not discoverable from the problem description; Category~B instances require specific edits whose content is not inferrable.}
+\label{lst:flipt_analysis}
+\end{listing}
+
+
+\subsection{SWE-Rebench}
+\label{sec:app_rebench}
+
+SWE-Rebench~\cite{swebenchrebench2025} is a curated, difficulty-controlled variant of SWE-Bench.
+Its leaderboard reveals an unusual pattern: stronger models do not consistently outperform weaker ones.
+For example, Opus~4.5 and GPT~5.2~Codex score below Sonnet~4.5 and Gemini~3~Flash on pass@1, and while Opus~4.6 leads Sonnet~4.5 by 4.6\% on pass@1, its pass@5 is actually 2.1\% \emph{lower}.
+This suggests that raw problem-solving ability is not the bottleneck on this benchmark, meaning \sysname likely cannot provide meaningful improvements either.
+
+We ran \sysname lite to confirm this hypothesis.
+\Cref{tab:rebench} summarizes the results.
+
+\begin{table}[H]
+\centering
+\caption{SWE-Rebench results (48 instances, Jan 2026 snapshot). When stronger models do not outperform weaker ones, better agentic systems provide no meaningful lift either.}
+\label{tab:rebench}
+\small
+\begin{tabular}{lcc}
+\hline
+\textbf{System} & \textbf{Pass@1} & \textbf{Cost/inst.} \\
+\hline
+Claude Code (Opus 4.6) & 52.9\% & \$3.50 \\
+\sysname lite (Gemini~3~Flash) & 52.1\% & \$1.01 \\
+ReACT (Opus 4.6) & 51.7\% & \$0.93 \\
+GPT-5.2 xHigh & 51.7\% & \$1.28 \\
+GPT-5.2 Medium & 51.0\% & \$0.76 \\
+GPT-5.1 Codex Max & 48.5\% & \$0.73 \\
+\sysname lite (Opus 4.6) & 47.9\% & \$2.41 \\
+Sonnet 4.5 & 47.1\% & \$0.94 \\
+Gemini 3 Pro & 46.7\% & \$0.59 \\
+Gemini 3 Flash & 46.7\% & \$0.32 \\
+GPT-5.2 Codex & 45.0\% & \$0.46 \\
+Codex & 44.0\% & \$0.29 \\
+Opus 4.5 & 43.8\% & \$1.19 \\
+\hline
+\end{tabular}
+\end{table}
+
+As expected, \sysname provides no meaningful improvement on this benchmark: \sysname lite with Gemini~3~Flash (52.1\%) and with Opus~4.6 (47.9\%) are generally within the variance of simpler baselines.
+Notably, the Opus~4.6 configuration actually scores \emph{lower} than the Gemini~3~Flash configuration despite costing 2.4$\times$ more, mirroring the leaderboard's pattern of stronger models not necessarily benefiting.
+We leave a deeper investigation of this phenomenon to future work.
+
+\subsection{Why We Avoid SWE-Bench Verified}
+\label{sec:app_swebench_verified}
+
+On small samples of unsolved SWE-Bench Verified instances, we have found that the failures were often caused by benchmark design issues: the agent's solution is valid according to the given problem description, but the tests reject it because it does not exactly match the reference solution. We did not conduct a systematic analysis, and instead point to the excellent audit (conducted while we were doing this work) by OpenAI~\cite{openai2026_swebench_verified_audit}, whose findings align with and go well beyond our observations.
+
+They audited 138 SWE-Bench Verified problems that one of their strongest models at the time (o3) failed to solve, and found that at least 59.4\% contained issues in test design and/or problem description, rendering them extremely difficult or impossible to solve correctly. These issues fall into two main categories. First, 35.5\% of audited tasks have \emph{narrow} test cases that enforce specific implementation details (e.g., importing a function by an exact name not mentioned in the problem statement), invalidating many functionally correct submissions. Second, 18.8\% have \emph{wide} test cases that check for additional functionality not specified in the problem description (e.g., tests covering three issues when the description only mentions one). Beyond test quality, they also found evidence of significant training data contamination: all frontier models tested (GPT-5.2, Claude Opus~4.5, Gemini~3~Flash) were able to reproduce the original gold patch or verbatim problem specifics for certain tasks, indicating exposure during training. Critically, models that had seen the problems during training were more likely to succeed, because they had the additional information needed to pass the underspecified tests. They conclude that improvements on SWE-Bench Verified no longer reflect meaningful improvements in real-world software engineering ability, but instead increasingly reflect training data exposure, and recommend SWE-Bench Pro as an alternative.
+
+
+\section{Learned Ontologies}
+\label{sec:app_design_docs}
+
+\subsection{ScreenSpot-Pro Agent Specifications}
+\label{sec:app_screenspot}
+
+The following two documents are the complete agent ontologies produced by the offline learning process described in \cref{sec:eval_offline}.
+They are the actual interpretable blueprints that the Gemini~3~Flash agents read at runtime.
+The only manual edits were notes on investigating more direct UI elements and raising the recommended maximum iterations from 5 to 10--20.
+
+\begin{listing}[H]
+{\tiny
+\begin{lstlisting}
+# Cropper Agent Guidelines
+
+## Critical Warning
+
+> CRITICAL: You MUST use the
+> `%run -i .../crop_helper.py ...` command to visualize regions.
+> This is the ONLY allowed method. Do NOT use any other methods
+> (PIL, matplotlib, manual file loading, etc.)
+
+> CRITICAL: We are aiming for elements that are directly clickable.
+> If one alternative requires two clicks (e.g., dropdown+select),
+> then it's definitely the wrong alternative.
+
+## Coordinate System
+All coordinates are normalized [0-1]:
+- (0, 0) = TOP-LEFT corner; (1, 1) = BOTTOM-RIGHT corner
+- X-axis: increase = RIGHT; Y-axis: increase = DOWN
+- Crop box format: [x, y, 0.5, 0.5]
+  (x, y = TOP-LEFT corner; width and height ALWAYS 0.5)
+
+## Standard Regions - TRY THESE FIRST!
+| Region           | Crop Box (x, y) | When to use              |
+|------------------|-----------------|--------------------------|
+| Top-left         | [0, 0]          | Target in upper-left     |
+| Top-right        | [0.5, 0]        | Target in upper-right    |
+| Bottom-left      | [0, 0.5]        | Target in lower-left     |
+| Bottom-right     | [0.5, 0.5]      | Target in lower-right    |
+| Top-center       | [0.25, 0]       | Top area, centered       |
+| Bottom-center    | [0.25, 0.5]     | Bottom area, centered    |
+| Left-center      | [0, 0.25]       | Left side, vert centered |
+| Right-center     | [0.5, 0.25]     | Right side, vert centered|
+| Center           | [0.25, 0.25]    | Near center of image     |
+
+## Workflow (~10-20 Iterations Max)
+1. View the instruction and full image (already in context)
+2. Identify which STANDARD REGION most likely contains the target
+3. Run the standard region command
+4. If target visible -> output that region immediately
+5. If not visible -> try another STANDARD REGION
+6. Only micro-tune if all relevant standard regions missed (rare)
+
+## Output Format
+{"reasoning_summary": "...",
+ "error_missing_item": false,
+ "crop_box": [x, y, 0.5, 0.5]}
+\end{lstlisting}
+}
+\caption{ScreenSpot-Pro cropper agent ontology (condensed for space).}
+\label{lst:cropper_spec}
+\end{listing}
+
+\begin{listing}[H]
+{\tiny
+\begin{lstlisting}
+# Clicker Agent Guidelines
+
+## Critical Warning
+
+> CRITICAL: You MUST use the
+> `%run -i .../clicker_helper.py ...` command to visualize clicks.
+> This is the ONLY allowed method.
+
+> CRITICAL: The target should be a single-click action. If clicking
+> requires 2 steps (e.g., dropdown+select), you have the WRONG element.
+
+## Coordinate System
+All coordinates are normalized [0-1]:
+- (0, 0) = TOP-LEFT; (1, 1) = BOTTOM-RIGHT
+- Click format: [x, y] = CENTER of the target element
+- Box visualization: 0.05 x 0.05 centered at (x, y)
+
+## Standard Grid Points
+| Location      | Click (x, y) | When to use             |
+|---------------|-------------|--------------------------|
+| Center        | (0.5, 0.5)  | Target at image center   |
+| Top-center    | (0.5, 0.25) | Upper half, centered     |
+| Bottom-center | (0.5, 0.75) | Lower half, centered     |
+| Left-center   | (0.25, 0.5) | Left side                |
+| Right-center  | (0.75, 0.5) | Right side               |
+
+## Click Precision Guidelines
+| Element Type   | Click Location                      |
+|----------------|-------------------------------------|
+| Icons/Buttons  | Visual center of the icon/button    |
+| Text links     | Horizontal center, vertical middle  |
+| Checkboxes     | Center of the checkbox square       |
+| Input fields   | Left-center (cursor position)       |
+| Dropdown arrows| Center of the arrow icon            |
+| Menu items     | Center of the menu item row         |
+
+## Workflow (~10-20 Iterations Max)
+1. View the instruction and cropped image (in context)
+2. Identify target element visually
+3. Estimate initial (x, y) based on visual inspection
+4. Visualize using clicker_helper
+5. If crosshair at target center -> return coordinate
+6. If not -> adjust by 0.05 and repeat
+7. Fine-tune with 0.02-0.03 adjustments for final precision
+
+## Output Format
+{"click": [x, y]}
+\end{lstlisting}
+}
+\caption{ScreenSpot-Pro clicker agent ontology (condensed for space).}
+\label{lst:clicker_spec}
+\end{listing}
+
+\subsection{Meta Agent Lessons from Distributed DuckDB}
+\label{sec:app_duckdb}
+
+The following document is the meta agent ontology from our distributed DuckDB case study (\cref{sec:usecases}).
+It was produced through gradual online learning: each run's task profiles surfaced recurring failure modes that were distilled into the patterns below.
+The document is displayed as an example of a gradually evolved interpretable blueprint that has strongly improved meta agent behavior over time.
+
+\begin{listing}[H]
+{\tiny
+\begin{lstlisting}
+# Generalizable Meta Agent Lessons (Part 1/2)
+
+## 1. Context Coherence Across Sequential Sub-Agents (CRITICAL)
+Problem: When a root agent spawns multiple investigation sub-agents
+sequentially, later agents may not have context from earlier
+investigations, leading to inconsistent or contradictory results.
+
+Pattern:
+  Phase 1: Investigator A -> produces synthesis_v1
+  Phase 2: Investigator B (task: "Given synthesis_v1, investigate X")
+  Phase 3: Investigator C (task: "Given synthesis_v2, investigate Y")
+
+Guideline: Always include full prior context when spawning subsequent
+investigation agents.
+
+## 2. Parallel Investigation is Effective
+When investigations are independent (different hook types, APIs,
+components), running them in parallel is highly effective. When NOT
+to parallelize: later investigations depend on earlier findings,
+resource contention, need to establish approach before branching.
+
+## 3. Verifier Agents for Quality Auditing
+Problem: Implementation agents can produce tests that all pass but
+don't actually test core functionality. Observed: 50+ tests passing
+but NONE called the primary API being implemented.
+Solution: Deploy verifier agents with checklist:
+  1. Do tests call the primary APIs being implemented?
+  2. Would tests fail if the implementation code was deleted?
+  3. Are there negative test cases?
+  4. Do tests verify extracted/transformed values?
+  5. Does implementation match design doc?
+
+## 4. Refactoring Agent Chains
+Large implementations accumulate technical debt. Pattern:
+  Implementation Agent -> working but messy code
+  Planner Agent -> refactoring plan
+  Refactorer Agent -> executes the plan
+  Verifier Agent -> ensures tests still pass
+
+## 5. HIL Density as Direction Change Indicator
+| HIL Count | Interpretation                         |
+|-----------|----------------------------------------|
+| 0         | Well-planned autonomous work            |
+| 1-5       | Minor clarifications                   |
+| 10-20     | Significant direction changes          |
+| 20+       | Major architectural rethinking needed  |
+
+## 6. Sub-Agent Challenges Often Exceed Root Challenges
+Root agents primarily orchestrate; sub-agents encounter real technical
+challenges. The most valuable lessons are in sub-agent profiles.
+
+## 7. HIL Interventions Reveal Systematic Design Gaps
+| HIL Intervention Pattern        | Gap Category          |
+|---------------------------------|-----------------------|
+| "Ignores X and Y"              | Coverage completeness |
+| "Agent investigated wrong thing"| Context passing       |
+| "Investigate lifecycle"         | Cross-phase analysis  |
+| "MUST PASS section"            | Verification criteria |
+| "Focus SOLELY on X"            | Scope reduction       |
+
+## 8. Task Prompt Engineering for Sub-Agents
+Bad: "Investigate how estimation works"
+Good: "Investigate how estimation works in the context of
+SQL-based pattern matching.
+GIVEN: research_synthesis_v1.md (attached)
+VERIFY: Are estimate hooks compatible?
+PRODUCE: Report with concrete code examples"
+\end{lstlisting}
+}
+\caption{Meta-agent lessons from the distributed DuckDB project, part~1 of~2 (condensed). Lessons 1--8 cover context management, parallelism, verification, and prompt engineering.}
+\label{lst:duckdb_lessons}
+\end{listing}
+
+\begin{listing}[H]
+{\tiny
+\begin{lstlisting}
+# Generalizable Meta Agent Lessons (Part 2/2)
+
+## 9. Multi-Phase Investigation Ordering
+Recommended order: 1. Architecture/Lifecycle, 2. Hook Compatibility,
+3. Detailed API, 4. Testing Specification.
+
+## 10. Cleanup Phase After Implementation
+Cleanup Agent checklist: no backup files, no excessive debug logging,
+examples use recommended APIs, README complete, code follows style.
+
+## 11. Dedicated Fixer Agents for Technical Blockers
+When to use: blocker requires deep investigation, multiple failed fix
+attempts, issue is orthogonal to main task, clear definition of done.
+Fixer task template: BLOCKER, SUSPECTED CAUSE, PREVIOUS ATTEMPTS,
+SUCCESS CRITERIA, CONSTRAINTS.
+
+## 12. Experience Documentation Before Termination
+When a fixer or implementation agent resolves a complex issue,
+prompt it to document learnings before terminating.
+
+## 13. BROADCAST vs IMPORTANT Message Distinction
+BROADCAST: General guidance affecting all agents.
+IMPORTANT: Task-specific direction for current agent.
+
+## 14. Systematic Debugging Before Escalation
+Debugging Escalation Ladder:
+  1. Read error message  2. Add debug logging  3. Use debugger
+  4. Binary search  5. Check structural issues
+  6. Spawn Fixer Agent  7. Escalate to human
+
+## 15. Cross-Boundary Tracing for Multi-System Features
+When feature spans multiple languages/systems:
+  1. Trace data flow across ALL boundaries
+  2. Document boundary crossings
+  3. Identify assumption breaks
+\end{lstlisting}
+}
+\caption{Meta-agent lessons from the distributed DuckDB project, part~2 of~2 (condensed). Lessons 9--15 cover investigation ordering, cleanup, debugging escalation, and cross-boundary tracing.}
+\label{lst:duckdb_lessons_2}
+\end{listing}
+
+
+%%%% 07_appendix.tex ends here %%%%
+
+
+
+\end{document}

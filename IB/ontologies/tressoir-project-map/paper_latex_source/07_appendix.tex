@@ -1,0 +1,466 @@
+% ====================================================================
+% APPENDIX
+% ====================================================================
+
+\section{Evaluation Setup Details}
+\label{sec:app_eval_setup}
+\label{sec:app_agent_configs}
+
+Listing~\ref{lst:singlemeta_prompt} shows the single-meta agent prompt used in \sysname lite for SWE tasks.
+Listing~\ref{lst:multimeta_workflow} shows the multi-meta agent workflow used in \sysname max.
+
+\begin{listing}[H]
+{\tiny
+\begin{lstlisting}[rulecolor=\color{accentShell}]
+# This is shared by all spawned agents.
+task = "... SWE problem statement ..."
+# This is only visible to the meta agent (or to any meta agent it chooses to spawn).
+meta_task = """
+We trying to an SWE task.
+Based on your responsibilities and experience, delegate to the appropriate agents to reach your goal.
+Be sure to produce the right deliverables before returning (whether in your artifacts or in-source).
+When previous deliverables exist, use them and pass them around as context.
+Throughout, emphasize the MDD guidelines to ensure clean communication and effective deliverables.
+
+REMEMBER to delegate rather than act directly.
+As a general rule, run agents for at most ~3 rounds, and make dynamic helpers when stuck,
+rather than trying to do everything in one agent.
+
+Here are the phases you must follow:
+**Pre-Resolution Phase**
+Emphasize broad research, information gathering, and bug reproduction.
+Avoid forming strong opinions or jumping to conclusions.
+- Research Sub-Agent: Thoroughly research the codebase and the specific issue we are trying to solve.
+    Focus on flow, likely integration points, similar patterns, likely helpers and relevant past changes.
+    - Produces a `<artifacts>/reports/research_synthesis.md` < 12k characters.
+- Reproduction, Testing and Tooling Sub-Agent: Figure out the current testing baseline,
+    make new failing tests that reproduce the issue reliably, and create necessary tooling.
+    - Produces tests, tools, scripts, etc. that later agents can use to focus on implementation.
+    - Produces `<artifacts>/reports/reproduction_testing_and_tooling_guide.md` < 12k characters.
+
+**Resolution Phase**
+Focus on implementation, validation, and fixing.
+- Planning Sub-Agent: Takes in the research synthesis, reproduction/tooling guide, and design guidelines,
+    and comes up with a plan for implementation.
+    - Produces `<artifacts>/reports/implementation_plan.md` < 8k characters.
+- Implementation Sub-Agent(s): For each testable step in the plan, create one specialized implementer
+    agent. Each runs for at most ~3 rounds at a time.
+    - Produces:
+        - `<artifacts>/final_patch.diff`: The clean final patch file.
+        - `<artifacts>/reports/final_implementation_summary.md`.
+        - `<artifacts>/reports/final_testing_summary.md`.
+- Validation and Fixing Sub-Agent: Validate and cleanup the final results.
+    - Produces `<artifacts>/reports/validation_summary.md`.
+"""
+\end{lstlisting}
+}
+\caption{\sysname lite single-meta agent prompt for SWE tasks.}
+\label{lst:singlemeta_prompt}
+\end{listing}
+
+\begin{listing}[H]
+{\tiny
+\begin{lstlisting}[rulecolor=\color{accentShell}]
+[workflow]
+title = "Software Engineering Task"
+task = "..." # Task-Specific: shared by all agents.
+meta_task = """
+We trying to an SWE task.
+Based on your responsibilities and experience, delegate to the appropriate agents to reach your goal.
+Be sure to produce the right deliverables before returning (whether in your artifacts or in-source).
+When previous deliverables exist, use them and pass them around as context.
+Throughout, emphasize the DD guidelines to ensure clean communication and effective deliverables.
+REMEMBER to delegate rather than act directly.
+As a general rule, run agents for at most ~3 rounds, and make dynamic helpers when stuck,
+rather than trying to do everything in one agent.
+"""
+
+[[workflow.phases]]
+loop_condition_pattern = ".*RESEARCH PHASE APPROVED.*"
+title = "Research Phase"
+task = """... Emphasize information gathering ..."""
+meta_task = """... Recommend Planner + Parallel Researchers + Synthesis pattern ..."""
+
+[[workflow.phases]]
+title = "Reproduction, Testing, and Tooling Phase"
+task = "... Emphasize reusable scripts, tools with a clear guide for using them ..."
+meta_task = """... Recommend Planner+Reproducer pattern ..."""
+
+[[workflow.phases]]
+loop_condition_pattern = ".*IMPLEMENTATION PHASE APPROVED.*"
+title = "Implementation Phase"
+task = """... Emphasize complete resolution ..."""
+meta_task = """... Recommend Planner + Multi-Phase implementers/testers ..."""
+
+[[workflow.phases]]
+loop_condition_pattern = ".*VALIDATION PHASE APPROVED.*"
+title = "Validation and Fixing Phase"
+task = """... Emphasize thorough validation, meaningful tests ..."""
+meta_task = """... Recommend simple validator, with dynamic fixers if bugs are found ..."""
+\end{lstlisting}
+}
+\caption{\sysname max multi-meta agent workflow for advanced software engineering tasks. Each phase has its own meta agent; HIL checkpoints are controlled by \texttt{loop\_condition\_pattern}. This is typically an overkill in small-to-moderate problems, hence the high costs.}
+\label{lst:multimeta_workflow}
+\end{listing}
+
+
+\section{Supplementary Evaluation Results}
+\label{sec:app_supplementary}
+
+Our main evaluation (\cref{sec:evaluation}) demonstrates that \sysname lifts performance when problem-solving ability is the bottleneck.
+Here we examine the converse: when additional problem-solving ability does not help (because the problems are too simple, mis-designed, or underspecified), \sysname does not help either.
+This is normal: when weaker models already match or exceed stronger ones on a benchmark, it means better problem-solving ability provides no value, and may even hurt performance by producing unexpected solutions that the evaluation script rejects.
+We present three such cases below.
+
+\subsection{SWE-Bench-Pro Flipt Subset}
+\label{sec:app_flipt}
+
+The Flipt repository (85 instances in SWE-Bench Pro) extends our online-evaluation language coverage to Go, complementing the Python (Qute) and C/C++ (SWE-Bench-Live) subsets in the main text. It exhibits a consistently low success rate across all baselines, with near-identical failure patterns between systems.
+After running \sysname with Claude 4.5 Sonnet on a sample of 37 instances and observing nearly the same failures as the SWE Agent baselines (differing in only one instance), we tasked the uplifter (which analyzes profiles) with analyzing the failure profiles to produce an ontology for the remaining instances.
+
+The uplifter concluded that most failures stem from missing test configuration files that are (a)~referenced only by \emph{new} test cases added in the reference patch, (b)~have filenames that cannot be inferred from the problem description or any other available information, and (c)~do not follow a discoverable naming pattern.
+In other words, the benchmark requires guessing filenames that cannot possibly be learned from the provided information.
+Listing~\ref{lst:flipt_analysis} shows the analysis tables produced by the learning agents.
+
+After discovering this, we intended to open a GitHub issue, only to find that another developer had already encountered and reported the same problem, though it has not been addressed as of this writing.\footnote{\url{https://github.com/scaleapi/SWE-bench_Pro-os/issues/45}}
+This corroborates our agent's conclusion and opens an interesting avenue for future work: using \sysname's learning capabilities to automatically identify design flaws in benchmarks.
+
+\begin{listing}[H]
+{\tiny
+\begin{lstlisting}
+## Category A: NEW Testdata + NEW Test Case (UNDISCOVERABLE)
+These instances have testdata files referenced ONLY by NEW test cases
+added in reference_tests.diff:
+
+| Instance | NEW Testdata File                       | Discoverable? |
+|----------|-----------------------------------------|---------------|
+| 756f00f  | deprecated/ui_disabled.yml              | NO            |
+| 524f277  | import_rule_multiple_segments.yml       | NO            |
+| 406f939  | cmd/flipt/testdata/config/advanced.yml  | NO            |
+| 406f939  | cmd/flipt/testdata/config/default.yml   | NO            |
+| f808b4d  | config/testdata/config/database.yml     | NO            |
+| abaa595  | storage/invalid_readonly.yml            | NO            |
+| 0fd09de  | authentication/kubernetes.yml           | NO            |
+| e91615c  | export.yml, import.yml, ...             | NO            |
+| ebb3f84  | token_bootstrap_token.yml               | NO            |
+| 5af0757  | session_domain_scheme_port.yml          | NO            |
+| c6a7b1f  | import_invalid_version.yml              | NO            |
+
+Verdict: ~10+ testdata files are UNDISCOVERABLE through running
+existing tests.
+
+## Category B: MODIFIED Testdata + MODIFIED Test Expectations
+                                               (PARTIAL DISCOVERY)
+These instances modify EXISTING testdata files, with corresponding
+test expectation changes:
+
+| Instance | EXISTING File Modified | What Changed            | Discov.? |
+|----------|-----------------------|-------------------------|----------|
+| 756f00f  | advanced.yml          | Removed ui.enabled      | PARTIAL  |
+| 518ec32  | advanced.yml          | Added baz.com origins   | PARTIAL  |
+| 5c7037e  | advanced.yml          | Modified config values  | PARTIAL  |
+| 524f277  | export.yml, etc.      | Added new fields        | PARTIAL  |
+| a42d38a  | advanced.yml          | Modified config values  | PARTIAL  |
+| c6a7b1f  | seed.yaml, export.yml | Added new fields        | PARTIAL  |
+\end{lstlisting}
+}
+\caption{Flipt failure analysis produced by \sysname learning agents. Category~A instances require testdata files whose names are not discoverable from the problem description; Category~B instances require specific edits whose content is not inferrable.}
+\label{lst:flipt_analysis}
+\end{listing}
+
+
+\subsection{SWE-Rebench}
+\label{sec:app_rebench}
+
+SWE-Rebench~\cite{swebenchrebench2025} is a curated, difficulty-controlled variant of SWE-Bench.
+Its leaderboard reveals an unusual pattern: stronger models do not consistently outperform weaker ones.
+For example, Opus~4.5 and GPT~5.2~Codex score below Sonnet~4.5 and Gemini~3~Flash on pass@1, and while Opus~4.6 leads Sonnet~4.5 by 4.6\% on pass@1, its pass@5 is actually 2.1\% \emph{lower}.
+This suggests that raw problem-solving ability is not the bottleneck on this benchmark, meaning \sysname likely cannot provide meaningful improvements either.
+
+We ran \sysname lite to confirm this hypothesis.
+\Cref{tab:rebench} summarizes the results.
+
+\begin{table}[H]
+\centering
+\caption{SWE-Rebench results (48 instances, Jan 2026 snapshot). When stronger models do not outperform weaker ones, better agentic systems provide no meaningful lift either.}
+\label{tab:rebench}
+\small
+\begin{tabular}{lcc}
+\hline
+\textbf{System} & \textbf{Pass@1} & \textbf{Cost/inst.} \\
+\hline
+Claude Code (Opus 4.6) & 52.9\% & \$3.50 \\
+\sysname lite (Gemini~3~Flash) & 52.1\% & \$1.01 \\
+ReACT (Opus 4.6) & 51.7\% & \$0.93 \\
+GPT-5.2 xHigh & 51.7\% & \$1.28 \\
+GPT-5.2 Medium & 51.0\% & \$0.76 \\
+GPT-5.1 Codex Max & 48.5\% & \$0.73 \\
+\sysname lite (Opus 4.6) & 47.9\% & \$2.41 \\
+Sonnet 4.5 & 47.1\% & \$0.94 \\
+Gemini 3 Pro & 46.7\% & \$0.59 \\
+Gemini 3 Flash & 46.7\% & \$0.32 \\
+GPT-5.2 Codex & 45.0\% & \$0.46 \\
+Codex & 44.0\% & \$0.29 \\
+Opus 4.5 & 43.8\% & \$1.19 \\
+\hline
+\end{tabular}
+\end{table}
+
+As expected, \sysname provides no meaningful improvement on this benchmark: \sysname lite with Gemini~3~Flash (52.1\%) and with Opus~4.6 (47.9\%) are generally within the variance of simpler baselines.
+Notably, the Opus~4.6 configuration actually scores \emph{lower} than the Gemini~3~Flash configuration despite costing 2.4$\times$ more, mirroring the leaderboard's pattern of stronger models not necessarily benefiting.
+We leave a deeper investigation of this phenomenon to future work.
+
+\subsection{Why We Avoid SWE-Bench Verified}
+\label{sec:app_swebench_verified}
+
+On small samples of unsolved SWE-Bench Verified instances, we have found that the failures were often caused by benchmark design issues: the agent's solution is valid according to the given problem description, but the tests reject it because it does not exactly match the reference solution. We did not conduct a systematic analysis, and instead point to the excellent audit (conducted while we were doing this work) by OpenAI~\cite{openai2026_swebench_verified_audit}, whose findings align with and go well beyond our observations.
+
+They audited 138 SWE-Bench Verified problems that one of their strongest models at the time (o3) failed to solve, and found that at least 59.4\% contained issues in test design and/or problem description, rendering them extremely difficult or impossible to solve correctly. These issues fall into two main categories. First, 35.5\% of audited tasks have \emph{narrow} test cases that enforce specific implementation details (e.g., importing a function by an exact name not mentioned in the problem statement), invalidating many functionally correct submissions. Second, 18.8\% have \emph{wide} test cases that check for additional functionality not specified in the problem description (e.g., tests covering three issues when the description only mentions one). Beyond test quality, they also found evidence of significant training data contamination: all frontier models tested (GPT-5.2, Claude Opus~4.5, Gemini~3~Flash) were able to reproduce the original gold patch or verbatim problem specifics for certain tasks, indicating exposure during training. Critically, models that had seen the problems during training were more likely to succeed, because they had the additional information needed to pass the underspecified tests. They conclude that improvements on SWE-Bench Verified no longer reflect meaningful improvements in real-world software engineering ability, but instead increasingly reflect training data exposure, and recommend SWE-Bench Pro as an alternative.
+
+
+\section{Learned Ontologies}
+\label{sec:app_design_docs}
+
+\subsection{ScreenSpot-Pro Agent Specifications}
+\label{sec:app_screenspot}
+
+The following two documents are the complete agent ontologies produced by the offline learning process described in \cref{sec:eval_offline}.
+They are the actual interpretable blueprints that the Gemini~3~Flash agents read at runtime.
+The only manual edits were notes on investigating more direct UI elements and raising the recommended maximum iterations from 5 to 10--20.
+
+\begin{listing}[H]
+{\tiny
+\begin{lstlisting}
+# Cropper Agent Guidelines
+
+## Critical Warning
+
+> CRITICAL: You MUST use the
+> `%run -i .../crop_helper.py ...` command to visualize regions.
+> This is the ONLY allowed method. Do NOT use any other methods
+> (PIL, matplotlib, manual file loading, etc.)
+
+> CRITICAL: We are aiming for elements that are directly clickable.
+> If one alternative requires two clicks (e.g., dropdown+select),
+> then it's definitely the wrong alternative.
+
+## Coordinate System
+All coordinates are normalized [0-1]:
+- (0, 0) = TOP-LEFT corner; (1, 1) = BOTTOM-RIGHT corner
+- X-axis: increase = RIGHT; Y-axis: increase = DOWN
+- Crop box format: [x, y, 0.5, 0.5]
+  (x, y = TOP-LEFT corner; width and height ALWAYS 0.5)
+
+## Standard Regions - TRY THESE FIRST!
+| Region           | Crop Box (x, y) | When to use              |
+|------------------|-----------------|--------------------------|
+| Top-left         | [0, 0]          | Target in upper-left     |
+| Top-right        | [0.5, 0]        | Target in upper-right    |
+| Bottom-left      | [0, 0.5]        | Target in lower-left     |
+| Bottom-right     | [0.5, 0.5]      | Target in lower-right    |
+| Top-center       | [0.25, 0]       | Top area, centered       |
+| Bottom-center    | [0.25, 0.5]     | Bottom area, centered    |
+| Left-center      | [0, 0.25]       | Left side, vert centered |
+| Right-center     | [0.5, 0.25]     | Right side, vert centered|
+| Center           | [0.25, 0.25]    | Near center of image     |
+
+## Workflow (~10-20 Iterations Max)
+1. View the instruction and full image (already in context)
+2. Identify which STANDARD REGION most likely contains the target
+3. Run the standard region command
+4. If target visible -> output that region immediately
+5. If not visible -> try another STANDARD REGION
+6. Only micro-tune if all relevant standard regions missed (rare)
+
+## Output Format
+{"reasoning_summary": "...",
+ "error_missing_item": false,
+ "crop_box": [x, y, 0.5, 0.5]}
+\end{lstlisting}
+}
+\caption{ScreenSpot-Pro cropper agent ontology (condensed for space).}
+\label{lst:cropper_spec}
+\end{listing}
+
+\begin{listing}[H]
+{\tiny
+\begin{lstlisting}
+# Clicker Agent Guidelines
+
+## Critical Warning
+
+> CRITICAL: You MUST use the
+> `%run -i .../clicker_helper.py ...` command to visualize clicks.
+> This is the ONLY allowed method.
+
+> CRITICAL: The target should be a single-click action. If clicking
+> requires 2 steps (e.g., dropdown+select), you have the WRONG element.
+
+## Coordinate System
+All coordinates are normalized [0-1]:
+- (0, 0) = TOP-LEFT; (1, 1) = BOTTOM-RIGHT
+- Click format: [x, y] = CENTER of the target element
+- Box visualization: 0.05 x 0.05 centered at (x, y)
+
+## Standard Grid Points
+| Location      | Click (x, y) | When to use             |
+|---------------|-------------|--------------------------|
+| Center        | (0.5, 0.5)  | Target at image center   |
+| Top-center    | (0.5, 0.25) | Upper half, centered     |
+| Bottom-center | (0.5, 0.75) | Lower half, centered     |
+| Left-center   | (0.25, 0.5) | Left side                |
+| Right-center  | (0.75, 0.5) | Right side               |
+
+## Click Precision Guidelines
+| Element Type   | Click Location                      |
+|----------------|-------------------------------------|
+| Icons/Buttons  | Visual center of the icon/button    |
+| Text links     | Horizontal center, vertical middle  |
+| Checkboxes     | Center of the checkbox square       |
+| Input fields   | Left-center (cursor position)       |
+| Dropdown arrows| Center of the arrow icon            |
+| Menu items     | Center of the menu item row         |
+
+## Workflow (~10-20 Iterations Max)
+1. View the instruction and cropped image (in context)
+2. Identify target element visually
+3. Estimate initial (x, y) based on visual inspection
+4. Visualize using clicker_helper
+5. If crosshair at target center -> return coordinate
+6. If not -> adjust by 0.05 and repeat
+7. Fine-tune with 0.02-0.03 adjustments for final precision
+
+## Output Format
+{"click": [x, y]}
+\end{lstlisting}
+}
+\caption{ScreenSpot-Pro clicker agent ontology (condensed for space).}
+\label{lst:clicker_spec}
+\end{listing}
+
+\subsection{Meta Agent Lessons from Distributed DuckDB}
+\label{sec:app_duckdb}
+
+The following document is the meta agent ontology from our distributed DuckDB case study (\cref{sec:usecases}).
+It was produced through gradual online learning: each run's task profiles surfaced recurring failure modes that were distilled into the patterns below.
+The document is displayed as an example of a gradually evolved interpretable blueprint that has strongly improved meta agent behavior over time.
+
+\begin{listing}[H]
+{\tiny
+\begin{lstlisting}
+# Generalizable Meta Agent Lessons (Part 1/2)
+
+## 1. Context Coherence Across Sequential Sub-Agents (CRITICAL)
+Problem: When a root agent spawns multiple investigation sub-agents
+sequentially, later agents may not have context from earlier
+investigations, leading to inconsistent or contradictory results.
+
+Pattern:
+  Phase 1: Investigator A -> produces synthesis_v1
+  Phase 2: Investigator B (task: "Given synthesis_v1, investigate X")
+  Phase 3: Investigator C (task: "Given synthesis_v2, investigate Y")
+
+Guideline: Always include full prior context when spawning subsequent
+investigation agents.
+
+## 2. Parallel Investigation is Effective
+When investigations are independent (different hook types, APIs,
+components), running them in parallel is highly effective. When NOT
+to parallelize: later investigations depend on earlier findings,
+resource contention, need to establish approach before branching.
+
+## 3. Verifier Agents for Quality Auditing
+Problem: Implementation agents can produce tests that all pass but
+don't actually test core functionality. Observed: 50+ tests passing
+but NONE called the primary API being implemented.
+Solution: Deploy verifier agents with checklist:
+  1. Do tests call the primary APIs being implemented?
+  2. Would tests fail if the implementation code was deleted?
+  3. Are there negative test cases?
+  4. Do tests verify extracted/transformed values?
+  5. Does implementation match design doc?
+
+## 4. Refactoring Agent Chains
+Large implementations accumulate technical debt. Pattern:
+  Implementation Agent -> working but messy code
+  Planner Agent -> refactoring plan
+  Refactorer Agent -> executes the plan
+  Verifier Agent -> ensures tests still pass
+
+## 5. HIL Density as Direction Change Indicator
+| HIL Count | Interpretation                         |
+|-----------|----------------------------------------|
+| 0         | Well-planned autonomous work            |
+| 1-5       | Minor clarifications                   |
+| 10-20     | Significant direction changes          |
+| 20+       | Major architectural rethinking needed  |
+
+## 6. Sub-Agent Challenges Often Exceed Root Challenges
+Root agents primarily orchestrate; sub-agents encounter real technical
+challenges. The most valuable lessons are in sub-agent profiles.
+
+## 7. HIL Interventions Reveal Systematic Design Gaps
+| HIL Intervention Pattern        | Gap Category          |
+|---------------------------------|-----------------------|
+| "Ignores X and Y"              | Coverage completeness |
+| "Agent investigated wrong thing"| Context passing       |
+| "Investigate lifecycle"         | Cross-phase analysis  |
+| "MUST PASS section"            | Verification criteria |
+| "Focus SOLELY on X"            | Scope reduction       |
+
+## 8. Task Prompt Engineering for Sub-Agents
+Bad: "Investigate how estimation works"
+Good: "Investigate how estimation works in the context of
+SQL-based pattern matching.
+GIVEN: research_synthesis_v1.md (attached)
+VERIFY: Are estimate hooks compatible?
+PRODUCE: Report with concrete code examples"
+\end{lstlisting}
+}
+\caption{Meta-agent lessons from the distributed DuckDB project, part~1 of~2 (condensed). Lessons 1--8 cover context management, parallelism, verification, and prompt engineering.}
+\label{lst:duckdb_lessons}
+\end{listing}
+
+\begin{listing}[H]
+{\tiny
+\begin{lstlisting}
+# Generalizable Meta Agent Lessons (Part 2/2)
+
+## 9. Multi-Phase Investigation Ordering
+Recommended order: 1. Architecture/Lifecycle, 2. Hook Compatibility,
+3. Detailed API, 4. Testing Specification.
+
+## 10. Cleanup Phase After Implementation
+Cleanup Agent checklist: no backup files, no excessive debug logging,
+examples use recommended APIs, README complete, code follows style.
+
+## 11. Dedicated Fixer Agents for Technical Blockers
+When to use: blocker requires deep investigation, multiple failed fix
+attempts, issue is orthogonal to main task, clear definition of done.
+Fixer task template: BLOCKER, SUSPECTED CAUSE, PREVIOUS ATTEMPTS,
+SUCCESS CRITERIA, CONSTRAINTS.
+
+## 12. Experience Documentation Before Termination
+When a fixer or implementation agent resolves a complex issue,
+prompt it to document learnings before terminating.
+
+## 13. BROADCAST vs IMPORTANT Message Distinction
+BROADCAST: General guidance affecting all agents.
+IMPORTANT: Task-specific direction for current agent.
+
+## 14. Systematic Debugging Before Escalation
+Debugging Escalation Ladder:
+  1. Read error message  2. Add debug logging  3. Use debugger
+  4. Binary search  5. Check structural issues
+  6. Spawn Fixer Agent  7. Escalate to human
+
+## 15. Cross-Boundary Tracing for Multi-System Features
+When feature spans multiple languages/systems:
+  1. Trace data flow across ALL boundaries
+  2. Document boundary crossings
+  3. Identify assumption breaks
+\end{lstlisting}
+}
+\caption{Meta-agent lessons from the distributed DuckDB project, part~2 of~2 (condensed). Lessons 9--15 cover investigation ordering, cleanup, debugging escalation, and cross-boundary tracing.}
+\label{lst:duckdb_lessons_2}
+\end{listing}

@@ -1,6 +1,6 @@
 ---
 name: project-map
-description: General map of the Tressoir codebase -- where things are and what they do. MUST BE FULLY CONSULTED for repository layout, top-level subsystem ownership, runtime entrypoints, and cross-repo navigation.
+description: Root ontology copied from the Tressoir Repository -- where things are and what they do. MUST BE FULLY CONSULTED for repository layout, top-level subsystem ownership, runtime entrypoints, and cross-repo navigation.
 metadata:
   pin: true
 ---
@@ -23,6 +23,20 @@ At a top level:
 - `tressoir/` is the Python runtime: agents, executors, SDK runtime, IB service, benchmarks, and testing helpers.
 - `tressoir_app/` is the Node/TypeScript/browser/editor side: daemon, supervisor, session routing, frontend, and VS Code bridge.
 - `IB/` is this repository's own Interpretable Blueprint: ontologies, skills, live canon, and working-area state.
+
+The paper we submitted has its latex source copied here.
+IB/ontologies/tressoir-project-map/paper_latex_source/00_abstract.tex
+IB/ontologies/tressoir-project-map/paper_latex_source/01_introduction.tex
+IB/ontologies/tressoir-project-map/paper_latex_source/02_approach.tex
+IB/ontologies/tressoir-project-map/paper_latex_source/03_evaluation.tex
+IB/ontologies/tressoir-project-map/paper_latex_source/04_usecases.tex
+IB/ontologies/tressoir-project-map/paper_latex_source/05_related_works.tex
+IB/ontologies/tressoir-project-map/paper_latex_source/06_conclusion.tex
+IB/ontologies/tressoir-project-map/paper_latex_source/07_appendix.tex
+IB/ontologies/tressoir-project-map/paper_latex_source/setup.tex
+Amalgamated Latex:
+IB/ontologies/tressoir-project-map/paper_latex_source/cais26-22.tex
+
 
 ## Repository Layout
 
