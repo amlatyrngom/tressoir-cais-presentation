@@ -1,0 +1,27 @@
+name = "IB"
+
+# VS Code extensions to install in code-server
+editor_extensions = [
+  "ms-python.python",
+  "Catppuccin.catppuccin-vsc",
+  "Catppuccin.catppuccin-vsc-icons",
+]
+
+# Starter permissions for generated IBs:
+# - workspace/IB reads are allowed
+# - writes and generic calls ask
+# policies = [
+#   { effect = "allow", action = "read", path = "." },
+# ]
+
+# Agent defaults
+[agent]
+# context_ceiling = "standard"   # Max visibility: meta, standard, micro, read-micro
+executor_type = "lua"          # Prefer lua for safer starter IBs
+
+# Optional model defaults live under [agent.models], not [agent]
+[agent.models]
+# advanced = "claude-4.7-opus"
+advanced = "chatgpt/gpt-5.5"
+reasoning_effort = "high"
+hi_token_limit = 150000
