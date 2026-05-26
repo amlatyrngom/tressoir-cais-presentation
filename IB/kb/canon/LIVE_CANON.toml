@@ -1,2 +1,305 @@
 # IB Live Canon
 # Auto-maintained by Tressoir self-learning.
+
+[[capture]]
+datetime = "2026-05-21T06:31:23.006367"
+source = "compaction.log"
+session_summary = """CAIS pitch-planning session for Tressoir 10-min talk. Iteratively shaping Slides 1-4 (Background, Pillars, Illustrative Example, Interpretable Blueprints) via the user-defined three-stage workflow. User is highly opinionated on framing; agent proposes, user approves/redirects."""
+
+[[capture.canon]]
+kind = "rule"
+oneliner = "Pitch-planning workflow: brainstorm in `FULL_PITCH_PLAN_BRAINSTORM.md` (user-owned `### Unformed Intent`; agent-shaped `### Formed Intent`), non-destructively copy approved Formed Intent into `pitch-plan.md` and `pitch_plan/*.md`, then user linearizes to `pitch.md`."
+details = """Three-stage pipeline locked in `IB/working_area/STATE.md`:
+1. Brainstorm — user hand-writes `### Unformed Intent`; agent shapes a sibling `### Formed Intent` via chat. Do NOT edit `### Unformed Intent` blocks unless user explicitly asks.
+2. Transfer to plan (non-destructive copy) — `pitch-plan.md` + `pitch_plan/intro_and_motivation.md` / `approach_and_implementation.md` / `evaluation_and_conclusion.md`. Do NOT modify these files unless user explicitly asks. Brainstorm doc stays as record.
+3. Linearize — `pitch.md`, in user's natural voice. Agent assists only on request.
+"""
+
+[[capture.canon]]
+kind = "rule"
+oneliner = "Always propose pitch-artifact drafts in chat (via interactive AnswerCommand) before writing to disk; write only when explicitly told (recorded in STATE.md `Agent interaction rule`)."
+details = """The user prefers reviewing drafts in chat and then giving an explicit go-ahead like \"write it down\" / \"ok write this\". The rule is recorded in `IB/working_area/STATE.md`. Applies to all pitch-related artifacts: brainstorm doc, `pitch_plan/*.md`, `pitch.md`, `slides.md`, and Slidev components.
+"""
+
+[[capture.canon]]
+kind = "rule"
+oneliner = "Tressoir CAIS pitch pillars are locked as **Specify · Adaptive Solve · Learn**, with cost/quality blended (budgets in Specify; optimize/re-evaluate in Adaptive Solve), not as a separate pillar."
+details = """Locked in the brainstorm doc's `### Formed Intent` for the Limitations / Gold Standard slide.
+- Specify subsumes intent + ontology resolution, context provision (domain + tribal knowledge), and budgets/quality targets.
+- Adaptive Solve subsumes per-task scaffold/harness, prompts, tools, in-task steering, general problem-solving capability, and cost/quality optimization.
+- Learn is durable cross-task improvement.
+Pillar 1 has a verbal-only scope caveat: this talk addresses Specify to a lesser extent; Pillars 2+3 are the focus.
+"""
+
+[[capture.canon]]
+kind = "rule"
+oneliner = "Time budget for the 10-min CAIS pitch: ~40% intro/motivation (Part 1 may stretch to ~50% to plant the flag), ~40% approach + platform, ~20% evals + conclusion (paper-pointed). If Part 1 hits 50%, compress Part 3 first, then Part 2."
+details = """Recorded in `IB/working_area/STATE.md`. Mixed academic/industry/business audience and crowded field both justify the Part-1 stretch. Evals are deferred to the paper rather than expanded inline.
+"""
+
+[[capture.canon]]
+kind = "insight"
+oneliner = "Slide 3 frames execution as a three-tier escalation: SQL with well-known opts → compiled cost-aware hybrid workflows → agent only as backstop for genuinely novel cases."
+details = """The agent is NOT the default execution mode — it is the backstop. This is a key differentiator vs Claude Code / Codex / Antigravity / pure-agent stacks, and the framing is also reflected at the platform level in Slide 4 (primitives must allow bypassing the agent for materialized components). Application-level assumptions inform planning at every tier and also get baked into engine code as specialized fast paths.
+"""
+
+[[capture.canon]]
+kind = "insight"
+oneliner = "Interpretable Blueprint = System Ontology (interpreted live by agents) + Materialized Components (proven, reviewed, optimized, deterministic), bound and feeding back into each other."
+details = """Ontology alone is interpreted on the fly by agents → adaptivity, but no reuse/determinism/optimization/review. Materializing components reclaims those properties for the patterns that have earned it (proven workflows, hardened prompts, vetted sub-agents, optimized scaffolding). The IB binds the two halves; feedback flows in both directions (the Learn loop from Slide 3 refines both halves). Slide 4 lands the analogy: \"SDD : vibe coding :: IB + meta-agent primitives : agentic systems.\"
+"""
+
+[[capture.canon]]
+kind = "intent"
+oneliner = "Slide 4 v3 must shorten the materialized-components beat (reference Slide 3's compiled hybrid workflows as the canonical example) and expand the meta-agent primitives beat with two structural points: (a) meta-agents are IB interpreters whose primary directive is jointly using+improving the IB, not direct task-solving; (b) primitives must make it trivial to bypass the agent and call materialized code directly."
+details = """User feedback right before compaction (step 41). Direct quote of intent: \"It's too verbose ... Also mention the compiled optimized workflows from earlier as an example. The meta agent section needs something on how (1) they act as interpreters whose primary directive is no longer to directly solve a task, but to jointly use/improve IB blalbla. Then, another piece on how the primitives should easily allow bypassing the agents completely to directly call an optimized piece of code.\" Both meta-agent additions tightly mirror the Slide 3 Beat 3 framing (agent as backstop, not default) — same architectural value at the platform level.
+"""
+
+[[capture.canon]]
+kind = "technique"
+oneliner = "When the user gives an elliptical hand-wave (e.g. \"blalbla\"), capture the structural idea cleanly in the proposal — don't try to fill in concrete words they haven't given. Iterate."
+details = """The user often signals a direction with a half-formed phrase, expecting the agent to crystallize the structure (not invent specifics). Best practice: name the architectural shape, leave specific rhetorical flourishes to the user, surface the framing as a question if uncertain. Multiple revisions are expected and welcomed.
+"""
+
+[[capture.canon]]
+kind = "rule"
+oneliner = "Slide 3+4 visual treatment is parked at `components/CapabilityFlow.vue` (Slide 3) and undefined for Slide 4 — script locks first, visual iteration deferred until Part 1 spoken script is fully nailed down."
+details = """Recorded under STATE.md `## Parked / Deferred`. The user explicitly said styling iteration was blocking content progress. The first attempt (a 4-tile pipeline + Learn arc with rich tile illustrations for Hybrid WF and Agentic Orchestration) was deemed too dated/cluttered. Future styling work should re-evaluate from scratch given the locked content.
+"""
+
+[[capture]]
+datetime = "2026-05-21T11:09:13.365858"
+source = "compaction.log"
+session_summary = """Continued CAIS pitch-planning. Locked Part 2 architecture (5 slides) and wrote all Slides 1–10 Formed Intent in the brainstorm doc. Transferred Slides 1–4 to `pitch_plan/intro_and_motivation.md`. Next user-stated step: extract Slides 5–10 to `pitch_plan/approach_and_implementation.md`, then start Part 3 (final part)."""
+
+[[capture.canon]]
+kind = "rule"
+oneliner = "On compaction triggers, preserve the **current chat-only draft verbatim** in compaction context — not just summary or asks (rule recorded in `IB/working_area/STATE.md`)."
+details = """Past compactions caused unwanted re-drafts because only the asks against a draft survived, not the draft itself. When iterating on a slide-beats draft (or any chat-only artifact not yet written to disk) and a compaction boundary is imminent, the agent MUST preserve the current draft text verbatim in compaction's \"Preserved Results\" or equivalent section. The rule is in `IB/working_area/STATE.md` under `## Key Workflow`.
+"""
+
+[[capture.canon]]
+kind = "insight"
+oneliner = "Slide 8 frames an IB as **regular files + parseable links (`STRUCTURED_RELATED_SOURCES`) + parseable contracts (`STRUCTURED_CANON`)**, with parseable links naturally forming a graph."
+details = """Advisor-flagged academic framing. Self-learning library showcased as the canonical example: TWO ontologies (internal `SELF_LEARNING.ONTOLOGY.md` first, then public `SDK_LIB.md`). Avoid stronger framings like \"knowledge-graph-with-executable-leaves\" — the user said marketing-flavored phrasings raise skeptic guards. Concrete STRUCTURED_CANON snippets to show: *\"Compaction must not await smart merge work\"* (invariant) and *\"`agent.stats(agent_id)` is the concise introspection surface for optimizer/meta agents\"* (technique that previews Slide 9 Beat 5). Slide 8 also notes the IB can house unstructured external sources under `IB/kb/` (papers/references/design docs/raw notes) for agent search.
+"""
+
+[[capture.canon]]
+kind = "insight"
+oneliner = "Slide 9 self-learning pipeline: `trigger → merge+promote → realign → deep-optimize`, all sharing a learner-specific memory (`CANON_LEARNER_DENSE_STATE.md`)."
+details = """Triggers: compaction, trajectory analysis, task termination, intent/expertise-bearing user prompts (heuristic — measuring this is open).
+Merge+Promote: load-bearing beat — context builder surfaces recent curated canon to agent system prompts; Canon Learner touches `datetime` of duplicate captures to implicitly promote them. **Pitch handle: \"implicit LRU over the curated graph, projecting the freshest relevant nodes into the next agent's system prompt — without prompt pollution.\"** Keep the LRU framing in the spoken pitch.
+Realign: agent-driven restructuring (small cleanup → medium hygiene → broad source-sync); today shallow Layer-2 tree, direction is richer graph.
+Deep-Optimize: NOT framed as user-gated. Reframed as the substantive optimization layer that uses introspection primitives (`analyze_trajectory`, `agent.stats` — hard callback to Slide 6) plus statistical experimentation (rollouts, A/B tests, candidate generation) to evolve IB components (skills, prompts, ontologies, subagent templates, SDK libs, workflows).
+"""
+
+[[capture.canon]]
+kind = "technique"
+oneliner = "Pitch-plan transfer protocol (brainstorm → `pitch_plan/*.md`): strip styling/animation/visuals/time-targets/word-budgets/working-titles; keep spoken content, verbal scope caveats, and framing notes that affect *what* gets said."
+details = """Used for `pitch_plan/intro_and_motivation.md` transfer this round. Stripped:
+- Time targets per beat (~20s, ~30s)
+- Animation/build sequences (per-pillar expand/contract, fade-ins, build numbers)
+- Visual treatment notes and references to `components/CapabilityFlow.vue`
+- Word budgets and \"spoken target\" annotations
+- \"Working title (TBD/may edit)\" framings — clean canonical titles only
+Kept:
+- Full spoken content and architectural framing of every beat
+- Verbal-only scope caveats (Pillar 1 \"to lesser extent\"; \"truly unsolved today, including by us\")
+- Architectural notes affecting *what* gets said (e.g., \"do not introduce SDD on Slide 1\"; \"agent-as-backstop is implicit competitor answer\"; cost/quality non-pillar note)
+- Connection threads (app-level assumptions repeated; Slide 4 design choices mirror Slide 3 escalation)
+"""
+
+[[capture.canon]]
+kind = "technique"
+oneliner = "When `write_replacement` fails with old_text-not-found at file end, file likely has trailing whitespace or no final newline; fall back to `read_full_file` + `write_full_file` with appended content instead of struggling with end-anchor matching."
+details = """Hit this twice this round on `FULL_PITCH_PLAN_BRAINSTORM.md`. Pattern:
+1. `tail | od -c` to inspect trailing bytes (note: macOS `cat` lacks `-A`; use `od -c`).
+2. If trailing whitespace/no-newline, build full new content via `read_full_file` + concatenation + `write_full_file`.
+This is faster than iterating on whitespace-exact `old_text` for trailing anchors.
+"""
+
+[[capture]]
+datetime = "2026-05-25T02:55:05.519652"
+source = "compaction.log"
+session_summary = """Continued CAIS pitch-planning + began visual slide work. Wrote Part 3 plan files. Built the title slide as `components/TitleSlide.vue` matching the user's mock with iterative font/color/logo/padding refinements. User started linearization in `pitch-plan.md` under `# Linearized Plan` (NOT `pitch.md`). Locked Slide 3 (IB+SDK bridge) phrasing in chat. Decided Part 2 ordering Y (IB → Self-Learning → SDK), reversing earlier X recommendation. Built offline-safe tldraw sketchpad at `localhost:3030/tldraw.html` via Vite library bundle for the user's 9-hour pre-talk flight."""
+
+[[capture.canon]]
+kind = "insight"
+oneliner = "Slide 3 (IB+SDK bridge) uses parallel \"two coupled halves\" structure: rich-enough representation + expressive-enough SDK + synthesis closer about specify-evolve-execute with human-where-needed."
+details = """Locked phrasing pattern (~50s spoken target, ~140 words):
+- Opener: \"Tressoir's philosophy is to unify these pillars into one framework, built from two coupled halves.\"
+- Half 1 (Representation = IB): system ontology (intent, entity-invariant relationships, cost/quality contracts, tribal knowledge) + materialized components (proven workflows, hardened prompts, vetted sub-agents, optimized scaffolds). \"Both human and agent editable. We call it an Interpretable Blueprint.\"
+- Half 2 (SDK): operate on it AND feed learning signals back into it (compile optimized workflows, orchestrate free-form agents, hybrids, generate tools live, deep introspection + runtime statistics).
+- Synthesis: \"Together, this lets an agentic system continuously specify, evolve, and execute itself — with human involvement wherever needed.\"
+
+The structural insight is that the two halves are framed as *coupled requirements* (rich-enough / expressive-enough), not just listed features. The synthesis line lands on continuous specification + evolution + execution and explicitly names HIL flexibility.
+"""
+
+[[capture.canon]]
+kind = "technique"
+oneliner = "For an offline-safe `localhost:3030/tldraw.html` sketchpad inside a Slidev project: install tldraw + react + react-dom, bundle via Vite library mode (`scripts/build-tldraw.mjs`) into `public/tldraw-dist/`, reference from `public/tldraw.html`."
+details = """Working setup (Vite 8 + rolldown era):
+- `scripts/build-tldraw.mjs` calls `vite.build()` with `configFile: false`, `plugins: [react()]`, `publicDir: false` (avoids Vite warning when outDir is inside public/), `rollupOptions.output.inlineDynamicImports: true` (single-file bundle), `assetFileNames: '[name][extname]'` (preserves CSS name). Output filenames: entry → `tldraw.js`; CSS → `tldraw-entry.css` (named after entry file `tldraw-entry.jsx`).
+- Vite 8 needs `esbuild` as a separate dev dep (no longer bundled).
+- pnpm 11+ moved `onlyBuiltDependencies` from `package.json` to `pnpm-workspace.yaml` under `allowBuilds: { <pkg>: true }`. The package.json `pnpm` field is silently ignored.
+- Persistence: `<Tldraw persistenceKey=\"tressoir-sketches\" />` → IndexedDB per-origin, multi-page document with bottom-left page menu, survives reloads/restarts.
+- Bundle size ~1.85 MB JS + 75 KB CSS — acceptable for local-only.
+- Re-bundle with `pnpm build:tldraw` only when upgrading tldraw.
+"""
+
+[[capture.canon]]
+kind = "rule"
+oneliner = "User linearizes pitch in `pitch-plan.md` under `# Linearized Plan`, NOT in `pitch.md`; agent should not edit either without explicit ask."
+details = """The natural-voice pitch will eventually move to `pitch.md`, but during the planning/refinement stage, the user works in `pitch-plan.md` `# Linearized Plan` section. Both files have explicit headers stating \"DO NOT modify this file unless I say so.\" Agent should propose phrasing/structure in chat (interactive AnswerCommand) and only write to disk on explicit greenlight (\"ok write this down\" / \"OK go\").
+
+`pitch.md` currently has only the Slide 0 hand-drafted intro by the user. `pitch-plan.md` carries the in-progress linearization (Slides 0-3 in progress as of compaction).
+"""
+
+[[capture.canon]]
+kind = "insight"
+oneliner = "User's new Slide 2 ('AI-Native Complex Software Is Still …') merges the old Slides 2+3 (Pillars + DBMS Illustrative Example) into a single ~3-minute 4-beat slide using the AI-Native database example to introduce all three pillars."
+details = """Beat structure (locked by user):
+- Beat 1 (Prelude, ~30s): announces the three pillars (intent/ontology resolution, constrained adaptive solving, continual learning) and uses an AI-Native database system as the worked example (generalizable beyond DBMSs).
+- Beat 2 (Intent/Ontology Resolution, ~50s): ambiguous NL queries, invariants/policies, cost/quality/latency tradeoffs, provenance, multi-user escalation. Highlights HIL parts in analyst + dbms-expert pushdown.
+- Beat 3 (Constrained Adaptive Solving, ~60s): three-tier escalation (free-form agents for novel engine work / hybrids / precompiled workflows for well-known templates that bypass agents). \"Compiled Workflows, Hybrids, Free Form Agents highlighted.\"
+- Beat 4 (Continual Learning, ~25s): learning signals from human feedback, db metrics, in-task discoveries, prior learning attempts; improves all three categories including the learning mechanism itself.
+
+Total ~3:00 wall budget. This restructure means old Slides 2+3 framing (Pillars-then-DBMS-example) no longer matches; the new structure is interleaved-and-grounded-in-DBMS-from-the-start.
+"""
+
+[[capture.canon]]
+kind = "technique"
+oneliner = "When user identifies a CSS-styling target (e.g., 'apply this color/font') without exact specs, sample reasonable values from any provided reference image, hardcode with `!important` to beat theme cascades, and offer to swap if shade/face is off."
+details = """Slidev's seriph theme primary CSS variable was overridden somewhere — `var(--slidev-theme-primary, #5d8392)` resolved to black, not the fallback. Direct hex `#5d8392 !important` worked.
+
+For Slidev font-family: scoped Vue component styles are reliable; theme styles can override h1 chrome unless explicitly set.
+
+For one-line text constraints (e.g., authors row), prefer reducing parent horizontal padding over shrinking font-size (preserves readability). Use `white-space: nowrap` to enforce.
+"""
+
+[[capture]]
+datetime = "2026-05-25T16:08:04.677173"
+source = "compaction.log"
+session_summary = """Continued CAIS pitch slide-design and Slidev implementation. Reverted Part 2 to SDK+IB+SL ordering (locked), wrote Slide 1, established Verdana+#5d8392 typography/title spacing via root `style.css`, and fixed the Slidev `$clicks` animation bug. Continued Slide 2 (`PillarsSlide.vue`) by centralizing title layout styling, building the Intent/Ontology card+diagram slice, cleaning the Background slide, and building/refining the Constrained Adaptive Solving fast/hybrid/orchestration slice using the established pillar-slice pattern."""
+
+[[capture.canon]]
+kind = "rule"
+oneliner = "Tressoir CAIS Part 2 ordering FINAL: SDK + IB + Self-Learning (X), reverted from earlier Y; flows better."
+details = """Confirmed by user this round. Slides 4-6: Slide 4 = Quick SDK Overview, Slide 5 = Agent/LLM Orchestration, Slide 6 = What an IB Looks Like (bootstrap + self-learning example). The earlier-locked Y ordering (IB -> SL -> SDK) is superseded. `pitch_plan/approach_and_implementation.md` and the brainstorm doc may still reflect Y; defer updating those plan files until user explicitly asks.
+"""
+
+[[capture.canon]]
+kind = "rule"
+oneliner = "Tressoir CAIS deck-wide typography and title spacing are centralized in root `style.css`."
+details = """User decision this round: the whole deck (not just the cover) uses Verdana + `#5d8392` Tressoir green. The `style.css` file at project root is auto-loaded by Slidev and contains the root cascade:
+```css
+.slidev-layout, .slidev-layout * { font-family: 'Verdana', sans-serif; }
+.slidev-layout h1 { font-family: 'Verdana', sans-serif !important; font-weight: 700 !important; color: #5d8392 !important; }
+.slidev-layout h2 { font-family: 'Verdana', sans-serif !important; font-weight: 600 !important; color: #5d8392 !important; }
+```
+`!important` is required to beat the seriph theme defaults. New `components/*.vue` should NOT redeclare font-family/color/weight on their h1/h2; component scoped CSS owns layout, size, spacing, and non-heading colors only.
+
+Title layout controls are also centralized in `style.css`: `--deck-title-markdown-top` for Markdown title offset, `--deck-title-top` for Vue/full-bleed header top padding, and `--deck-title-body-gap` for title-to-body spacing. Full-bleed Vue slides should use `.deck-slide`, `.deck-slide-header`, and `.deck-title`; Markdown slides use the first `h1` selectors.
+"""
+
+[[capture.canon]]
+kind = "technique"
+oneliner = "In Slidev custom Vue components, use `useSlideContext()` -> `$clicks` for reactive click state, NOT `useNav()` (which exposes navigation methods only)."
+details = """`useNav()` returns `{ currentPage, total, isPresenter, next(), prev(), nextSlide(), go(), ... }` - no `clicks`. Click state lives in `useSlideContext()`:
+```js
+import { useSlideContext } from '@slidev/client'
+const { $clicks, $page, $frontmatter } = useSlideContext()
+```
+`$clicks` is a reactive ref auto-unwrapped in templates. Use as `:class="{ active: $clicks >= N }"` for cumulative state, or `$clicks === N` for current-only state. Documented in `IB/skills/slidev/references/core-global-context.md` lines ~52 and ~105-109. This was the root cause of "animation doesn't work" early in this round - silently no-op'd because `clicks` was undefined.
+"""
+
+[[capture.canon]]
+kind = "technique"
+oneliner = "Slidev HMR fails with `Failed to fetch dynamically imported module` for slides containing only a heading + comment; always include placeholder body content."
+details = """Discovered this round: a slide whose markdown is just `# Heading` followed by an HTML comment trips Slidev's slide compiler dynamic-import recovery. Symptom: red `An error occurred on this slide. Check the terminal for more information.` overlay; console errors `slide failed to load TypeError: Failed to fetch dynamically imported module: .../@slidev/slides/N/md`. Fix: include at least one body line (text, italic placeholder, or a component reference). A full reload of the dev server resolves the stuck HMR after the body is added.
+"""
+
+[[capture.canon]]
+kind = "technique"
+oneliner = "For pillar/column iconography, `game-icons:greek-temple` (5-column temple silhouette, 285 bytes inlined SVG) is a strong default; iconify CDN at `https://api.iconify.design/<set>/<icon>.svg` for offline-safe download."
+details = """Slide 2's `PillarsSlide.vue` uses `game-icons:greek-temple` inlined as `<svg viewBox="0 0 512 512">` with `fill="currentColor"` so CSS controls color (currently `#b6c4cc` muted teal-grey for inactive frame). To download new candidates: `curl -fsSL https://api.iconify.design/<set>/<name>.svg -o figures/icons/<name>.svg`. Multiple sets confirmed available: `game-icons:*`, `mdi:*` (most), `tabler:*`, `ph:*`, `carbon:*`, `noto:*`, `twemoji:*`, `fluent-emoji-flat:*`, `hugeicons:*`. NOT confirmed: `streamline:column-1*`, `lucide:pillar` (404). Inlining the SVG (rather than `<img>`) lets `currentColor` cascade from CSS for free recoloring.
+"""
+
+[[capture.canon]]
+kind = "rule"
+oneliner = "Tressoir CAIS Slide 2 uses an MVP pillar-slice pattern: exclusive active pillar, LHS explanatory card, RHS compact diagram."
+details = """Slide 2 (`components/PillarsSlide.vue`, title `Agent-Native Software Is Still A Dream`) starts with the title/subtitle and 3-pillar strip visible; `$clicks === 0` has all pillars inactive. Clicks activate exactly one slice (`$clicks === 1/2/3`) and grey out non-active pillars, rather than cumulative highlighting. Avoid a separate visual prelude before the pillar strip.
+
+Layout idiom:
+- Title row: left-aligned default-theme h1 (Verdana 700 + `#5d8392` via global `style.css`).
+- Subtitle row: centered "The 3 Pillars of Agent-Native Software", italic/quiet so it does not compete with the title.
+- Strip row: centered, flanked by `game-icons:greek-temple` SVG bookends.
+- Active slice pattern: concise left explanatory card plus a simple expressive right diagram.
+- Slide 2 cards prefer plain subtext under bullets for examples rather than chip badges. Example: `Contract-bound solving` -> `Tradeoffs, Invariants, Checkpoints, ...`; `Holistic Adaptation` -> `Scaffolds, Tools, Skills, ...`.
+- Beat 2 Intent/Ontology diagram: Workload Patterns + Research Technique -> Agent-Native DBMS -> Correct, Optimized Code, with expert/HIL steering.
+- Beat 3 Constrained Adaptive Solving diagram uses a fast/hybrid/orchestration spectrum: `Fast Path: Minimal Overhead, Strong Guarantees`, centered `... Hybrid Approaches ...`, and `Orchestration Path: Flexible, Complex, HIL`. Keep this as a simple expressive spectrum, not a full architecture diagram.
+- Beat 4 shows signal sources feeding "improves all 3 pillars + learning itself".
+- DBMS architecture is out of scope for this visual; keep the DBMS example schematic, not architectural.
+"""
+
+[[capture.canon]]
+kind = "intent"
+oneliner = "Tressoir CAIS slide-making is MVP-polished: clear diagrams and icons, but no overbuilt architecture art."
+details = """The user wants solid, consistent, well-styled, well-animated slides over the mostly locked `pitch-plan.md`. Use simple Vue/SVG/CSS diagrams, available/offline-safe icons, and focused workflow or human-agent interaction visuals. Provide image-model prompts only when one polished generated asset clearly communicates better than icons.
+"""
+
+[[capture.canon]]
+kind = "insight"
+oneliner = "For compact Slidev workflow nodes, HIL-style icon pills can read better than card blocks with subtext."
+details = """In `components/PillarsSlide.vue`, the RHS Intent/Ontology diagram became cleaner after removing subtext and formatting nodes as compact dashed rounded pills with small icons. The user preferred this over horizontal cards and top-left icon badges, which caused awkward text alignment and wrapping.
+"""
+
+[[capture.canon]]
+kind = "insight"
+oneliner = "For compact orchestration diagrams, explicit connector elements are easier to control than pseudo-element elbow lines."
+details = """In `components/PillarsSlide.vue`, the meta-agent-to-agent-clusters connector became clearer after replacing a single pseudo-element elbow with a `cluster-connector` element containing explicit stems and arrowheads. Use explicit connector markup for small dense diagrams when line starts/ends need visual precision.
+"""
+
+[[capture.canon]]
+kind = "technique"
+oneliner = "Use `pnpm exec slidev build --out /tmp/tressoir-cais-slidev-build-check` as the Tressoir CAIS deck build smoke test."
+details = """Run this after Slidev edits to catch Vue/Slidev build regressions without writing build artifacts into the project root. The command has repeatedly passed during the Tressoir CAIS deck work:
+```bash
+pnpm exec slidev build --out /tmp/tressoir-cais-slidev-build-check
+```
+"""
+
+[[capture.canon]]
+kind = "rule"
+oneliner = "When iterating on slide visuals, wait for user's visual feedback before screenshotting via webview ops to avoid wasting tokens; user explicitly opted out of agent-driven webview screenshot polling."
+details = """User said this round: "(In general, wait for my visual feedback to avoid wasting time/tokens on the webview, unless I ask you to operate it of course.)" Default behavior: write code, ack what was written, hand back via interactive AnswerCommand, wait for user's verbal feedback or attached screenshot. Only call `sdk('user_webview', 'operate', ...)` if user explicitly asks the agent to operate the webview, debug a console error, or check kernel state. Earlier in this round the agent burnt tokens by taking an automatic post-write screenshot - explicitly avoid this pattern.
+"""
+
+[[capture]]
+datetime = "2026-05-25T21:14:39.778183"
+source = "compaction.log"
+session_summary = """Continued Tressoir CAIS Slidev deck iteration. Simplified the unified SDK/representation slide and built the static Quick SDK Overview slide. Captured slide-design rules about iframe-safe fixed layouts, established subtitle/code-card styling, and process-safety preference."""
+
+[[capture.canon]]
+kind = "rule"
+oneliner = "For this Slidev deck, avoid mobile-adaptive layouts in full-bleed custom Vue slides unless explicitly requested."
+details = """The user observed that `UnifiedSlide.vue` rendered differently in the webview iframe than in a regular tab because a `@media (max-width: 820px)` branch changed the layout. Previous slides scaled instead of switching layout. Future custom slide components should prefer fixed compositions that Slidev scales, and should not add small-width/mobile reflow rules by default.
+"""
+
+[[capture.canon]]
+kind = "rule"
+oneliner = "Do not stop, kill, or restart presentation-related processes without asking the user first."
+details = """The user warned that a previous agent killed a process and explicitly asked that similar actions be run by them first. Build-only checks with `pnpm exec slidev build --out /tmp/tressoir-cais-slidev-build-check` were acceptable during this session, but process management should be user-approved.
+"""
+
+[[capture.canon]]
+kind = "insight"
+oneliner = "On Quick SDK slide styling, the user prefers light dashed code-card treatment over dark terminal styling."
+details = """A dark terminal-style `sdk(...)` signature was called too gaudy. The user preferred the earlier lighter style: soft white/blue-green, dashed borders, subtle shadow, monospace code, and established deck typography. Subtitle styling should match the Pillars slide: centered, italic, light weight, about 16px.
+"""
+
+[[capture.canon]]
+kind = "technique"
+oneliner = "When verifying visual separators in Vue slides, check both template DOM and CSS selectors."
+details = """During `QuickSdkSlide.vue` iteration, `.body-divider` CSS existed but the actual `<div class="body-divider">` was missing, so no divider rendered. Future edits should verify both the template element and the CSS rule, not just grep for the selector.
+"""

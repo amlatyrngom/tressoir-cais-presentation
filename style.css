@@ -1,0 +1,88 @@
+/* style.css — deck-wide typography
+   Auto-loaded by Slidev. Establishes Verdana + #5d8392 as the default
+   register for all content slides. Title slide and PillarsSlide are
+   full-bleed components and use scoped styles.
+*/
+
+:root {
+  --slidev-theme-primary: #5d8392;
+  --deck-title-color: #5d8392;
+  --deck-title-font: 'Verdana', sans-serif;
+  --deck-title-size: 2rem;
+  --deck-title-weight: 600;
+  --deck-title-line-height: 1.2;
+  --deck-title-top: 2.5rem;
+  --deck-title-x: 3rem;
+  --deck-title-gap: 1.25rem;
+  --deck-title-markdown-top: 0rem;
+  --deck-title-body-gap: 1.5rem;
+}
+
+/* Cascade Verdana to all slide content. */
+.slidev-layout,
+.slidev-layout * {
+  font-family: 'Verdana', sans-serif;
+}
+
+/* Shared content-slide title contract.
+   Markdown slides use the first h1 selectors; full-bleed Vue slides
+   should use .deck-slide-header + .deck-title. */
+.slidev-layout > h1:first-child,
+.slidev-layout > div > h1:first-child,
+.deck-title {
+  font-family: var(--deck-title-font) !important;
+  font-size: var(--deck-title-size) !important;
+  font-weight: var(--deck-title-weight) !important;
+  line-height: var(--deck-title-line-height) !important;
+  color: var(--deck-title-color) !important;
+  margin: 0;
+  text-align: left;
+}
+
+.slidev-layout > h1:first-child,
+.slidev-layout > div > h1:first-child {
+  margin-top: var(--deck-title-markdown-top);
+}
+
+/* Shared title-to-body spacing for Markdown slides and Vue slides. */
+.slidev-layout > h1:first-child + *,
+.slidev-layout > div > h1:first-child + *,
+.deck-title + * {
+  margin-top: var(--deck-title-body-gap);
+}
+
+/* Avoid double top margins when Slidev wraps the real body in a component. */
+.slidev-layout > h1:first-child + * > :first-child,
+.slidev-layout > div > h1:first-child + * > :first-child {
+  margin-top: 0;
+}
+
+.deck-slide {
+  position: absolute;
+  inset: 0;
+  background: #ffffff;
+  color: #1a1a1a;
+}
+
+.deck-slide-header {
+  padding: var(--deck-title-top) var(--deck-title-x) var(--deck-title-gap) var(--deck-title-x);
+}
+
+/* Non-title headings keep the same deck register. */
+.slidev-layout h1 {
+  font-family: var(--deck-title-font) !important;
+  font-weight: var(--deck-title-weight) !important;
+  color: var(--deck-title-color) !important;
+}
+
+.slidev-layout h2 {
+  font-family: var(--deck-title-font) !important;
+  font-weight: 500 !important;
+  color: var(--deck-title-color) !important;
+}
+
+.slidev-layout h3,
+.slidev-layout h4 {
+  font-family: 'Verdana', sans-serif !important;
+  font-weight: 500 !important;
+}
