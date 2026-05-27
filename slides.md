@@ -6,7 +6,7 @@ info: |
 class: text-center
 drawings:
   persist: false
-transition: slide-left
+transition: fade
 duration: 10min
 ---
 
@@ -19,17 +19,11 @@ Hello everyone, my name is Amadou, and I am a PhD student at MIT. Today I'll tal
 -->
 
 ---
-layout: default
+layout: none
 transition: fade
 ---
 
-# Background — The Agent Revolution
-
-- Past ~2 years: rapid agent capability gains
-- Complex software work — driven from prompts & design files
-- Humans mostly at planning, review, unblocking
-- Extreme form: vibe coding
-- A shift in how software gets built
+<BackgroundSlide />
 
 <!--
 - As we all know in this room, over the past ~2 years, models and the agentic systems built around them have become increasingly capable.
