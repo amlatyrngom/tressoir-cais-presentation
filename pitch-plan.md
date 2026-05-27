@@ -103,8 +103,8 @@ CHECKPOINT: 6:35
 
 
 # Slide 6 - What an IB Looks Like - Bootstrapping Example
-- Then, for the representation, since Tressoir is meant to be general, our first litmus test was that once the core SDK and agent services were built, the framework should exclusively construct or boostrap itself using its own principles otherwise we cannot claim generality.
-- It means I can show you a blueprint example from the framework itself. This is from the self-learning subsystem, which is responsible for accumulating lessons from human input, agent introspection, task profiles and the improving the IB from them, and can even broadcast lessons to agents. I'll go through it at a high-level.
+- Then, for the representation, since Tressoir is meant to be general, we use it to build or boostrap itself otherwise we cannot claim generality.
+- It means I can show you a blueprint example from the framework itself. This is from the self-learning subsystem, which is responsible for accumulating lessons from human input, agent introspection, compaction or task profiles and the improving the IB from them. I'll go through it at a high-level.
     - The ontology has semi-structured sections about architecture, vocabulary, interface, usage contract.
     - And two structured sections: one containing related sources which forms a graph to enable bidirectional syncing so when either the ontology, the code, or tests are updated we know where to propagate to keep things in sync.
     - Another section contains parseable invariants, techniques, insights so we know what potential pitfalls to check for across these related sources and also what techniques to reuse when building components related to this ontology.
@@ -118,8 +118,8 @@ CHECKPOINT: 8:15
 - Finally, for the evaluation, the key takeaway is that Tressoir is effective at designing agentic systems that solve a wide spectrum of problems.
     - For example, on bird-critic (which is like a SQL fixing benchmark), from just 5 few-shot samples, we can use Sonnet 4.5 offline with HIL to design tools and guidelines that boost Gemini 3 Flash above Opus 4.6.
     - Same with screenspot-pro where a scaffold designed by Opus 4.6 helps gemini 3 flash rises above gemini 3 pro, and most baselines is only slightly behind OpenAI's scaffold with gpt 5.2 on extra high reasoning.
-    - And even in cases with no a-priori design phase like SWE-bench pro, the SDK can trivially enable parallel test-time scaling, with increased costs for people willing to spend more for higher accuracy.
-- I'll conclude this slide by saying that these benchmarks are not really the kind of evaluation we're looking for. The customers we speak to in our G5 project have software developed over months or years, with multiple developers or multiple teams collaborating, and strict guardrails over what the developers and their agents can and cannot. There, the ontology becomes far more important than in these benchmarks which mostly exercise the SDK and the materialized components, so we need a new evaluation for this.
+    - And even in cases with no a-priori design phase like SWE-bench pro, the SDK can trivially enable parallel test-time scaling for higher accuracy with increased costs.
+- I'll conclude this slide by saying that these benchmarks are not really the kind of evaluation we're looking for. The customers we speak to in our G5 project have software developed over months or years, with multiple teams collaborating, and strict guardrails over what the developers and their agents can and cannot do. There, the ontology becomes far more important than in these benchmarks which mostly exercise the SDK and the materialized components, so we need a new evaluation for this.
 
 (~212 words, 1:30)
 CHECKPOINT: 9:45

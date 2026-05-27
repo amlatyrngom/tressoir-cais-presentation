@@ -1,6 +1,8 @@
 ---
 theme: seriph
-title: Tressoir
+title: Tressoir CAIS Slides
+titleTemplate: '%s'
+favicon: ./tressoir.svg
 info: |
   Tressoir — unifying online/offline human-in-the-loop agentic system design and evolution.
 class: text-center
@@ -92,6 +94,7 @@ CHECKPOINT: ~04:50.
 ---
 layout: none
 transition: fade
+clicks: 1
 ---
 
 <QuickSdkSlide />
@@ -110,6 +113,7 @@ CHECKPOINT: 5:45
 ---
 layout: none
 transition: fade
+clicks: 1
 ---
 
 <AgentOrchestrationSlide />

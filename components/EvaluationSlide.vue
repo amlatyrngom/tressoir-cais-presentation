@@ -130,7 +130,7 @@ const panels = [
 .evaluation-body {
   flex: 1;
   display: grid;
-  grid-template-columns: minmax(0, 0.72fr) 1px minmax(0, 1.28fr);
+  grid-template-columns: minmax(0, 0.92fr) 1px minmax(0, 1.08fr);
   gap: 1.18rem;
   align-items: center;
   padding: 1.2rem 3rem 1.36rem 3rem;
@@ -172,9 +172,9 @@ const panels = [
 .takeaways-card h2 {
   margin: 0;
   color: #254854;
-  font-size: 22px;
+  font-size: var(--deck-card-heading-size);
   font-weight: 800;
-  line-height: 1.08;
+  line-height: var(--deck-card-heading-line-height);
 }
 
 .decision-list {
@@ -190,15 +190,15 @@ const panels = [
   align-items: flex-start;
   gap: 0.6rem;
   color: #24343a;
-  font-size: 13px;
-  font-weight: 600;
-  line-height: 1.18;
+  font-size: var(--deck-eval-list-size);
+  font-weight: 500;
+  line-height: var(--deck-eval-list-line-height);
 }
 
 .decision-dot {
   width: 0.46rem;
   height: 0.46rem;
-  margin-top: 0.27rem;
+  margin-top: 0.35rem;
   flex: 0 0 auto;
   border-radius: 999px;
   background: #5d8392;
@@ -214,9 +214,9 @@ const panels = [
 
 .decision-subtext {
   color: rgba(36, 52, 58, 0.62);
-  font-size: 10.2px;
+  font-size: var(--deck-eval-subtext-size);
   font-weight: 500;
-  line-height: 1.14;
+  line-height: var(--deck-eval-subtext-line-height);
 }
 
 .body-divider {
@@ -236,7 +236,7 @@ const panels = [
   gap: 0.72rem;
   margin-bottom: 0.45rem;
   color: rgba(36, 52, 58, 0.62);
-  font-size: 7.4px;
+  font-size: var(--deck-eval-legend-size);
   font-weight: 750;
 }
 
@@ -270,17 +270,17 @@ const panels = [
 .panel-heading h3 {
   margin: 0;
   color: #254854;
-  font-size: 10.7px;
+  font-size: var(--deck-eval-panel-title-size);
   font-weight: 850;
-  line-height: 1.05;
+  line-height: var(--deck-eval-panel-title-line-height);
 }
 
 .panel-heading p {
   margin: 0;
   color: rgba(36, 52, 58, 0.52);
-  font-size: 7.1px;
+  font-size: var(--deck-eval-panel-subtitle-size);
   font-weight: 650;
-  line-height: 1;
+  line-height: var(--deck-eval-panel-subtitle-line-height);
 }
 
 .bar-list {
@@ -298,9 +298,9 @@ const panels = [
 
 .bar-label {
   color: #25343a;
-  font-size: 6.55px;
+  font-size: var(--deck-eval-bar-label-size);
   font-weight: 700;
-  line-height: 1;
+  line-height: var(--deck-eval-bar-line-height);
   text-align: right;
   white-space: normal;
 }
@@ -320,9 +320,9 @@ const panels = [
 
 .bar-value {
   color: rgba(36, 52, 58, 0.68);
-  font-size: 6.55px;
+  font-size: var(--deck-eval-bar-value-size);
   font-weight: 800;
-  line-height: 1;
+  line-height: var(--deck-eval-bar-line-height);
 }
 
 .gemini {

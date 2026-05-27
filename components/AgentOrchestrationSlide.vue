@@ -1,3 +1,9 @@
+<script setup>
+import { useSlideContext } from '@slidev/client'
+
+const { $clicks } = useSlideContext()
+</script>
+
 <template>
   <div class="orchestration-slide deck-slide">
     <header class="deck-slide-header orchestration-header">
@@ -15,21 +21,25 @@
     <span class="fn">spawn</span>(<span class="param">task</span>, <span class="param">attachments</span>, <span class="param">context</span>, <span class="param">model_spec</span>)
 
     <span class="comment"># Synchronous and Asynchronous Run/Steering.</span>
+    <span class="comment"># Programmatic auto-compaction</span>
     <span class="fn">compact_run</span>(<span class="param">agent_id</span>, <span class="param">injected_ctx</span>, <span class="param">rounds</span>, <span class="param">tokens</span>)
     <span class="fn">steer</span>(<span class="param">agent_id</span>, <span class="param">instructions</span>, <span class="param">attachments</span>, <span class="param">wake</span>)
     <span class="fn">broadcast</span>(<span class="param">agent_id</span>, <span class="param">instruction</span>, <span class="param">attachments</span>)
 
     <span class="comment"># Introspection</span>
-    <span class="fn">analyze_trajectory</span>(<span class="param">agent_id</span>, <span class="param">purpose</span>) <span class="pipe">|</span> <span class="fn">stats</span>(<span class="param">agent_id</span>)
+    <span class="fn">analyze_trajectory</span>(<span class="param">agent_id</span>, <span class="param">purpose</span>)
+    <span class="fn">stats</span>(<span class="param">agent_id</span>)
 
     <span class="comment"># Others Controls</span>
     <span class="fn">pause</span> <span class="pipe">|</span> <span class="fn">resume</span> <span class="pipe">|</span> <span class="fn">terminate</span> <span class="pipe">|</span> <span class="ellipsis">...</span></code></pre>
         </article>
       </section>
 
-      <div class="body-divider" aria-hidden="true"></div>
+      <div class="body-divider reveal-on-click" :class="{ visible: $clicks >= 1 }" aria-hidden="true"></div>
 
-      <section class="example-column" aria-label="Coordination examples">
+      <section class="example-column reveal-on-click" :class="{ visible: $clicks >= 1 }" aria-label="Coordination examples">
+        <h2 class="example-title">Coordination Examples</h2>
+
         <article class="code-card">
           <p class="card-label">Cost-Aware Graph Executor</p>
           <pre class="code-block example-code"><code>dag = build_task_graph(spec)  <span class="comment"># nodes + dependencies</span>
@@ -93,10 +103,10 @@ reviews = parallel_map(
 .goal-subtitle {
   margin: 0.72rem 0 0 0;
   color: rgba(36, 52, 58, 0.85);
-  font-size: 16px;
+  font-size: var(--deck-subtitle-size);
   font-weight: 400 !important;
   font-style: italic;
-  line-height: 1.2;
+  line-height: var(--deck-subtitle-line-height);
   text-align: center;
   opacity: 0.85;
 }
@@ -145,9 +155,9 @@ reviews = parallel_map(
 .signature-card h2 {
   margin: 0 0 0.88rem 0;
   color: #254854;
-  font-size: 22px;
+  font-size: var(--deck-card-heading-size);
   font-weight: 800;
-  line-height: 1.08;
+  line-height: var(--deck-card-heading-line-height);
 }
 
 .body-divider {
@@ -159,14 +169,41 @@ reviews = parallel_map(
 
 .example-column {
   display: grid;
-  grid-template-rows: auto auto;
-  gap: 0.82rem;
+  grid-template-rows: auto auto auto;
+  gap: 0.44rem;
   align-content: center;
   min-width: 0;
 }
 
+.reveal-on-click {
+  opacity: 0;
+  transform: translateY(0.22rem);
+  transition: opacity 260ms ease-out, transform 260ms ease-out;
+  pointer-events: none;
+}
+
+.reveal-on-click.visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.body-divider.reveal-on-click {
+  transform: none;
+}
+
+.example-title {
+  margin: 0 0 -0.08rem 0;
+  color: rgba(36, 52, 58, 0.85);
+  font-size: var(--deck-example-column-title-size) !important;
+  font-style: italic;
+  font-weight: var(--deck-example-column-title-weight) !important;
+  line-height: var(--deck-example-column-title-line-height);
+  text-align: center;
+}
+
 .code-card {
-  padding: 0.78rem 0.72rem 0.58rem 0.72rem;
+  padding: 0.64rem 0.72rem 0.5rem 0.72rem;
 }
 
 .card-label {
@@ -178,10 +215,11 @@ reviews = parallel_map(
   border-radius: 999px;
   background: #ffffff;
   color: #5d8392;
-  font-size: 8.7px;
+  font-size: var(--deck-example-label-size);
   font-weight: 800;
-  letter-spacing: 0.035em;
+  letter-spacing: var(--deck-example-label-letter-spacing);
   box-shadow: 0 5px 14px rgba(30, 54, 62, 0.08);
+  line-height: var(--deck-example-label-line-height);
 }
 
 .code-block {
@@ -193,14 +231,14 @@ reviews = parallel_map(
 }
 
 .signature-code {
-  font-size: 9.6px;
-  line-height: 1.42;
+  font-size: var(--deck-code-signature-size);
+  line-height: var(--deck-code-signature-line-height);
 }
 
 .example-code {
-  padding-top: 0.16rem;
-  font-size: 7.25px;
-  line-height: 1.2;
+  padding-top: 0.08rem;
+  font-size: var(--deck-code-body-tight-size);
+  line-height: var(--deck-code-body-tight-line-height);
 }
 
 .kw {

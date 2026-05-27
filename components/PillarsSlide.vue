@@ -47,19 +47,19 @@ const { $clicks } = useSlideContext()
               </li>
               <li class="decision-item">
                 <span class="decision-dot"></span>
-                <span>Invariants + policies</span>
+                <span>Guardrails and invariants</span>
               </li>
               <li class="decision-item">
                 <span class="decision-dot"></span>
-                <span>Cost / quality / latency budgets</span>
+                <span>Budget Tradeoffs</span>
               </li>
               <li class="decision-item">
                 <span class="decision-dot"></span>
-                <span>Provenance and blast radius</span>
+                <span>Provenance and blast radius analysis</span>
               </li>
               <li class="decision-item">
                 <span class="decision-dot"></span>
-                <span>Necessary HIL checkpoints</span>
+                <span>Necessary HIL escalations</span>
               </li>
             </ul>
           </article>
@@ -437,11 +437,11 @@ const { $clicks } = useSlideContext()
 }
 
 .strip-subtitle {
-  font-size: 16px;
+  font-size: var(--deck-subtitle-size);
   font-weight: 400 !important;
   font-style: italic;
   margin: 0;
-  line-height: 1.2;
+  line-height: var(--deck-subtitle-line-height);
   text-align: center;
   opacity: 0.85;
 }
@@ -471,38 +471,58 @@ const { $clicks } = useSlideContext()
 .pillar {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 0.45rem;
-  padding: 0.6rem 1.1rem;
+  width: var(--pillar-width);
+  box-sizing: border-box;
+  padding: 0.6rem 1.08rem;
   border: 1.5px solid #d1d5db;
   border-radius: 0.55rem;
-  background: #f9fafb;
-  color: #9ca3af;
+  background: #ffffff;
+  color: #24343a;
   transform: scale(1);
   transition:
     border-color 0.4s ease-out,
     background 0.4s ease-out,
     color 0.4s ease-out,
     box-shadow 0.4s ease-out,
-    transform 0.4s ease-out;
+    transform 0.4s ease-out,
+    opacity 0.4s ease-out;
   white-space: nowrap;
+}
+
+.pillar-ontology {
+  --pillar-width: var(--deck-pillar-ontology-width);
+}
+
+.pillar-solving {
+  --pillar-width: var(--deck-pillar-solving-width);
+}
+
+.pillar-learning {
+  --pillar-width: var(--deck-pillar-learning-width);
 }
 
 .pillar.active {
   border-color: #5d8392;
   background: #ffffff;
   color: #5d8392;
-  transform: scale(1.04);
+  transform: none;
   box-shadow: 0 2px 12px rgba(93, 131, 146, 0.22);
 }
 
+.pillar.active .pillar-label {
+  text-shadow: 0.018em 0 currentColor;
+}
+
 .pillar.inactive {
-  opacity: 0.42;
-  filter: grayscale(1);
+  opacity: 0.78;
+  color: #24343a;
 }
 
 .pillar-label {
-  font-size: 16px;
-  line-height: 1.2;
+  font-size: var(--deck-pillar-label-size);
+  line-height: var(--deck-pillar-label-line-height);
   font-weight: 500;
   white-space: nowrap;
 }
@@ -510,7 +530,7 @@ const { $clicks } = useSlideContext()
 .divider {
   align-self: center;
   color: #d1d5db;
-  font-size: 1.15rem;
+  font-size: var(--deck-pillar-divider-size);
   user-select: none;
 }
 
@@ -577,10 +597,10 @@ const { $clicks } = useSlideContext()
 .card-kicker {
   margin: 0;
   color: #5d8392;
-  font-size: 16px;
+  font-size: var(--deck-card-kicker-size);
   font-weight: 700;
   letter-spacing: 0.02em;
-  line-height: 1.2;
+  line-height: var(--deck-card-kicker-line-height);
 }
 
 .decision-list {
@@ -596,9 +616,9 @@ const { $clicks } = useSlideContext()
   align-items: center;
   gap: 0.62rem;
   color: #24343a;
-  font-size: 14px;
+  font-size: var(--deck-card-list-size);
   font-weight: 500;
-  line-height: 1.22;
+  line-height: var(--deck-card-list-line-height);
 }
 
 .decision-dot {
@@ -614,6 +634,10 @@ const { $clicks } = useSlideContext()
   align-items: flex-start;
 }
 
+.decision-with-subtext .decision-dot {
+  margin-top: 0.38rem;
+}
+
 .decision-copy {
   display: grid;
   gap: 0.18rem;
@@ -621,9 +645,9 @@ const { $clicks } = useSlideContext()
 
 .decision-subtext {
   color: rgba(36, 52, 58, 0.62);
-  font-size: 11px;
+  font-size: var(--deck-card-subtext-size);
   font-weight: 500;
-  line-height: 1.15;
+  line-height: var(--deck-card-subtext-line-height);
 }
 
 .intent-diagram {
@@ -706,9 +730,9 @@ const { $clicks } = useSlideContext()
 .node-copy h4 {
   margin: 0;
   color: #254854;
-  font-size: 12px;
+  font-size: var(--deck-diagram-node-size);
   font-weight: 700;
-  line-height: 1;
+  line-height: var(--deck-diagram-node-line-height);
   white-space: nowrap;
 }
 
@@ -805,10 +829,10 @@ const { $clicks } = useSlideContext()
   position: relative;
   width: 100%;
   display: grid;
-  grid-template-rows: minmax(5.1rem, auto) auto minmax(7.4rem, auto);
-  gap: 0.48rem;
-  min-height: 16rem;
-  margin-top: -0.5rem;
+  grid-template-rows: minmax(5.1rem, auto) 1.1rem minmax(7.4rem, auto);
+  gap: 0.72rem;
+  min-height: 16.4rem;
+  margin-top: -0.35rem;
   animation: card-in 420ms ease-out both;
 }
 
@@ -844,20 +868,26 @@ const { $clicks } = useSlideContext()
   border-radius: 999px;
   background: #ffffff;
   color: #5d8392;
-  font-size: 8.7px;
+  font-size: var(--deck-example-label-size);
   font-weight: 800;
-  letter-spacing: 0.035em;
+  letter-spacing: var(--deck-example-label-letter-spacing);
+  line-height: var(--deck-example-label-line-height);
 }
 
 .hybrid-label {
   justify-self: center;
+  align-self: center;
+  position: relative;
+  z-index: 2;
+  margin: 0.04rem 0 0.18rem 0;
   padding: 0.08rem 0.48rem;
   border-radius: 999px;
   background: #ffffff;
   color: #5d8392;
-  font-size: 8.7px;
+  font-size: var(--deck-example-label-size);
   font-weight: 800;
-  letter-spacing: 0.035em;
+  letter-spacing: var(--deck-example-label-letter-spacing);
+  line-height: var(--deck-example-label-line-height);
   box-shadow: 0 5px 14px rgba(30, 54, 62, 0.08);
 }
 
@@ -885,7 +915,7 @@ const { $clicks } = useSlideContext()
 }
 
 .solving-diagram .node-copy h4 {
-  font-size: 9.4px;
+  font-size: var(--deck-diagram-node-compact-size);
 }
 
 .short-arrow {
@@ -923,9 +953,9 @@ const { $clicks } = useSlideContext()
   justify-content: center;
   gap: 0.3rem;
   color: #254854;
-  font-size: 9.7px;
+  font-size: var(--deck-diagram-plan-title-size);
   font-weight: 800;
-  line-height: 1.05;
+  line-height: var(--deck-diagram-plan-title-line-height);
   white-space: nowrap;
 }
 
@@ -962,9 +992,9 @@ const { $clicks } = useSlideContext()
   background: #ffffff;
   border: 1px solid rgba(93, 131, 146, 0.22);
   color: #315764;
-  font-size: 7.6px;
+  font-size: var(--deck-diagram-plan-step-size);
   font-weight: 700;
-  line-height: 1.05;
+  line-height: var(--deck-diagram-plan-step-line-height);
   white-space: nowrap;
 }
 
@@ -977,8 +1007,8 @@ const { $clicks } = useSlideContext()
   border-radius: 999px;
   background: rgba(93, 131, 146, 0.13);
   color: #5d8392;
-  font-size: 6.7px;
-  line-height: 1;
+  font-size: var(--deck-diagram-plan-index-size);
+  line-height: var(--deck-diagram-node-line-height);
 }
 
 .search-badge {
@@ -1152,10 +1182,10 @@ const { $clicks } = useSlideContext()
 .stack-card.front span {
   min-width: 0;
   color: #254854;
-  font-size: 7.65px;
+  font-size: var(--deck-diagram-stack-label-size);
   font-weight: 800;
   letter-spacing: -0.02em;
-  line-height: 1;
+  line-height: var(--deck-diagram-node-line-height);
   white-space: nowrap;
 }
 
@@ -1187,7 +1217,7 @@ const { $clicks } = useSlideContext()
 }
 
 .code-change-node .node-copy h4 {
-  font-size: 10px;
+  font-size: var(--deck-diagram-node-output-size);
 }
 
 

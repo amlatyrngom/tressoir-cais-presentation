@@ -33,11 +33,21 @@
 <span class="key">kind</span> = <span class="str">"technique"</span>
 <span class="key">oneliner</span> = <span class="str">"`agent.stats(agent_id)` is the concise introspection ..."</span>
 <span class="key">details</span> = <span class="str">"""..."""</span>
+
+[[canon]]
+<span class="key">kind</span> = <span class="str">"intent"</span>
+<span class="key">oneliner</span> = <span class="str">"Layer 3 self-learning is a user-gated ..."</span>
+<span class="key">details</span> = <span class="str">"""..."""</span>
 <span class="ellipsis">...</span>
 <span class="fence">```</span></code></pre>
           </div>
         </article>
 
+      </section>
+
+      <div class="body-divider" aria-hidden="true"></div>
+
+      <section class="ib-right" aria-label="Materialized components and self-learning flow">
         <article class="surface-card materialized-card">
           <p class="surface-label">Materialized Components</p>
           <pre class="code-block tree-code"><code>sdk_libs/self_learning/
@@ -57,11 +67,8 @@
 |       `-- <span class="ellipsis">...</span>
 `-- <span class="file">CANON_LEARNER_DENSE_STATE.md</span>  <span class="comment"># memory</span></code></pre>
         </article>
-      </section>
 
-      <div class="body-divider" aria-hidden="true"></div>
-
-      <section class="learning-panel" aria-label="Self-learning flow">
+        <section class="learning-panel" aria-label="Self-learning flow">
         <div class="learning-diagram">
           <div class="input-stack">
             <article class="diagram-node input-node">
@@ -143,6 +150,7 @@
             </div>
           </article>
         </div>
+        </section>
       </section>
     </main>
   </div>
@@ -166,24 +174,35 @@
 .ib-body {
   flex: 1;
   display: grid;
-  grid-template-columns: minmax(0, 45fr) 1px minmax(0, 55fr);
-  gap: 1.18rem;
-  align-items: center;
-  padding: 1.28rem 3rem 1.42rem 3rem;
+  grid-template-columns: minmax(0, 0.9fr) 1px minmax(0, 1.16fr);
+  gap: 1.12rem;
+  align-items: stretch;
+  padding: 1.18rem 3rem 1.36rem 3rem;
   overflow: hidden;
 }
 
 .ib-surface {
   display: grid;
-  gap: 0.82rem;
   align-content: center;
   min-width: 0;
+  min-height: 0;
+}
+
+.ib-right {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 0.95rem;
+  align-content: center;
+  min-width: 0;
+  min-height: 0;
 }
 
 .learning-panel {
   display: flex;
   align-items: center;
+  justify-content: center;
   min-width: 0;
+  min-height: 0;
 }
 
 .surface-card {
@@ -198,7 +217,18 @@
 }
 
 .surface-card {
-  padding: 0.82rem 0.78rem 0.64rem 0.78rem;
+  padding: 0.88rem 0.84rem 0.7rem 0.84rem;
+}
+
+.ontology-card {
+  display: flex;
+  flex-direction: column;
+  align-self: center;
+  min-height: 0;
+}
+
+.materialized-card {
+  align-self: start;
 }
 
 .surface-label {
@@ -211,10 +241,11 @@
   background: #ffffff;
   color: #5d8392;
   font-family: "Menlo", "Consolas", monospace;
-  font-size: 8.7px;
+  font-size: var(--deck-example-label-size);
   font-weight: 800;
-  letter-spacing: 0.035em;
+  letter-spacing: var(--deck-example-label-letter-spacing);
   box-shadow: 0 5px 14px rgba(30, 54, 62, 0.08);
+  line-height: var(--deck-example-label-line-height);
 }
 
 .code-block {
@@ -226,12 +257,13 @@
 }
 
 .ontology-codebox {
+  flex: 1;
   padding: 0.08rem 0 0 0;
 }
 
 .ontology-code {
-  font-size: 6.95px;
-  line-height: 1.22;
+  font-size: var(--deck-ontology-code-size);
+  line-height: var(--deck-ontology-code-line-height);
 }
 
 .structured-code {
@@ -245,9 +277,9 @@
   margin: 0.2rem 0 0.18rem 0;
   color: rgba(93, 131, 146, 0.72);
   font-family: "Menlo", "Consolas", monospace;
-  font-size: 6.5px;
+  font-size: var(--deck-code-section-label-size);
   font-weight: 850;
-  letter-spacing: 0.05em;
+  letter-spacing: var(--deck-code-section-label-letter-spacing);
   text-transform: uppercase;
 }
 
@@ -266,8 +298,8 @@
 
 .tree-code {
   padding-top: 0.08rem;
-  font-size: 6.75px;
-  line-height: 1.18;
+  font-size: var(--deck-tree-code-size);
+  line-height: var(--deck-tree-code-line-height);
 }
 
 .md-heading,
@@ -312,9 +344,9 @@
 .learning-diagram {
   position: relative;
   width: 100%;
-  min-height: 10.8rem;
+  min-height: 10rem;
   display: grid;
-  grid-template-columns: max-content minmax(1.4rem, 1fr) max-content minmax(1.4rem, 1fr) max-content;
+  grid-template-columns: max-content minmax(1.3rem, 1fr) max-content minmax(1.3rem, 1fr) max-content;
   grid-template-rows: 1fr;
   align-items: center;
 }
@@ -324,7 +356,7 @@
   grid-row: 1;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.44rem;
 }
 
 .diagram-node {
@@ -382,9 +414,9 @@
 .node-copy h4 {
   margin: 0;
   color: #254854;
-  font-size: 10.9px;
+  font-size: var(--deck-diagram-node-ib-size);
   font-weight: 700;
-  line-height: 1;
+  line-height: var(--deck-diagram-node-line-height);
   white-space: nowrap;
 }
 

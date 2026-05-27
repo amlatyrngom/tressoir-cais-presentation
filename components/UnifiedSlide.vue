@@ -72,7 +72,7 @@ const { $clicks } = useSlideContext()
             </div>
             <div>
               <p class="eyebrow">Execution Surface</p>
-              <h2>Unified SDK</h2>
+              <h2>Composable SDK</h2>
             </div>
           </div>
 
@@ -133,7 +133,9 @@ const { $clicks } = useSlideContext()
 .bridge-card {
   position: relative;
   align-self: center;
-  min-height: 16.1rem;
+  display: flex;
+  flex-direction: column;
+  min-height: 17.4rem;
   padding: 1.35rem 1.35rem 1.2rem 1.35rem;
   border: 1.5px solid rgba(93, 131, 146, 0.32);
   border-radius: 1rem;
@@ -209,19 +211,19 @@ const { $clicks } = useSlideContext()
 .eyebrow {
   margin: 0 0 0.2rem 0;
   color: #5d8392;
-  font-size: 10px;
+  font-size: var(--deck-card-eyebrow-size);
   font-weight: 800;
   letter-spacing: 0.12em;
-  line-height: 1.1;
+  line-height: var(--deck-card-eyebrow-line-height);
   text-transform: uppercase;
 }
 
 .bridge-card h2 {
   margin: 0;
   color: #254854;
-  font-size: 24px;
+  font-size: var(--deck-unified-card-heading-size);
   font-weight: 800;
-  line-height: 1.02;
+  line-height: var(--deck-unified-card-heading-line-height);
 }
 
 .bridge-card.active h2 {
@@ -241,15 +243,15 @@ const { $clicks } = useSlideContext()
   align-items: flex-start;
   gap: 0.62rem;
   color: #24343a;
-  font-size: 14px;
+  font-size: var(--deck-card-list-size);
   font-weight: 500;
-  line-height: 1.22;
+  line-height: var(--deck-card-list-line-height);
 }
 
 .decision-dot {
   width: 0.46rem;
   height: 0.46rem;
-  margin-top: 0.32rem;
+  margin-top: 0.38rem;
   flex: 0 0 auto;
   border-radius: 999px;
   background: #5d8392;
@@ -271,23 +273,19 @@ const { $clicks } = useSlideContext()
 
 .decision-subtext {
   color: rgba(36, 52, 58, 0.62);
-  font-size: 11px;
+  font-size: var(--deck-card-subtext-size);
   font-weight: 500;
-  line-height: 1.16;
+  line-height: var(--deck-card-subtext-line-height);
 }
 
 .card-footer {
-  position: absolute;
-  left: 1.35rem;
-  right: 1.35rem;
-  bottom: 1.08rem;
-  margin: 0;
+  margin: auto 0 0 0;
   padding-top: 0.78rem;
   border-top: 1px solid rgba(93, 131, 146, 0.18);
   color: #5d8392;
-  font-size: 12.5px;
+  font-size: var(--deck-card-footer-size);
   font-weight: 700;
-  line-height: 1.2;
+  line-height: var(--deck-card-footer-line-height);
 }
 
 .bridge-card.active .card-footer {

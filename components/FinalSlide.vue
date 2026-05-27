@@ -20,6 +20,8 @@
 
         <p class="thanks">Thank you for listening.</p>
       </section>
+
+      <p class="made-by">These slides were made by Tressoir agents with slidev</p>
     </main>
   </div>
 </template>
@@ -39,6 +41,7 @@
 .final-body {
   flex: 1;
   display: flex;
+  flex-direction: column;
   align-items: flex-start;
   padding: 1.2rem 3rem 2.2rem 3rem;
 }
@@ -60,9 +63,9 @@
   position: relative;
   padding-left: 1.25rem;
   color: #24343a;
-  font-size: 21px;
+  font-size: var(--deck-simple-list-size);
   font-weight: 500;
-  line-height: 1.32;
+  line-height: var(--deck-simple-list-line-height);
 }
 
 .conclusion-list li::before {
@@ -80,8 +83,20 @@
 .thanks {
   margin: 2.1rem 0 0 0;
   color: #5d8392;
-  font-size: 26px;
+  font-size: var(--deck-simple-thanks-size);
   font-weight: 700;
-  line-height: 1.1;
+  line-height: var(--deck-simple-thanks-line-height);
 }
+
+.made-by {
+  align-self: center;
+  margin: auto 0 0 0;
+  color: rgba(36, 52, 58, 0.66);
+  font-size: var(--deck-subtitle-size);
+  font-style: italic;
+  font-weight: 400;
+  line-height: var(--deck-subtitle-line-height);
+  text-align: center;
+}
+
 </style>

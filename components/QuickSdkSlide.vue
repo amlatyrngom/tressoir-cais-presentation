@@ -1,3 +1,9 @@
+<script setup>
+import { useSlideContext } from '@slidev/client'
+
+const { $clicks } = useSlideContext()
+</script>
+
 <template>
   <div class="sdk-slide deck-slide">
     <header class="deck-slide-header sdk-header">
@@ -52,9 +58,11 @@
         </section>
       </aside>
 
-      <div class="body-divider" aria-hidden="true"></div>
+      <div class="body-divider reveal-on-click" :class="{ visible: $clicks >= 1 }" aria-hidden="true"></div>
 
-      <section class="snippet-column" aria-label="SDK code examples">
+      <section class="snippet-column reveal-on-click" :class="{ visible: $clicks >= 1 }" aria-label="SDK code examples">
+        <h2 class="column-title">SDK Composition Examples</h2>
+
         <article class="code-step">
           <p class="step-label">Step N: Parallel Search</p>
           <pre class="step-code"><code>searches = <span class="fn">sdk</span>(<span class="str">"core"</span>, <span class="str">"parallel_tool_calls"</span>, {
@@ -115,10 +123,10 @@ print(results)</code></pre>
 .call-subtitle {
   margin: 0 0 0.52rem 0;
   color: rgba(36, 52, 58, 0.85);
-  font-size: 16px;
+  font-size: var(--deck-subtitle-size);
   font-weight: 400 !important;
   font-style: italic;
-  line-height: 1.2;
+  line-height: var(--deck-subtitle-line-height);
   text-align: center;
   opacity: 0.85;
 }
@@ -134,9 +142,9 @@ print(results)</code></pre>
   box-shadow: 0 10px 22px rgba(30, 54, 62, 0.1);
   color: #24343a;
   font-family: "Menlo", "Consolas", monospace;
-  font-size: 18px;
+  font-size: var(--deck-code-hero-size);
   font-weight: 800;
-  line-height: 1;
+  line-height: var(--deck-code-hero-line-height);
   text-align: center;
   white-space: pre;
 }
@@ -157,7 +165,7 @@ print(results)</code></pre>
 .sdk-body {
   flex: 1;
   display: grid;
-  grid-template-columns: minmax(0, 0.86fr) 1px minmax(0, 1.56fr);
+  grid-template-columns: minmax(0, 1.1fr) 1px minmax(0, 1.32fr);
   gap: 1.08rem;
   align-items: center;
   padding: 0.95rem 3rem 0.82rem 3rem;
@@ -194,9 +202,9 @@ print(results)</code></pre>
 .design-card h2 {
   margin: 0;
   color: #254854;
-  font-size: 22px;
+  font-size: var(--deck-card-heading-size);
   font-weight: 800;
-  line-height: 1.08;
+  line-height: var(--deck-card-heading-line-height);
 }
 
 .decision-list {
@@ -212,15 +220,15 @@ print(results)</code></pre>
   align-items: flex-start;
   gap: 0.58rem;
   color: #24343a;
-  font-size: 12.5px;
+  font-size: var(--deck-card-list-compact-size);
   font-weight: 500;
-  line-height: 1.18;
+  line-height: var(--deck-card-list-compact-line-height);
 }
 
 .decision-dot {
   width: 0.44rem;
   height: 0.44rem;
-  margin-top: 0.28rem;
+  margin-top: 0.36rem;
   flex: 0 0 auto;
   border-radius: 999px;
   background: #5d8392;
@@ -235,15 +243,15 @@ print(results)</code></pre>
 .decision-copy code {
   color: #254854;
   font-family: "Menlo", "Consolas", monospace;
-  font-size: 0.92em;
+  font-size: var(--deck-inline-code-scale);
   font-weight: 800;
 }
 
 .decision-subtext {
   color: rgba(36, 52, 58, 0.62);
-  font-size: 10.2px;
+  font-size: var(--deck-card-subtext-compact-size);
   font-weight: 500;
-  line-height: 1.12;
+  line-height: var(--deck-card-subtext-compact-line-height);
 }
 
 .body-divider {
@@ -255,16 +263,43 @@ print(results)</code></pre>
 
 .snippet-column {
   display: grid;
-  grid-template-rows: auto auto;
-  gap: 0.72rem;
+  grid-template-rows: auto auto auto;
+  gap: 0.46rem;
   align-content: center;
   min-width: 0;
+}
+
+.reveal-on-click {
+  opacity: 0;
+  transform: translateY(0.22rem);
+  transition: opacity 260ms ease-out, transform 260ms ease-out;
+  pointer-events: none;
+}
+
+.reveal-on-click.visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.body-divider.reveal-on-click {
+  transform: none;
+}
+
+.column-title {
+  margin: 0 0 -0.08rem 0;
+  color: rgba(36, 52, 58, 0.85);
+  font-size: var(--deck-example-column-title-size) !important;
+  font-style: italic;
+  font-weight: var(--deck-example-column-title-weight) !important;
+  line-height: var(--deck-example-column-title-line-height);
+  text-align: center;
 }
 
 .code-step {
   position: relative;
   min-width: 0;
-  padding: 0.72rem 0.68rem 0.52rem 0.68rem;
+  padding: 0.62rem 0.68rem 0.48rem 0.68rem;
   border: 1px solid rgba(93, 131, 146, 0.22);
   border-radius: 0.9rem;
   background:
@@ -282,9 +317,10 @@ print(results)</code></pre>
   border-radius: 999px;
   background: #ffffff;
   color: #5d8392;
-  font-size: 8.7px;
+  font-size: var(--deck-example-label-size);
   font-weight: 800;
-  letter-spacing: 0.035em;
+  letter-spacing: var(--deck-example-label-letter-spacing);
+  line-height: var(--deck-example-label-line-height);
   box-shadow: 0 5px 14px rgba(30, 54, 62, 0.08);
 }
 
@@ -293,9 +329,9 @@ print(results)</code></pre>
   padding: 0.22rem 0 0 0;
   color: #25343a;
   font-family: "Menlo", "Consolas", monospace;
-  font-size: 7.65px;
+  font-size: var(--deck-code-body-size);
   font-weight: 600;
-  line-height: 1.18;
+  line-height: var(--deck-code-body-line-height);
   white-space: pre;
 }
 

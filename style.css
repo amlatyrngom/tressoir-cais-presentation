@@ -16,6 +16,103 @@
   --deck-title-gap: 1.25rem;
   --deck-title-markdown-top: 0rem;
   --deck-title-body-gap: 1.5rem;
+
+  /* Global slide number in the bottom-right corner. */
+  --deck-slide-number-size: 10.5px;
+  --deck-slide-number-line-height: 1;
+  --deck-slide-number-right: 1.05rem;
+  --deck-slide-number-bottom: 0.82rem;
+
+  /* Simple bullet slides: Background + Conclusion body bullets. */
+  --deck-simple-list-size: 21px;
+  --deck-simple-list-line-height: 1.32;
+  --deck-simple-thanks-size: 26px;
+  --deck-simple-thanks-line-height: 1.1;
+
+  /* Centered subtitles below main titles, e.g. "The 3 Pillars..." and "Single, Composable...". */
+  --deck-subtitle-size: 18px;
+  --deck-subtitle-line-height: 1.2;
+
+  /* Pillar strip labels: "Ontology Resolution", "Constrained Adaptive Solving", etc. */
+  --deck-pillar-label-size: 18px;
+  --deck-pillar-label-line-height: 1.2;
+  --deck-pillar-ontology-width: 12.8rem;
+  --deck-pillar-solving-width: 17rem;
+  --deck-pillar-learning-width: 12.4rem;
+  --deck-pillar-divider-size: 1.15rem;
+
+  /* Card text used by Pillars, Unified, SDK, Agent, and Evaluation cards. */
+  --deck-card-heading-size: 20px;
+  --deck-card-heading-line-height: 1.08;
+  --deck-unified-card-heading-size: 24px;
+  --deck-unified-card-heading-line-height: 1.02;
+  --deck-card-kicker-size: 18px;
+  --deck-card-kicker-line-height: 1.2;
+  --deck-card-eyebrow-size: 10px;
+  --deck-card-eyebrow-line-height: 1.1;
+  --deck-card-list-size: 16px;
+  --deck-card-list-line-height: 1.22;
+  --deck-card-list-compact-size: 16px;
+  --deck-card-list-compact-line-height: 1.18;
+  --deck-card-subtext-size: 12px;
+  --deck-card-subtext-line-height: 1.15;
+  --deck-card-subtext-compact-size: 10.2px;
+  --deck-card-subtext-compact-line-height: 1.12;
+  --deck-card-footer-size: 12.5px;
+  --deck-card-footer-line-height: 1.2;
+  --deck-inline-code-scale: 0.92em;
+
+  /* Floating labels on boxed examples: "Fast Path...", "Step N...", "Cost-Aware...". */
+  --deck-example-label-size: 10px;
+  --deck-example-label-line-height: 1.1;
+  --deck-example-label-letter-spacing: 0.035em;
+  /* Centered column titles above RHS examples: "SDK Composition Examples", "Coordination Examples". */
+  --deck-example-column-title-size: 15px;
+  --deck-example-column-title-line-height: 1.15;
+  --deck-example-column-title-weight: 500;
+
+  /* Diagram node/pill labels such as "Workload Patterns", plan steps, and agent stacks. */
+  --deck-diagram-node-size: 13px;
+  --deck-diagram-node-line-height: 1;
+  --deck-diagram-node-compact-size: 9.4px;
+  --deck-diagram-node-output-size: 10px;
+  --deck-diagram-node-ib-size: 11.8px;
+  --deck-diagram-plan-title-size: 9.7px;
+  --deck-diagram-plan-title-line-height: 1.05;
+  --deck-diagram-plan-step-size: 7.6px;
+  --deck-diagram-plan-step-line-height: 1.05;
+  --deck-diagram-plan-index-size: 6.7px;
+  --deck-diagram-stack-label-size: 7.65px;
+
+  /* Code snippets and signature blocks. */
+  --deck-code-hero-size: 18px;
+  --deck-code-hero-line-height: 1;
+  --deck-code-signature-size: 11px;
+  --deck-code-signature-line-height: 1.42;
+  --deck-code-body-size: 8px;
+  --deck-code-body-line-height: 1.18;
+  --deck-code-body-tight-size: 8px;
+  --deck-code-body-tight-line-height: 1.2;
+  --deck-ontology-code-size: 8px;
+  --deck-ontology-code-line-height: 1.2;
+  --deck-tree-code-size: 8px;
+  --deck-tree-code-line-height: 1.15;
+  --deck-code-section-label-size: 8px;
+  --deck-code-section-label-letter-spacing: 0.05em;
+
+  /* Evaluation mini-chart text. */
+  --deck-eval-list-size: 16px;
+  --deck-eval-list-line-height: 1.18;
+  --deck-eval-subtext-size: 10.2px;
+  --deck-eval-subtext-line-height: 1.14;
+  --deck-eval-legend-size: 7.4px;
+  --deck-eval-panel-title-size: 10.7px;
+  --deck-eval-panel-title-line-height: 1.05;
+  --deck-eval-panel-subtitle-size: 7.1px;
+  --deck-eval-panel-subtitle-line-height: 1;
+  --deck-eval-bar-label-size: 6.55px;
+  --deck-eval-bar-value-size: 6.55px;
+  --deck-eval-bar-line-height: 1;
 }
 
 /* Cascade Verdana to all slide content. */

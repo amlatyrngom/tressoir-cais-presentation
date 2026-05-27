@@ -203,3 +203,33 @@ LHS:
 
 
 Propose a layout.
+
+# Edits
+Check the git diff in pitch_plan.md to know how to update the speaker notes.
+
+
+OK refactor the font sizes into a unified place where I can easily tweak them.
+I especially want:
+- The background/conclusion list font sizes.
+- The header text like "The 3 Pillars..." or "Single, Composable ..."
+- The pillar font sizes for "Ontology Resolution", etc.
+- The card titles, list and subtext:
+    - Both pillar cards, and the unified slide cards.
+- The diagram "pills" like "Workload Patterns".
+- Etc.
+Clearly comment what each does. Make this intuitive.
+
+
+- SDK OVerview slide (5/9).
+    - Move vertical divider by 10% and give card more space.
+    - On RHS: Add a centered title "SDK Composition Examples"
+- Slide 6/9:
+    - Move stats signature into its own line.
+    - On RHS: Add a centered title "Coordination Examples"
+- Eval slide:
+    - Unbold the evaluation list items; should look like the SDK items.
+    - Also move its divider by 10%.
+
+
+- Add slide numbering on the bottom right. (E.g., 1/9, etc)
+- Let

@@ -9,7 +9,7 @@
         <ul class="background-list">
           <li>Rapid model and agent capability gains.</li>
           <li>Complex work largely feasible from prompts &amp; design files.</li>
-          <li>Humans involved mostly at planning and review, or at hard blockers.</li>
+          <li>Humans involvement at planning and review, or at genuinely hard blockers.</li>
           <li>A shift in how software gets built.</li>
         </ul>
       </section>
@@ -38,7 +38,7 @@
 
 .background-block {
   width: 100%;
-  max-width: 43rem;
+  max-width: 46rem;
 }
 
 .background-list {
@@ -53,9 +53,9 @@
   position: relative;
   padding-left: 1.25rem;
   color: #24343a;
-  font-size: 21px;
+  font-size: var(--deck-simple-list-size);
   font-weight: 500;
-  line-height: 1.32;
+  line-height: var(--deck-simple-list-line-height);
 }
 
 .background-list li::before {

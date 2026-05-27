@@ -337,3 +337,31 @@ kind = "insight"
 oneliner = "A green caveat bullet on the Evaluation slide reads as unintended emphasis unless explicitly desired."
 details = """The Evaluation slide had `.caveat-dot` turning the caveat bullet green. The user asked why the caveat bullet had a different color, implying it should likely match the standard blue bullet unless there is a deliberate semantic reason.
 """
+[[capture]]
+datetime = "2026-05-27T03:25:25.855184"
+source = "compaction.log"
+session_summary = """Continued CAIS deck refinement after the pitch-set commit. Centralized active-slide typography controls, adjusted Pillars/Unified/SDK/Agent/Evaluation layouts, and prepared the next click-animation edit for Agent/LLM RHS examples."""
+
+[[capture.canon]]
+kind = "rule"
+oneliner = "For this CAIS Slidev deck, active-slide font sizes and typography line-heights should be controlled from root `style.css` `--deck-*` variables."
+details = """The active custom slides now use centralized CSS variables for simple bullets, subtitles, pillar labels, card headings/lists/subtexts, floating example labels, code snippets, diagram labels, and evaluation chart labels. Future font-size tweaks should prefer editing `style.css` variables such as `--deck-card-list-size`, `--deck-card-list-compact-size`, `--deck-example-label-size`, or `--deck-example-column-title-size` rather than hardcoding values in components.
+"""
+
+[[capture.canon]]
+kind = "technique"
+oneliner = "For UnifiedSlide IB-card footer collisions, increase/flow the card layout rather than reducing fonts."
+details = """The user explicitly rejected fixing the IB overflow by shrinking fonts. The accepted fix in `components/UnifiedSlide.vue` was to make `.bridge-card` a flex column with `min-height: 17.4rem` and move `.card-footer` into normal flow using `margin: auto 0 0 0`, avoiding overlap with the content.
+"""
+
+[[capture.canon]]
+kind = "rule"
+oneliner = "RHS example-column titles in this deck should be centered italic titles controlled by `--deck-example-column-title-*`."
+details = """`SDK Composition Examples` and `Coordination Examples` were changed from bold card-heading style to italic, lighter centered titles. Their size/weight/line-height now live in `style.css` as `--deck-example-column-title-size`, `--deck-example-column-title-line-height`, and `--deck-example-column-title-weight`.
+"""
+
+[[capture.canon]]
+kind = "technique"
+oneliner = "Use `useSlideContext()` and `clicks` frontmatter for click-driven reveals inside custom Slidev Vue components."
+details = """The deck already uses this pattern in `PillarsSlide.vue`. The immediate next task should use the same approach for `AgentOrchestrationSlide.vue`: import `useSlideContext`, bind reveal classes to `$clicks >= 1`, and add `clicks: 1` to the slide frontmatter in `slides.md`.
+"""
