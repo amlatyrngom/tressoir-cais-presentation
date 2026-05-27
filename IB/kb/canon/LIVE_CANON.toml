@@ -365,3 +365,114 @@ kind = "technique"
 oneliner = "Use `useSlideContext()` and `clicks` frontmatter for click-driven reveals inside custom Slidev Vue components."
 details = """The deck already uses this pattern in `PillarsSlide.vue`. The immediate next task should use the same approach for `AgentOrchestrationSlide.vue`: import `useSlideContext`, bind reveal classes to `$clicks >= 1`, and add `clicks: 1` to the slide frontmatter in `slides.md`.
 """
+[[capture]]
+datetime = "2026-05-27T09:19:29.891632"
+source = "compaction.log"
+session_summary = """Continued CAIS deck polish: added click reveals, slide numbering, title/favicon handling, footer credit, IB slide relayout/note, and pillar jitter fixes while preserving process-safety constraints."""
+
+[[capture.canon]]
+kind = "technique"
+oneliner = "For Slidev decks served under routed session paths, prefer route-relative favicons like `./tressoir.svg`."
+details = """In the CAIS deck, `favicon: /tressoir.svg` built correctly but would resolve to the daemon/root path under session routing, where it 404ed. Using `favicon: ./tressoir.svg` points to the deck-local public asset relative to `/sessions/<slug>/` or the dev route.
+"""
+
+[[capture.canon]]
+kind = "insight"
+oneliner = "Slidev dev server headmatter can stay stale until restart even when build output is correct."
+details = """`curl http://localhost:3030/` still returned `Tressoir - Slidev` and the CDN Slidev favicon while `pnpm exec slidev build` produced the correct title and favicon. Because presentation processes must not be restarted without approval, `global-bottom.vue` runtime-syncs `document.title`, `og:title`, and favicon links on mount.
+"""
+
+[[capture.canon]]
+kind = "technique"
+oneliner = "Avoid PillarsSlide jitter by reserving per-pillar widths and using non-metric active emphasis."
+details = """For `components/PillarsSlide.vue`, true bolding and `scale(1.04)` caused visible motion when the active pillar changed, especially for `Constrained Adaptive Solving`. The accepted pattern uses fixed per-pillar widths controlled by `--deck-pillar-*-width`, removes active scale, and uses a subtle `text-shadow` for active emphasis.
+"""
+
+[[capture.canon]]
+kind = "rule"
+oneliner = "The CAIS IB example slide should be LHS ontology-only with a text-only prototype note, and RHS materialized components over the learning diagram."
+details = """The user requested larger fonts by laying out `components/IbExampleSlide.vue` as ontology-only on the left and materialized components plus self-learning diagram on the right. The note below the ontology card should read that Tressoir ontologies are a working prototype and G5 ontologies are more expressive/UX-friendly. A G5 logo was tried and rejected as too out of place.
+"""
+
+[[capture.canon]]
+kind = "technique"
+oneliner = "Use `global-bottom.vue` with `$nav.currentPage / $nav.total` for deck-wide Slidev numbering."
+details = """The CAIS deck now uses a root `global-bottom.vue` layer for bottom-right slide numbering, with placement and typography controlled via `--deck-slide-number-*` variables in `style.css`. This keeps numbering out of individual slide components.
+"""
+
+[[capture]]
+datetime = "2026-05-27T16:04:25.954016"
+source = "compaction.log"
+session_summary = """Tressoir CAIS poster build session continued. Refined SDK / Agent / IB / Eval panels using the pillar-slice recipe, removed conclusion, and extracted the canonical IB self-learning diagram into a reusable Vue component. Captured durable canon for the pillar-slice pattern, the slide↔poster syntax-highlight class palette, the Tressoir-bar family-coloring, and the right-column row math."""
+
+[[capture.canon]]
+kind = "rule"
+oneliner = "Tressoir CAIS poster card-bullet typography uses `.card-kicker` + `.poster-list` (with `<em>` subtext) — NOT custom item lists with bold weight."
+details = """The user explicitly rejected a custom `.decision-list` / `.decision-item` style on the eval Takeaways card and required matching the pillar cards exactly. The pillar-card pattern is `<p class=\"card-kicker\">Title</p><ul class=\"poster-list\"><li><span>Item</span><em>Subtext</em></li></ul>`. The kicker is `font-size: var(--poster-card-title-size); font-weight: 800; color: #5d8392`. List items are `font-weight: 500` (medium, NOT bold). Subtext (`em`) is `font-size: var(--poster-subtext-size); color: rgba(36,52,58,0.62); font-style: normal`. Apply this to ALL future card-with-bullets panels in the poster."""
+
+[[capture.canon]]
+kind = "rule"
+oneliner = "Tressoir CAIS poster scoped CSS palette mirrors `AgentOrchestrationSlide.vue` / `IbExampleSlide.vue`: `.fn`/`.kw`/`.svc`/`.str`/`.param`/`.pipe`/`.ellipsis`/`.comment`/`.md-heading`/`.file`/`.fence`/`.key`."
+details = """For consistent code highlighting across slides + poster, use ALL of these spans even though some have similar appearances. The colors:
+- `.fn` (function names): #4f7e5a poster (#5d8392 in slides; poster intentionally diverges to green for visual distinction)
+- `.kw` (def/while/lambda/...): #5d8392 weight 800
+- `.svc` (service names like `agent`): #49632a weight 800
+- `.str` (string literals): #49632a weight 700
+- `.param` (signature params): #254854 weight 650
+- `.pipe`/`.ellipsis`: rgba(36,52,58,0.5) weight 700
+- `.comment`: rgba(36,52,58,0.48) italic weight 500
+- `.md-heading`/`.file`: #254854 weight 900
+- `.fence` (markdown code-fence ` ``` `): #5d8392 weight 850
+- `.key` (TOML keys): #254854 weight 800
+The `.tressoir` family-color override technique (see other canon item) ALSO uses these spans inside code blocks."""
+
+[[capture.canon]]
+kind = "technique"
+oneliner = "Match `EvaluationSlide.vue` Tressoir-bar styling: family color via `--bar-color` CSS var + diagonal hatch overlay; do NOT make all Tressoir bars solid green."
+details = """Slide-canonical pattern preserves model-family signal (Tressoir-Gemini = blue+hatch, Tressoir-Claude = orange+hatch). Implementation in `Poster24x36.vue` scoped style:
+```css
+.results-card .bar-fill.tressoir {
+  border: 1px solid #222;
+  background-image:
+    repeating-linear-gradient(45deg, rgba(34,34,34,0.38) 0 2px, transparent 2px 5px),
+    linear-gradient(var(--bar-color), var(--bar-color));
+}
+.results-card .bar-fill.tressoir.gemini { --bar-color: #4285f4; }
+.results-card .bar-fill.tressoir.claude { --bar-color: #f4a524; }
+```
+Bar template: `:class=\"[row.family, { tressoir: row.tressoir }]\"`. The legend uses `.legend-swatch.tressoir-swatch` (gray with hatch) since it's family-agnostic. Earlier poster had Tressoir bars as solid green (#4f7e5a) — that lost the family signal and was wrong."""
+
+[[capture.canon]]
+kind = "rule"
+oneliner = "Tressoir CAIS poster bar palette is canonical: Gemini #4285f4, Claude #f4a524 (golden-orange, NOT #d97745 red-orange), OpenAI #111111, Other #aaaaaa."
+details = """Sourced from `EvaluationSlide.vue`. Earlier poster had Claude as #d97745 (red-orange) and Other as #9aa7ad (blue-tinted gray) — both diverged from the slide. Always sync from the slide when in doubt."""
+
+[[capture.canon]]
+kind = "technique"
+oneliner = "For poster code-card overflow, add `min-width: 0` chain (parent + children) + `overflow-wrap: break-word` on the `pre`; NEVER add `overflow: hidden` to the `.code-card` itself because `.code-label` is positioned at `top: -15px` outside the card and will get clipped."
+details = """The `.code-label` badge in `Poster24x36.vue` scoped style is `position: absolute; top: -15px; left: 24px` — sits visibly above the card. If the parent column allows the card to grow past its bounds, fix by:
+1. `min-width: 0` on the column container (e.g., `.code-column`, `.ib-side`).
+2. `min-width: 0` on the card itself (`.code-column .code-card`, `.ib-side > *`).
+3. `overflow-wrap: break-word` on the `pre` (only when wrapping is acceptable — NOT for ASCII trees with structural indentation).
+
+For ASCII trees that can't be wrapped (the `LOCALIZED_AGENTIC_OPTIMIZATION.SKILL.md` issue), use font-size shrinking instead — the canonical poster knob `--poster-tree-code-size: 10px` was set for this reason. Do not add `overflow: hidden` to `.code-card` — it clips the badge."""
+
+[[capture.canon]]
+kind = "rule"
+oneliner = "Tressoir CAIS poster .right-column rows are precision-tuned; the conclusion panel was REMOVED and its 0.34fr was reabsorbed into eval (1.26fr)."
+details = """Current allocation: `.right-column { grid-template-rows: 0.81fr 1.01fr 1.26fr; }` — agent / IB / eval. Total = 3.08fr (matches what it was when conclusion existed). Agent was bumped from 0.78 → 0.81 earlier (+~1%) to fix bottom-clip on the Parallel Sticky Review code-card; IB pulled back from 1.04 → 1.01. If a panel later overflows after content adds, the protocol is to nudge by ±0.03–0.10 from a generous neighbor. Eval received 0.34fr because it now hosts a full slide-canonical 3-mini-panel results-card with 8 ScreenSpot rows."""
+
+[[capture.canon]]
+kind = "rule"
+oneliner = "Tressoir CAIS poster knob registry (in `style.css` :root): pillar-card-width 35%, sdk-card-width 38%, agent-card-width 42% + agent-code-size 11.5px, ib-card-width 46% + tree-code-size 10px, eval-card-width 40%."
+details = """Each panel uses an independent card-vs-content split knob so they can be tuned independently. The pillar / sdk / agent / ib / eval knobs all feed into a `.{panel}-slice` rule of shape `grid-template-columns: var(--poster-{panel}-card-width, X%) auto minmax(0, 1fr)`. Code-size knobs allow per-panel font shrinking when content is dense (only used so far for agent and tree)."""
+
+[[capture.canon]]
+kind = "technique"
+oneliner = "When extracting a slide diagram into a reusable `components/<Name>Diagram.vue` for poster use, use scoped style with literal rem values (no deck-var deps) so the component renders correctly in BOTH the slide and the poster contexts."
+details = """Pattern used for `OntologyDiagram.vue`, `SolvingDiagram.vue`, `LearningDiagram.vue`, and now `SelfLearningFlowDiagram.vue`. The poster uses these via `<ComponentName />` directly (no namespace wrapper); the slide can keep its own inline copy or also import the component. For risk reasons (slides are locked), I do NOT refactor the slide to use the new component — slight code duplication is acceptable. The canon's earlier extraction guidance (using `.pillar-diagram` namespace in style.css) applies to the pillar-trio specifically; for one-off poster diagrams, scoped Vue style with rem units is simpler and equally good."""
+
+[[capture.canon]]
+kind = "intent"
+oneliner = "Tressoir CAIS poster cleanup pass is deferred: dead rules `.sdk-grid`/`.agent-grid`/`.eval-grid`/`.ib-grid`/`.mini-card`/`.mini-diagram`/`.lane`/`.hybrid-tag`/old `.self-learning-flow` will be removed only after all panel visual passes are done."
+details = """User explicitly opted to defer cleanup. Removing dead rules now would risk masking which classes are actually load-bearing. The conclusion panel CSS (`.conclusion-panel`, `.conclusion-list`, `.thanks`) was the only cleanup done so far and only because the conclusion HTML was also deleted."""

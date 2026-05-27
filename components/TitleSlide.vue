@@ -95,7 +95,7 @@ import g5Logo from '../figures/G5-Logo-Transparant.png'
 }
 
 .presenter {
-  font-weight: 700;
+  font-weight: 400;
   text-decoration: underline;
 }
 

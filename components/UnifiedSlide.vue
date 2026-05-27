@@ -97,7 +97,7 @@ const { $clicks } = useSlideContext()
             </li>
           </ul>
 
-          <p class="card-footer">Same SDK for humans and meta agents</p>
+          <p class="card-footer">Same SDK for humans and meta agent interpreters</p>
         </article>
       </section>
     </main>

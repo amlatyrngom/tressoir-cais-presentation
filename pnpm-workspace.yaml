@@ -1,3 +1,4 @@
 allowBuilds:
   esbuild: true
+  playwright-chromium: set this to true or false
 shamefullyHoist: true

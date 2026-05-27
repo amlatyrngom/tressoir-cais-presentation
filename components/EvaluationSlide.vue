@@ -65,8 +65,8 @@ const panels = [
             <li class="decision-item decision-with-subtext">
               <span class="decision-dot"></span>
               <span class="decision-copy">
-                <span>Caveat: lacking realistic evaluation</span>
-                <span class="decision-subtext">Days- or weeks-long tasks with periodic human input.</span>
+                <span>Caveat: lacking long-term settings</span>
+                <span class="decision-subtext">Weeks- or months-long tasks with periodic human input.</span>
                 <span class="decision-subtext">Even hard SWE-Bench-like tasks take ~10-20 minutes.</span>
               </span>
             </li>

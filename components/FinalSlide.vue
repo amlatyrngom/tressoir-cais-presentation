@@ -14,7 +14,7 @@
             Powerful SDK + representation in the form of the IB.
           </li>
           <li>
-            Already bootstraps itself. Other complex systems under development.
+            Already bootstraps itself. Another complex distributed cloud data system under development.
           </li>
         </ul>
 
@@ -48,7 +48,7 @@
 
 .conclusion-block {
   width: 100%;
-  max-width: 43rem;
+  max-width: 48rem;
 }
 
 .conclusion-list {

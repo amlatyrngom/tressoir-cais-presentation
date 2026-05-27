@@ -43,6 +43,12 @@
           </div>
         </article>
 
+        <aside class="ontology-note" aria-label="Ontology note">
+          <p>
+            <span>G5 ontologies are much more expressive and UX-friendly.</span>
+            <span>(Provenance, Multi-User Collab, Interactive HTML)</span>
+          </p>
+        </aside>
       </section>
 
       <div class="body-divider" aria-hidden="true"></div>
@@ -183,6 +189,7 @@
 
 .ib-surface {
   display: grid;
+  gap: 0.66rem;
   align-content: center;
   min-width: 0;
   min-height: 0;
@@ -229,6 +236,24 @@
 
 .materialized-card {
   align-self: start;
+}
+
+.ontology-note {
+  display: grid;
+  justify-items: center;
+  gap: 0.28rem;
+  color: rgba(36, 52, 58, 0.72);
+  text-align: center;
+}
+
+.ontology-note p {
+  display: grid;
+  gap: 0.12rem;
+  margin: 0;
+  font-size: var(--deck-ib-note-size);
+  font-style: italic;
+  font-weight: 500;
+  line-height: var(--deck-ib-note-line-height);
 }
 
 .surface-label {

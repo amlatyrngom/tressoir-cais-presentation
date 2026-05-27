@@ -232,4 +232,35 @@ Clearly comment what each does. Make this intuitive.
 
 
 - Add slide numbering on the bottom right. (E.g., 1/9, etc)
-- Let
+
+
+IB Example Slide:
+- Add a note below the example ontology.
+    - Tressoir ontologies are an MVP prototype.
+    - G5 Ontologies are much more expressive and UX-friendly.
+    - <G5 Logo>
+    - All centered below
+
+Remove the footer "Tressoir ontologes ...". Keep the G5 one.
+Add a parenthesis below that line (Provenance, Multi-User, Interactive HTML). Also centered.
+
+
+Let's now move the diagram to a dedicated row (like how the pillars have dedicated rows).
+LHS is the diagram.
+RHS is the following file tree:
+mac ~/Code/tressoir/IB/working_area/WORKTREES/worktree1 % ls IB/kb/canon
+AGENT_RUNTIME.LIVE_CANON.toml
+BENCHMARK_OPERATIONS.LIVE_CANON.toml
+CANON_LEARNER_DENSE_STATE.md
+DAEMON_NETWORKING.LIVE_CANON.toml
+FRONTEND_EDITOR_PERMISSIONS.LIVE_CANON.toml
+GENERAL.LIVE_CANON.toml
+IB_SELF_LEARNING.LIVE_CANON.toml
+LIVE_CANON_LOG.toml
+LIVE_CANON.toml
+
+
+Some subtitle text should should say.
+IB Learning Memory is a continuously reorganized tree with LRU context pinning.
+LRU artificially reorderable by learner agents.
+Eventually promoted to IB ontologies when definitive.

@@ -100,6 +100,10 @@
   --deck-code-section-label-size: 8px;
   --deck-code-section-label-letter-spacing: 0.05em;
 
+  /* IB example note below the ontology card. */
+  --deck-ib-note-size: 10.6px;
+  --deck-ib-note-line-height: 1.18;
+
   /* Evaluation mini-chart text. */
   --deck-eval-list-size: 16px;
   --deck-eval-list-line-height: 1.18;
@@ -113,6 +117,105 @@
   --deck-eval-bar-label-size: 6.55px;
   --deck-eval-bar-value-size: 6.55px;
   --deck-eval-bar-line-height: 1;
+
+  /* Poster 24x36 typography/layout knobs. Edit these first when tuning poster print readability. */
+  --poster-page-pad-x: 86px;
+  --poster-page-pad-y: 78px;
+  --poster-title-band-height: 290px;
+  --poster-section-gap: 21px;
+  --poster-column-gap: 44px;
+  --poster-panel-gap: 32px;
+  --poster-inner-gap: 24px;
+  --poster-panel-pad: 30px;
+  --poster-panel-radius: 34px;
+  --poster-heading-gap: 24px;
+  --poster-heading-gap-compact: 18px;
+
+  /* Poster title band: main title, subtitle, authors, and logos. */
+  --poster-title-size: 56px;
+  --poster-title-line-height: 0.94;
+  --poster-subtitle-size: 36px;
+  --poster-subtitle-line-height: 1.22;
+  --poster-authors-size: 28px;
+  --poster-authors-line-height: 1.28;
+  --poster-tressoir-logo-width: 176px;
+  --poster-mit-logo-width: 224px;
+  --poster-g5-logo-width: 76px;
+
+  /* Poster panel headings and standard card/list text. */
+  --poster-eyebrow-size: 24px;
+  --poster-eyebrow-line-height: 1.15;
+  --poster-panel-title-size: 28px;
+  --poster-panel-title-line-height: 1.1;
+  --poster-card-title-size: 24px;
+  --poster-card-title-line-height: 1.12;
+  --poster-card-eyebrow-size: 11px;
+  --poster-list-size: 20px;
+  --poster-list-line-height: 1.25;
+  --poster-list-gap: 12px;
+  --poster-dot-size: 11px;
+  --poster-subtext-size: 15px;
+  --poster-subtext-line-height: 1.18;
+  --poster-footer-size: 14px;
+  --poster-footer-line-height: 1.15;
+
+  /* Poster pillar slices and diagram labels. */
+  --poster-pillar-gap: 18px;
+  /* Width of the card column inside each pillar slice. The vertical
+     divider sits immediately to the right of this column, so reducing
+     this value moves the divider left and gives the diagram more room.
+     Accepts any CSS length (%, fr, px). */
+  --poster-pillar-card-width: 34%;
+  /* SDK panel slice: card column width vs. examples column.
+     Independent knob from the pillars because the right side
+     here is two stacked code-cards instead of a diagram.
+     Smaller value = divider moves left = examples wider. */
+  --poster-sdk-card-width: 38%;
+  /* Agent panel slice: signature code-card vs. example code-cards.
+     Slightly wider than SDK because LHS is a tall code block. */
+  --poster-agent-card-width: 42%;
+  /* Agent panel code blocks: slightly tighter than the global
+     --poster-code-size so the re-synced examples fit the row.
+     Tweak if too small or too large. */
+  --poster-agent-code-size: 11.5px;
+  --poster-agent-code-line-height: 1.32;
+  /* IB panel slice: ontology code-card vs. materialized + flow column.
+     LHS ontology block is content-rich; default 46%.
+     Smaller value = divider moves left = right column wider. */
+  --poster-ib-card-width: 46%;
+  /* Eval panel slice: takeaways pillar-card vs. results-card with 3 mini-panels.
+     Smaller value = takeaways narrower = results wider. */
+  --poster-eval-card-width: 40%;
+  --poster-diagram-label-size: 14px;
+  --poster-diagram-label-line-height: 1;
+  --poster-diagram-small-size: 11px;
+  --poster-example-label-size: 12px;
+  --poster-column-title-size: 16px;
+  /* Per-frame font-size that scales the rem-based slide diagrams up to
+     readable poster sizes. Bump these if diagrams print too small;
+     reduce them if they overflow the diagram column. */
+  --poster-pillar-diagram-scale: 14px;
+  --poster-pillar-diagram-solving-scale: 11px;
+
+  /* Poster code, ontology excerpt, file tree, and notes. */
+  --poster-code-hero-size: 23px;
+  --poster-code-size: 12.5px;
+  --poster-code-line-height: 1.2;
+  --poster-ontology-code-size: 11.2px;
+  --poster-ontology-code-line-height: 1.16;
+  --poster-tree-code-size: 10px;
+  --poster-tree-code-line-height: 1.15;
+  --poster-note-size: 13px;
+  --poster-note-line-height: 1.18;
+
+  /* Poster evaluation chart text. */
+  --poster-chart-legend-size: 10.5px;
+  --poster-chart-title-size: 13px;
+  --poster-chart-subtitle-size: 10px;
+  --poster-chart-label-size: 10.2px;
+  --poster-chart-label-line-height: 1.05;
+  --poster-chart-value-size: 10.5px;
+  --poster-thanks-size: 22px;
 }
 
 /* Cascade Verdana to all slide content. */
@@ -182,4 +285,554 @@
 .slidev-layout h4 {
   font-family: 'Verdana', sans-serif !important;
   font-weight: 500 !important;
+}
+
+/* ============================================================
+   Pillar diagram primitives (shared by PillarsSlide,
+   OntologyDiagram, SolvingDiagram, LearningDiagram, and the
+   poster). Selectors are intentionally global rather than
+   scoped to a single component so the same look holds on slides
+   and on the 24x36 poster.
+
+   To avoid colliding with other deck classes that happen to share
+   names (e.g. the IB panel's .self-learning-flow uses .core-node /
+   .output-node / .flow-arrow with very different geometry), all
+   primitives are namespaced under `.pillar-diagram`. Diagram
+   components must put `pillar-diagram` on their root element. */
+
+.intent-diagram {
+  position: relative;
+  width: 100%;
+  min-height: 9.5rem;
+  display: grid;
+  grid-template-columns: max-content minmax(1.6rem, 1fr) max-content minmax(1.6rem, 1fr) max-content;
+  grid-template-rows: 1fr;
+  align-items: center;
+  animation: card-in 420ms ease-out both;
+}
+
+.pillar-diagram .input-stack {
+  grid-column: 1;
+  grid-row: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.56rem;
+}
+
+.pillar-diagram .diagram-node {
+  display: flex;
+  align-items: center;
+  gap: 0.38rem;
+  min-height: 0;
+  padding: 0.34rem 0.56rem;
+  border: 1.4px dashed rgba(93, 131, 146, 0.48);
+  border-radius: 999px;
+  background: rgba(93, 131, 146, 0.08);
+  box-shadow: 0 10px 26px rgba(30, 54, 62, 0.08);
+}
+
+.pillar-diagram .input-node {
+  justify-content: flex-start;
+}
+
+.pillar-diagram .core-node {
+  grid-column: 3;
+  grid-row: 1;
+  justify-self: center;
+  width: auto;
+  border-color: rgba(93, 131, 146, 0.5);
+  background: rgba(93, 131, 146, 0.1);
+}
+
+.pillar-diagram .resolution-agent-node,
+.pillar-diagram .orchestrator-node,
+.pillar-diagram .learning-agent-node {
+  border-color: rgba(111, 148, 63, 0.52);
+  background: rgba(111, 148, 63, 0.12);
+}
+
+.pillar-diagram .resolution-agent-node .node-icon,
+.pillar-diagram .orchestrator-node .node-icon,
+.pillar-diagram .learning-agent-node .node-icon {
+  color: #6f943f;
+}
+
+.pillar-diagram .resolution-agent-node .node-copy h4,
+.pillar-diagram .orchestrator-node .node-copy h4,
+.pillar-diagram .learning-agent-node .node-copy h4 {
+  color: #49632a;
+}
+
+.pillar-diagram .output-node {
+  grid-column: 5;
+  grid-row: 1;
+  justify-self: center;
+  border-color: rgba(93, 131, 146, 0.42);
+}
+
+.pillar-diagram .node-icon {
+  flex: 0 0 auto;
+  width: 1.22rem;
+  height: 1.22rem;
+  color: #5d8392;
+}
+
+.pillar-diagram .node-copy h4 {
+  margin: 0;
+  color: #254854;
+  font-size: var(--deck-diagram-node-size);
+  font-weight: 700;
+  line-height: var(--deck-diagram-node-line-height);
+  white-space: nowrap;
+}
+
+.pillar-diagram .compound-icon {
+  position: relative;
+  flex: 0 0 auto;
+  width: 1.22rem;
+  height: 1.22rem;
+}
+
+.pillar-diagram .contract-icon {
+  width: 1.22rem;
+  height: 1.22rem;
+}
+
+.pillar-diagram .bot-badge,
+.pillar-diagram .check-badge,
+.pillar-diagram .search-badge {
+  position: absolute;
+  right: -0.2rem;
+  bottom: -0.16rem;
+  width: 0.66rem;
+  height: 0.66rem;
+  padding: 0.08rem;
+  color: #ffffff;
+  background: #5d8392;
+  border: 1.5px solid #ffffff;
+  border-radius: 999px;
+  box-shadow: 0 4px 10px rgba(30, 54, 62, 0.18);
+}
+
+.pillar-diagram .loop-badge {
+  position: absolute;
+  right: -0.2rem;
+  bottom: -0.16rem;
+  width: 0.66rem;
+  height: 0.66rem;
+  padding: 0.08rem;
+  color: #ffffff;
+  background: #6f943f;
+  border: 1.5px solid #ffffff;
+  border-radius: 999px;
+  box-shadow: 0 4px 10px rgba(30, 54, 62, 0.18);
+}
+
+.pillar-diagram .flow-arrow {
+  position: relative;
+  width: 100%;
+  height: 2px;
+  align-self: center;
+  background: rgba(93, 131, 146, 0.62);
+}
+
+.pillar-diagram .flow-arrow::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: -1px;
+  width: 0;
+  height: 0;
+  border-top: 0.28rem solid transparent;
+  border-bottom: 0.28rem solid transparent;
+  border-left: 0.42rem solid rgba(93, 131, 146, 0.72);
+  transform: translateY(-50%);
+}
+
+.pillar-diagram .input-arrow {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.pillar-diagram .output-arrow {
+  grid-column: 4;
+  grid-row: 1;
+}
+
+.learning-diagram {
+  position: relative;
+  width: 100%;
+  min-height: 10.8rem;
+  display: grid;
+  grid-template-columns: max-content minmax(1.6rem, 1fr) max-content minmax(1.6rem, 1fr) max-content;
+  grid-template-rows: 1fr;
+  align-items: center;
+  padding-bottom: 1.55rem;
+  animation: card-in 420ms ease-out both;
+}
+
+.solving-diagram {
+  position: relative;
+  width: 100%;
+  display: grid;
+  grid-template-rows: minmax(5.1rem, auto) 1.1rem minmax(7.4rem, auto);
+  gap: 0.72rem;
+  min-height: 16.4rem;
+  margin-top: -0.35rem;
+  animation: card-in 420ms ease-out both;
+}
+
+.solving-diagram .spectrum-lane {
+  position: relative;
+  border: 1px solid rgba(93, 131, 146, 0.22);
+  border-radius: 0.9rem;
+  background:
+    linear-gradient(135deg, rgba(93, 131, 146, 0.08), rgba(255, 255, 255, 0) 46%),
+    rgba(255, 255, 255, 0.92);
+  box-shadow: 0 12px 30px rgba(30, 54, 62, 0.08);
+}
+
+.solving-diagram .fast-lane {
+  display: grid;
+  align-content: center;
+  min-height: 5.1rem;
+  padding: 0.62rem 0.62rem 0.58rem 0.62rem;
+}
+
+.solving-diagram .agent-lane {
+  display: grid;
+  align-content: center;
+  min-height: 7.4rem;
+  padding: 0.82rem 0.62rem 0.72rem 0.62rem;
+}
+
+.solving-diagram .lane-label {
+  position: absolute;
+  top: -0.48rem;
+  left: 0.86rem;
+  padding: 0.08rem 0.42rem;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #5d8392;
+  font-size: var(--deck-example-label-size);
+  font-weight: 800;
+  letter-spacing: var(--deck-example-label-letter-spacing);
+  line-height: var(--deck-example-label-line-height);
+}
+
+.solving-diagram .hybrid-label {
+  justify-self: center;
+  align-self: center;
+  position: relative;
+  z-index: 2;
+  margin: 0.04rem 0 0.18rem 0;
+  padding: 0.08rem 0.48rem;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #5d8392;
+  font-size: var(--deck-example-label-size);
+  font-weight: 800;
+  letter-spacing: var(--deck-example-label-letter-spacing);
+  line-height: var(--deck-example-label-line-height);
+  box-shadow: 0 5px 14px rgba(30, 54, 62, 0.08);
+}
+
+.solving-diagram .fast-flow {
+  display: grid;
+  grid-template-columns: minmax(7rem, max-content) minmax(0.55rem, 0.35fr) minmax(12rem, 1.55fr) minmax(0.55rem, 0.35fr) max-content;
+  align-items: center;
+  gap: 0.28rem;
+}
+
+.solving-diagram .spectrum-node {
+  min-width: max-content;
+  justify-content: center;
+}
+
+.solving-diagram .diagram-node {
+  gap: 0.28rem;
+  padding: 0.25rem 0.42rem;
+}
+
+.solving-diagram .node-icon,
+.solving-diagram .compound-icon {
+  width: 0.98rem;
+  height: 0.98rem;
+}
+
+.solving-diagram .node-copy h4 {
+  font-size: var(--deck-diagram-node-compact-size);
+}
+
+.solving-diagram .short-arrow {
+  position: relative;
+  min-width: 0.9rem;
+  width: 100%;
+  height: 2px;
+  background: rgba(93, 131, 146, 0.55);
+}
+
+.solving-diagram .short-arrow::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: -1px;
+  width: 0;
+  height: 0;
+  border-top: 0.24rem solid transparent;
+  border-bottom: 0.24rem solid transparent;
+  border-left: 0.36rem solid rgba(93, 131, 146, 0.72);
+  transform: translateY(-50%);
+}
+
+.solving-diagram .plan-card {
+  min-width: 12rem;
+  padding: 0.36rem 0.46rem 0.4rem 0.46rem;
+  border: 1.4px dashed rgba(93, 131, 146, 0.44);
+  border-radius: 0.72rem;
+  background: rgba(93, 131, 146, 0.07);
+}
+
+.solving-diagram .plan-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  color: #254854;
+  font-size: var(--deck-diagram-plan-title-size);
+  font-weight: 800;
+  line-height: var(--deck-diagram-plan-title-line-height);
+  white-space: nowrap;
+}
+
+.solving-diagram .plan-bolt {
+  display: grid;
+  place-items: center;
+  width: 1.05rem;
+  height: 1.05rem;
+  border-radius: 999px;
+  color: #6f943f;
+  background: rgba(111, 148, 63, 0.16);
+  border: 1px solid rgba(111, 148, 63, 0.34);
+}
+
+.solving-diagram .plan-bolt svg {
+  width: 0.68rem;
+  height: 0.68rem;
+}
+
+.solving-diagram .plan-steps {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.18rem;
+  margin-top: 0.32rem;
+}
+
+.solving-diagram .plan-steps span {
+  display: flex;
+  align-items: center;
+  gap: 0.16rem;
+  min-height: 1rem;
+  padding: 0.12rem 0.2rem;
+  border-radius: 0.38rem;
+  background: #ffffff;
+  border: 1px solid rgba(93, 131, 146, 0.22);
+  color: #315764;
+  font-size: var(--deck-diagram-plan-step-size);
+  font-weight: 700;
+  line-height: var(--deck-diagram-plan-step-line-height);
+  white-space: nowrap;
+}
+
+.solving-diagram .plan-steps b {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 0.74rem;
+  height: 0.74rem;
+  border-radius: 999px;
+  background: rgba(93, 131, 146, 0.13);
+  color: #5d8392;
+  font-size: var(--deck-diagram-plan-index-size);
+  line-height: var(--deck-diagram-node-line-height);
+}
+
+.solving-diagram .orchestration-grid {
+  display: grid;
+  grid-template-columns: max-content minmax(0.72rem, 0.45fr) minmax(15rem, 1fr) minmax(0.72rem, 0.45fr) max-content;
+  align-items: center;
+  gap: 0.28rem 0.34rem;
+}
+
+.solving-diagram .integration-node {
+  grid-column: 1;
+}
+
+.solving-diagram .orchestration-arrow {
+  grid-column: 2;
+  margin-left: 0;
+  margin-right: -0.56rem;
+  width: calc(100% + 0.56rem);
+}
+
+.solving-diagram .orchestrator-stack {
+  position: relative;
+  grid-column: 3;
+  display: grid;
+  justify-items: center;
+  gap: 0.16rem;
+  min-width: 15rem;
+}
+
+.solving-diagram .expert-node {
+  background: rgba(93, 131, 146, 0.08);
+}
+
+.solving-diagram .vertical-connector {
+  width: 2px;
+  height: 0.62rem;
+  background: rgba(93, 131, 146, 0.44);
+}
+
+.solving-diagram .orchestrator-node {
+  position: relative;
+  z-index: 2;
+  background: rgba(93, 131, 146, 0.11);
+  border-color: rgba(93, 131, 146, 0.52);
+}
+
+.solving-diagram .cluster-connector {
+  position: relative;
+  width: 12.3rem;
+  height: 0.92rem;
+  margin-top: 0.06rem;
+}
+
+.solving-diagram .cluster-connector::before {
+  content: "";
+  position: absolute;
+  top: 0.1rem;
+  left: 1.15rem;
+  right: 1.15rem;
+  height: 1.4px;
+  background: rgba(93, 131, 146, 0.42);
+}
+
+.solving-diagram .cluster-connector::after {
+  content: "";
+  position: absolute;
+  top: -0.22rem;
+  left: 50%;
+  width: 1.4px;
+  height: 0.32rem;
+  background: rgba(93, 131, 146, 0.42);
+  transform: translateX(-50%);
+}
+
+.solving-diagram .cluster-connector span {
+  position: absolute;
+  top: 0.1rem;
+  width: 1.4px;
+  height: 0.66rem;
+  background: rgba(93, 131, 146, 0.42);
+}
+
+.solving-diagram .cluster-connector span:nth-child(1) { left: 1.15rem; }
+.solving-diagram .cluster-connector span:nth-child(2) { left: 50%; transform: translateX(-50%); }
+.solving-diagram .cluster-connector span:nth-child(3) { right: 1.15rem; }
+
+.solving-diagram .cluster-connector span::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -0.18rem;
+  width: 0;
+  height: 0;
+  border-left: 0.16rem solid transparent;
+  border-right: 0.16rem solid transparent;
+  border-top: 0.24rem solid rgba(93, 131, 146, 0.58);
+  transform: translateX(-50%);
+}
+
+.solving-diagram .cluster-row {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  gap: 0.34rem;
+  align-items: center;
+  justify-content: center;
+}
+
+.solving-diagram .agent-cluster {
+  position: relative;
+  width: 4.85rem;
+  height: 2.02rem;
+}
+
+.solving-diagram .implementer-cluster { width: 5.35rem; }
+.solving-diagram .reviewer-cluster { width: 4.45rem; }
+
+.solving-diagram .stack-card {
+  position: absolute;
+  border: 1px solid rgba(93, 131, 146, 0.32);
+  border-radius: 0.52rem;
+  background: #ffffff;
+}
+
+.solving-diagram .stack-card.back-two {
+  inset: 0.02rem 0.38rem 0.38rem 0.02rem;
+  opacity: 0.32;
+}
+
+.solving-diagram .stack-card.back-one {
+  inset: 0.18rem 0.18rem 0.2rem 0.2rem;
+  opacity: 0.58;
+}
+
+.solving-diagram .stack-card.front {
+  inset: 0.34rem 0 0 0.38rem;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 0.12rem;
+  padding: 0.2rem 0.2rem;
+  background: rgba(93, 131, 146, 0.08);
+  box-shadow: 0 8px 17px rgba(30, 54, 62, 0.08);
+}
+
+.solving-diagram .stack-card.front span {
+  min-width: 0;
+  color: #254854;
+  font-size: var(--deck-diagram-stack-label-size);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: var(--deck-diagram-node-line-height);
+  white-space: nowrap;
+}
+
+.solving-diagram .stack-card.front .node-icon {
+  width: 0.82rem;
+  height: 0.82rem;
+}
+
+.solving-diagram .output-code-arrow {
+  grid-column: 4;
+  align-self: center;
+  margin-left: -0.56rem;
+  margin-right: 0;
+  width: calc(100% + 0.56rem);
+}
+
+.solving-diagram .code-change-node {
+  grid-column: 5;
+  justify-self: end;
+}
+
+.solving-diagram .code-change-node .node-copy h4 {
+  font-size: var(--deck-diagram-node-output-size);
+}
+
+@keyframes card-in {
+  from { opacity: 0; transform: translateY(0.45rem); }
+  to { opacity: 1; transform: translateY(0); }
 }
