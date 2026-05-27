@@ -303,3 +303,37 @@ kind = "technique"
 oneliner = "When verifying visual separators in Vue slides, check both template DOM and CSS selectors."
 details = """During `QuickSdkSlide.vue` iteration, `.body-divider` CSS existed but the actual `<div class="body-divider">` was missing, so no divider rendered. Future edits should verify both the template element and the CSS rule, not just grep for the selector.
 """
+[[capture]]
+datetime = "2026-05-26T00:35:10.507351"
+source = "compaction.log"
+session_summary = """Continued CAIS Slidev deck construction after Quick SDK. Added Agent/LLM orchestration, IB layout/self-learning, Evaluation, and Conclusion slides, while capturing deck-specific preferences for simple closures, extracted evaluation panels, and IB example visual language."""
+
+[[capture.canon]]
+kind = "rule"
+oneliner = "For this CAIS Slidev deck, conclusion slides should use simple pitch-plan bullets rather than card-heavy summary visuals."
+details = """The user rejected a more polished card-based conclusion as "gaudy" and requested simple bullet points plus "Thank you for listening." When a slide is meant as a short spoken wrap-up, preserve direct pitch-plan wording and avoid extra visual ornamentation.
+"""
+
+[[capture.canon]]
+kind = "rule"
+oneliner = "For extracted Evaluation panels, remove paper-only labels and use actual model/system names plus costs."
+details = """When adapting paper evaluation figures into slides, remove labels such as `(a)`, `(c)`, and `(d)` that only make sense in paper context. Add costs where available, and replace shorthand labels like `Tressoir Flash` with full labels such as `Tressoir (Gemini 3 Flash)`.
+"""
+
+[[capture.canon]]
+kind = "technique"
+oneliner = "Native Vue/CSS mini bar charts can replace matplotlib figures for this Slidev deck when Python plotting deps are unavailable."
+details = """The deck environment had `numpy` but no `matplotlib`, so the Evaluation slide was implemented as data-driven Vue/CSS bars while preserving the source plot data/color semantics: Gemini blue, Claude orange, OpenAI black, other gray, and hatched/outlined Tressoir bars.
+"""
+
+[[capture.canon]]
+kind = "rule"
+oneliner = "The Slide 6 IB example should present IB layout as file/code cards plus a Pillars-style self-learning diagram."
+details = """The user wanted the LHS to look like code cards with floating labels (`SELF_LEARNING.ONTOLOGY.md`, `Materialized Components`), showing semi-structured headers, structured related sources/canon, and a materialized component tree. The RHS should mimic Pillars slide diagrams: trigger pills -> Self-Learning Agents -> Improved IB, not a gaudy card stack.
+"""
+
+[[capture.canon]]
+kind = "insight"
+oneliner = "A green caveat bullet on the Evaluation slide reads as unintended emphasis unless explicitly desired."
+details = """The Evaluation slide had `.caveat-dot` turning the caveat bullet green. The user asked why the caveat bullet had a different color, implying it should likely match the standard blue bullet unless there is a deliberate semantic reason.
+"""

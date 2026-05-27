@@ -137,10 +137,69 @@ Ok let's work on the presentation
 
 ## Agent/LLM Orchestration
 (/Users/amlatyr/Code/tressoir_projects/tressoir-cais-presentation/IB/ontologies/tressoir-project-map/paper_latex_source/02_approach.tex
-contains a graph example pseudocode in python. Reuse it)
+contains a graph example pseudocode in python. as well as more complete  Reuse it)
 
 Let's now do this slide.
+Header: just say "Design Goal: Expose Sophisticated Coordination Ordinary Code"
+LHS says (can occupy ~50% this time)
+"Key Signatures".
+Should follow the fake service definition language we use in the paper with nice syntax highlighting.
+```
+service agent: # Enables advanced agent management
+    # ...
+    spawn(...)
+    compact_run(...)
+    steer(...)
+    broadcast(...)
+
+    # Others <not part of slide: CAN BE in one line with ... elision>
+    pause() | re
+
+service llm:
+    ...
+```
+The comments can be concise, I'll do the speaking for details.
+
+The RHS should contain two (not complete codes)
+- The cost-aware graph pseudocode.
+- A parallel sticky review with code like:
+```
+# Start of Task: Spawn R parallel Reviewers
+...
+# Milestone: Ask R parallel reviews
+...
+```
+
+
+```toml
+[[canon]]
+kind = "rule"
+oneliner = "Compaction must not await smart merge work."
+details = """..."""
+
+[[canon]]
+kind = "technique"
+oneliner = "`agent.stats(agent_id)` is the concise introspection surface for optimizer/meta agents."
+details = """..."""
+```
+
+# Evaluation Slide and Final Slide
+Ok let's move on to the Evaluation slide and final slide together. The final slide should be easy to layout.
+Take this, bring it over here, and adapt it.
+/Users/amlatyr/Code/tressoir_writing/code/plot_results.py
+
+RHS:
+(c), (d), (a) in that order.
+For (a) do not include the ablations.
+
 LHS:
-- 
+"Evaluation Takeways"
+- Effective at offline/hybrid design.
+- Effective at pure online orchestration without learning.
+- Caveat: Lacking Realistic Evaluation
+    Subtext: 
+        - days- or weeks-long tasks with periodic human input.
+        - Even hard SWEB-like tasks take ~10-20 minutes.
 
 
+Propose a layout.

@@ -7,7 +7,7 @@ const { $clicks } = useSlideContext()
 <template>
   <div class="pillars-slide deck-slide">
     <header class="header deck-slide-header">
-      <h1 class="deck-title">Agent-Native Software Is Still A Dream</h1>
+      <h1 class="deck-title">Agent-Native Software Is Still Challenging</h1>
       <div class="subtitle-row">
         <h2 class="strip-subtitle">The 3 Pillars of Agent-Native Software</h2>
       </div>
@@ -18,7 +18,7 @@ const { $clicks } = useSlideContext()
         </svg>
         <div class="pillar-strip">
           <div class="pillar" :class="{ active: $clicks === 1, inactive: $clicks > 0 && $clicks !== 1 }">
-            <span class="pillar-label">Intent / Ontology Resolution</span>
+            <span class="pillar-label">Ontology Resolution</span>
           </div>
           <div class="divider">›</div>
           <div class="pillar" :class="{ active: $clicks === 2, inactive: $clicks > 0 && $clicks !== 2 }">
@@ -39,7 +39,7 @@ const { $clicks } = useSlideContext()
       <section class="pillar-body" aria-live="polite">
         <div class="card-column">
           <article v-if="$clicks === 1" class="resolution-card">
-            <p class="card-kicker">Intent / Ontology Resolution</p>
+            <p class="card-kicker">Ontology Resolution</p>
             <ul class="decision-list">
               <li class="decision-item">
                 <span class="decision-dot"></span>
@@ -113,7 +113,7 @@ const { $clicks } = useSlideContext()
         </div>
         <div v-if="$clicks >= 1 && $clicks <= 3" class="body-divider" aria-hidden="true"></div>
         <div class="diagram-column">
-          <section v-if="$clicks === 1" class="intent-diagram" aria-label="Intent ontology resolution diagram">
+          <section v-if="$clicks === 1" class="intent-diagram" aria-label="Ontology resolution diagram">
             <div class="input-stack">
               <article class="diagram-node input-node">
                 <svg class="node-icon" viewBox="0 0 32 32" aria-hidden="true">
@@ -194,7 +194,7 @@ const { $clicks } = useSlideContext()
                     </svg>
                   </div>
                   <div class="node-copy">
-                    <h4>Repeated Semantic Query</h4>
+                    <h4>Repeated NL Query</h4>
                   </div>
                 </article>
 

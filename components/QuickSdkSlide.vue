@@ -45,7 +45,7 @@
               <span class="decision-dot"></span>
               <span class="decision-copy">
                 <span>Comprehensive builtin services</span>
-                <span class="decision-subtext"><code>core</code>, <code>web</code>, <code>embed</code>, <code>editor</code>, <code>webview</code>, <code>llm</code>, <code>agent</code>, <code>self-learning</code>, ...</span>
+                <span class="decision-subtext"><code>core</code>, <code>web</code>, <code>embed</code>, <code>editor</code>, <code>webview</code>, <code>llm</code>, <code>agent</code>, <code>self-learning</code></span>
               </span>
             </li>
           </ul>
@@ -57,7 +57,7 @@
       <section class="snippet-column" aria-label="SDK code examples">
         <article class="code-step">
           <p class="step-label">Step N: Parallel Search</p>
-          <pre class="step-code"><code>searches = sdk(<span class="str">"core"</span>, <span class="str">"parallel_tool_calls"</span>, {
+          <pre class="step-code"><code>searches = <span class="fn">sdk</span>(<span class="str">"core"</span>, <span class="str">"parallel_tool_calls"</span>, {
   calls = {
     {<span class="str">"web"</span>, <span class="str">"search"</span>, { query = <span class="str">"agent-native databases"</span> }},
     {<span class="str">"web"</span>, <span class="str">"search"</span>, { query = <span class="str">"semantic query optimization"</span> }},
@@ -77,12 +77,12 @@ print(results)</code></pre>
   idx = relevant_idxs[i]
   result = results[idx]
 
-  path = sdk(<span class="str">"web"</span>, <span class="str">"read"</span>, {
+  path = <span class="fn">sdk</span>(<span class="str">"web"</span>, <span class="str">"read"</span>, {
     url = result.url,
     download_path = <span class="str">"/tmp/sdk-result-"</span> .. idx .. <span class="str">".pdf"</span>,
   })
 
-  sdk(<span class="str">"core"</span>, <span class="str">"multimodal_view"</span>, { path = path })
+  <span class="fn">sdk</span>(<span class="str">"core"</span>, <span class="str">"multimodal_view"</span>, { path = path })
 <span class="kw">end</span></code></pre>
         </article>
       </section>
@@ -142,11 +142,12 @@ print(results)</code></pre>
 }
 
 .fn {
-  color: #254854;
+  color: #5d8392;
+  font-weight: 900;
 }
 
 .arg {
-  color: #5d8392;
+  color: inherit;
 }
 
 .punct {
